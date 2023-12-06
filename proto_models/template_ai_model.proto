@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package template_ai_model;
+
+service AiModelTemplateService {
+  rpc AiModelTemplateRequest (AiTemplateRequest) returns (stream AiTemplateReply);
+}
+
+message AiTemplateRequest {
+  string name = 1;
+}
+
+message AiTemplateReply {
+  string message = 1;
+}
