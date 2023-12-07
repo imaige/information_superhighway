@@ -1,4 +1,4 @@
-from app.src.internal_api_template_service_service import internal_api_template_service_service, internal_api_template_service_service_test
+from app.src.internal_api_template_service_server import internal_api_template_service_server, internal_api_template_service_server_test
 import asyncio
 
 
