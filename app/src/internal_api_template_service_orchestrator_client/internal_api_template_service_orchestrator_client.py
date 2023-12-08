@@ -3,15 +3,20 @@ from proto_models.internal_api_template_service_pb2 import (
     TemplateRequest, TemplateReply
 )
 from proto_models.internal_api_template_service_pb2_grpc import (
-    InternalApiTemplateServiceServicer, add_InternalApiTemplateServiceServicer_to_server,
     InternalApiTemplateServiceStub
 )
+from ...libraries.logging_file_format import configure_logger
 
 import asyncio
 import logging
 
 
+logger = logging.getLogger(__name__)
+configure_logger(logger, level=logging.INFO)
+
+
 async def run() -> None:
+    # logging.basicConfig(level=logging.INFO)
     # client_key = open('../tls_certs/client-key.pem', 'rb').read()
     # client_cert = open('../tls_certs/client-cert.pem', 'rb').read()
     # ca_cert = open('../tls_certs/ca-cert.pem', 'rb').read()
@@ -28,7 +33,7 @@ async def run() -> None:
         )
 
         async for response in stub.InternalApiTemplateRequest(TemplateRequest(name="Caleb")):
-            print("Client received from async generator: " + response.message)
+            logger.info("Client received from async generator: " + response.message)
 
             #
             # stream = await test_stream
