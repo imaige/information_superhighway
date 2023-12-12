@@ -20,7 +20,7 @@ class TemplateRequester(InternalApiTemplateServiceServicer):
     # Endpoint definition #
     # Matches name in InternalApiTemplateServiceServicer
     async def InternalApiTemplateRequest(self, request, context) -> TemplateReply:
-        logger.info(f"Serving request with detail: request")
+        logger.info(f"Serving request with detail: {request}")
         # send response (optional, but recommended)
         yield TemplateReply(message=f"Hello, {request.name}!")
 

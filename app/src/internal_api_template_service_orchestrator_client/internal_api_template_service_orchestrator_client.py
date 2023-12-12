@@ -32,6 +32,7 @@ async def run() -> None:
             TemplateRequest(name="Caleb")
         )
 
+        logger.info("Client making InternalApiTemplateRequest")
         async for response in stub.InternalApiTemplateRequest(TemplateRequest(name="Caleb")):
             logger.info("Client received from async generator: " + response.message)
 

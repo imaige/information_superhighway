@@ -5,9 +5,6 @@ import logging
 
 
 def main():
-    # logging.basicConfig(level=logging.INFO)
-    # logging.info("Starting up template service server.")
-
     logger = logging.getLogger(__name__)
     configure_logger(logger, level=logging.INFO)
     logger.info("Starting up template service server.")
