@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import proto_models.internal_api_template_service_pb2 as internal__api__template__service__pb2
+import internal_api_template_service_pb2 as internal__api__template__service__pb2
 
 
 class InternalApiTemplateServiceStub(object):

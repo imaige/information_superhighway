@@ -13,13 +13,14 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n#internal_api_template_service.proto\x12\x1dinternal_api_template_service\"\x1f\n\x0fTemplateRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\" \n\rTemplateReply\x12\x0f\n\x07message\x18\x01 \x01(\t2\x9a\x01\n\x1aInternalApiTemplateService\x12|\n\x1aInternalApiTemplateRequest\x12..internal_api_template_service.TemplateRequest\x1a,.internal_api_template_service.TemplateReply0\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n#internal_api_template_service.proto\x12\x1dinternal_api_template_service\"\x1f\n\x0fTemplateRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\" \n\rTemplateReply\x12\x0f\n\x07message\x18\x01 \x01(\t2\x9a\x01\n\x1aInternalApiTemplateService\x12|\n\x1aInternalApiTemplateRequest\x12..internal_api_template_service.TemplateRequest\x1a,.internal_api_template_service.TemplateReply0\x01\x42\x36\n\x1bio.grpc.examples.helloworldB\x0fHelloWorldProtoP\x01\xa2\x02\x03HLWb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'internal_api_template_service_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
+  DESCRIPTOR._serialized_options = b'\n\033io.grpc.examples.helloworldB\017HelloWorldProtoP\001\242\002\003HLW'
   _globals['_TEMPLATEREQUEST']._serialized_start=70
   _globals['_TEMPLATEREQUEST']._serialized_end=101
   _globals['_TEMPLATEREPLY']._serialized_start=103
