@@ -2,21 +2,14 @@ import re
 
 
 def get_protocol_buffer_file_name(input_string):
-    # Define the pattern for capturing text after the last slash
-    pattern = r'[^/]+/?$'
-
-    # Use regular expressions to find the match
+    # Capture text after last slash, or all text if no slash
+    # as this will live in [repo_name]/scripts, in practice there should always be one
+    pattern = r'([^/]+/?)?$'
     match = re.search(pattern, input_string)
-
-    if match:
-        # Extract the matched text
-        result = match.group(0)
-        # remove '.proto' extension
-        result = result[:-6]
-        return result
-    else:
-        # If no match is found, return the original string
-        return input_string
+    result = match.group(0)
+    # remove '.proto' extension
+    result = result[:-6]
+    return result
 
 
 def replace_pb2_import_statement(file_path, file_name):
