@@ -11,7 +11,7 @@ import re
 # so using this script gets us the necessary prefix to which we can add _pb2(.py or .pyi) or_pb2_grpc(.py) as need
 def get_protocol_buffer_file_name(input_proto_file_name):
     # Capture text after last slash, or all text if no slash
-    # as this will live in [repo_name]/scripts, in practice there should always be one
+    # as this will live in $repo_name/scripts, in practice there should always be one
     pattern = r'([^/]+/?)?$'
     match = re.search(pattern, input_proto_file_name)
     result = match.group(0)
