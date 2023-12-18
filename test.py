@@ -2,6 +2,7 @@ import pytest
 import os
 
 
+# to run tests, from the root (where this file is located), run python -m pytest
 def run_tests():
     # Get the current directory
     current_directory = os.path.dirname(os.path.abspath(__file__))

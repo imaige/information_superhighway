@@ -13,7 +13,7 @@
 #
 # @pytest.fixture(scope='module')
 # def grpc_servicer():
-#     from app.src.internal_api_template_service_server.internal_api_template_service_server import TemplateRequester
+#     from app.app.internal_api_template_service_server.internal_api_template_service_server import TemplateRequester
 #     return TemplateRequester()
 #
 #

@@ -1,6 +1,6 @@
-from app.src.internal_api_template_service_orchestrator_client import internal_api_template_service_orchestrator_client
+from src.app.internal_api_template_service_orchestrator_client import internal_api_template_service_orchestrator_client
 import asyncio
-from app.libraries.logging_file_format import configure_logger
+from src.libraries.logging_file_format import configure_logger
 import logging
 
 

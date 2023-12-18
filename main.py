@@ -1,6 +1,6 @@
-from app.src.internal_api_template_service_server import internal_api_template_service_server
+from src.app.internal_api_template_service_server import internal_api_template_service_server
 import asyncio
-from app.libraries.logging_file_format import configure_logger
+from src.libraries.logging_file_format import configure_logger
 import logging
 
 
