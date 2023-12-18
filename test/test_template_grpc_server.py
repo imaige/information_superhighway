@@ -7,8 +7,12 @@ from proto_models import internal_api_template_service_pb2_grpc
 from src.app.internal_api_template_service_server.internal_api_template_service_server import TemplateRequester
 
 
-class TestGreeter:
+class TestTemplateRpc:
     def setUp(self):
+        # add all servers/servicers to this list
+        # syntax: [protobuf file].DESCRIPTOR.services_by_name['ServiceName']: [ServerOrServicerClass()]
+        # you can find each ServiceName by looking at the .proto file for the service you would like to test
+        # anything defined using 'service $RandomService { }' should be tested
         servicers = {
             internal_api_template_service_pb2.DESCRIPTOR.services_by_name['InternalApiTemplateService']:
                 TemplateRequester()
@@ -20,17 +24,19 @@ class TestGreeter:
     @pytest.mark.asyncio
     async def test_templaterequest(self):
         self.setUp()
-        """ expect to get Greeter response """
+        """ expect to get TemplateRequest response with the provided name """
         name = "John Doe"
         request = internal_api_template_service_pb2.TemplateRequest(name=name)
-        print("descriptor is: ")
-        print(internal_api_template_service_pb2.DESCRIPTOR)
+
         print("services is:")
         for service in internal_api_template_service_pb2.DESCRIPTOR.services_by_name:
             print("service is: "+service)
             for method in internal_api_template_service_pb2.DESCRIPTOR.services_by_name[service].methods_by_name:
                 print("method is: "+method)
 
+        # you can find each Method by looking at the .proto file for the service you would like to test
+        # for each service, anything defined using 'rpc $RandomEndpoint($RandomRequest) returns ($RandomReply);' should
+        # be tested
         templaterequest_method = self.test_server.invoke_unary_unary(
             method_descriptor=(internal_api_template_service_pb2.DESCRIPTOR
                 .services_by_name['InternalApiTemplateService']
@@ -38,12 +44,12 @@ class TestGreeter:
             invocation_metadata={},
             request=request, timeout=1)
 
+        # run template rpc request
         response_async, metadata, code, details = templaterequest_method.termination()
+
+        # unwrap async list of responses
         response = [i async for i in response_async]
-        print("output is:")
-        print("response: ", response)
-        print("code: ", code)
-        print("details: ", details)
+
         assert response[0].message == f'Hello, {name}!'
         assert code == grpc.StatusCode.OK
 
