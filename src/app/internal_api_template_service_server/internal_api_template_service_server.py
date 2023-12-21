@@ -35,7 +35,7 @@ class TemplateRequester(InternalApiTemplateServiceServicer):
         # so it would be good practice to enforce this on our end using simple logic like the below
         if not isinstance(request, TemplateRequest):
             logger.info(f"Failure in method call")
-            code = grpc.StatusCode.INVALID_ARGUMENT
+            code = code_pb2.INVALID_ARGUMENT
             details = any_pb2.Any()
             # to access details for a particular error, use response[$index].details[0].value.decode('utf-8')
             # as details is passed as a list and the value parameter is passed as a protobuf-serialized string
@@ -45,10 +45,8 @@ class TemplateRequester(InternalApiTemplateServiceServicer):
                 )
             )
             message = "Invalid argument error."
-            context.set_code(code)
-            context.set_details(message)
             yield status_pb2.Status(
-                code=code_pb2.INVALID_ARGUMENT,
+                code=code,
                 message=message,
                 details=[details]
             )
