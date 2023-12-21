@@ -11,7 +11,7 @@ from src.libraries.grpc_status_code_mapping import numeric_status_code_mapping
 class TestTemplateRpc:
     def setUp(self):
         # add all servers/servicers to this list
-        # syntax: [protobuf file].DESCRIPTOR.services_by_name['ServiceName']: [ServerOrServicerClass()]
+        # syntax: [$protobuf_file].DESCRIPTOR.services_by_name['$ServiceName']: [$ServerOrServicerClass()]
         # you can find each ServiceName by looking at the .proto file for the service you would like to test
         # anything defined using 'service $RandomService { }' should be tested
         servicers = {
@@ -57,7 +57,7 @@ class TestTemplateRpc:
     @pytest.mark.asyncio
     async def test_templaterequest_invalid_proto(self):
         self.setUp()
-        """ expect to get error """
+        """ expect to get INVALID_ARGUMENT error """
         name = "John Doe"
 
         class FailedRequest:
@@ -88,6 +88,50 @@ class TestTemplateRpc:
         details_value_str = response[0].details[0].value.decode('utf-8')
         assert ('Invalid argument: request must use TemplateRequest protocol buffer.'
                 in details_value_str), f"Expected predefined message, but got: {details_value_str}"
+
+    @pytest.mark.asyncio
+    async def test_templaterequest_empty_name(self):
+        self.setUp()
+        """ expect to get TemplateRequest response with the provided name, which is an empty string """
+        name = ""
+        request = internal_api_template_service_pb2.TemplateRequest(name=name)
+        templaterequest_method = self.test_server.invoke_unary_unary(
+            method_descriptor=(internal_api_template_service_pb2.DESCRIPTOR
+                .services_by_name['InternalApiTemplateService']
+                .methods_by_name['InternalApiTemplateRequest']),
+            invocation_metadata={},
+            request=request, timeout=1)
+
+        # run template rpc request
+        response_async, metadata, code, details = templaterequest_method.termination()
+
+        # unwrap async list of responses
+        response = [i async for i in response_async]
+
+        assert response[0].message == f'Hello, {name}!'
+        assert code == grpc.StatusCode.OK
+
+    @pytest.mark.asyncio
+    async def test_templaterequest_numeric_string_name(self):
+        self.setUp()
+        """ expect to get TemplateRequest response with the provided name, which is numeric but in string form """
+        name = "3478239479327489237489327489237489327483297489237489273412312309871"
+        request = internal_api_template_service_pb2.TemplateRequest(name=name)
+        templaterequest_method = self.test_server.invoke_unary_unary(
+            method_descriptor=(internal_api_template_service_pb2.DESCRIPTOR
+            .services_by_name['InternalApiTemplateService']
+            .methods_by_name['InternalApiTemplateRequest']),
+            invocation_metadata={},
+            request=request, timeout=1)
+
+        # run template rpc request
+        response_async, metadata, code, details = templaterequest_method.termination()
+
+        # unwrap async list of responses
+        response = [i async for i in response_async]
+
+        assert response[0].message == f'Hello, {name}!'
+        assert code == grpc.StatusCode.OK
 
 
 if __name__ == '__main__':
