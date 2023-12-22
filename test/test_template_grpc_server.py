@@ -8,6 +8,9 @@ from src.app.internal_api_template_service_server.internal_api_template_service_
 from src.libraries.grpc_status_code_mapping import numeric_status_code_mapping
 
 
+# Notably, one thing this test package does not test is varied input types.  This is handled by the protocol buffer, #
+# which does not permit input of any data type other than the prescribed one.  E.g. if trying to initialize a #
+# TemplateRequest with parameter name=3 or name=["John", "Jim"], it will throw a TypeError. #
 class TestTemplateRpc:
     def setUp(self):
         # add all servers/servicers to this list
@@ -29,11 +32,12 @@ class TestTemplateRpc:
         name = "John Doe"
         request = internal_api_template_service_pb2.TemplateRequest(name=name)
 
-        print("services is:")
-        for service in internal_api_template_service_pb2.DESCRIPTOR.services_by_name:
-            print("service is: "+service)
-            for method in internal_api_template_service_pb2.DESCRIPTOR.services_by_name[service].methods_by_name:
-                print("method is: "+method)
+        # Leaving these statements commented out in case future devs need to log out list of services & methods
+        # print("services is:")
+        # for service in internal_api_template_service_pb2.DESCRIPTOR.services_by_name:
+        #     print("service is: "+service)
+        #     for method in internal_api_template_service_pb2.DESCRIPTOR.services_by_name[service].methods_by_name:
+        #         print("method is: "+method)
 
         # you can find each Method by looking at the .proto file for the service you would like to test
         # for each service, anything defined using 'rpc $RandomEndpoint($RandomRequest) returns ($RandomReply);' should
