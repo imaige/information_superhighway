@@ -2,14 +2,31 @@ syntax = "proto3";
 
 package internal_api_template_service;
 
+// Template service definition
 service InternalApiTemplateService {
+  // Basic request
   rpc InternalApiTemplateRequest (TemplateRequest) returns (stream TemplateReply);
+
+  // Basic photo request
+  rpc InternalApiTemplateImageRequest (ImageRequest) returns (stream ImageReply) {}
 }
 
+// A basic request message
 message TemplateRequest {
   string name = 1;
 }
 
+// A basic response message
 message TemplateReply {
   string message = 1;
+}
+
+// A request message containing an image file
+message ImageRequest{
+  string b64image = 1;
+}
+
+// A response message containing an image file
+message ImageReply{
+  string b64image = 1;
 }

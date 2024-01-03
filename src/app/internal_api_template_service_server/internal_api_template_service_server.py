@@ -1,19 +1,23 @@
 import grpc
 
 from proto_models.internal_api_template_service_pb2 import (
-    TemplateRequest, TemplateReply
+    TemplateRequest, TemplateReply, ImageRequest, ImageReply
 )
 from proto_models.internal_api_template_service_pb2_grpc import (
     InternalApiTemplateServiceServicer, add_InternalApiTemplateServiceServicer_to_server
 )
 from ...libraries.grpc_server_factory import create_secure_server
 from ...libraries.logging_file_format import configure_logger
+import logging
 
 import grpc
 import asyncio
-import logging
 from google.rpc import status_pb2, code_pb2, error_details_pb2
 from google.protobuf import any_pb2
+
+import base64
+from PIL import Image, ImageOps
+from io import BytesIO
 
 
 logger = logging.getLogger(__name__)
@@ -27,8 +31,7 @@ class TemplateRequester(InternalApiTemplateServiceServicer):
     async def InternalApiTemplateRequest(
             self, request: TemplateRequest, context: grpc.ServicerContext
     ) -> TemplateReply | status_pb2.Status:
-        logger.info(f"Serving request with detail: {request}")
-        logger.info(f"request type is {type(request)}")
+        logger.info(f"Serving basic request with detail: {request}")
         # Example error handling
         # in this case, for using a protocol buffer that is not the designated one
         # IMO, Python does not enforce the 'same protocol buffer' requirement as stringently as it should
@@ -52,6 +55,36 @@ class TemplateRequester(InternalApiTemplateServiceServicer):
             )
         # send response (optional, but recommended)
         yield TemplateReply(message=f"Hello, {request.name}!")
+
+    async def InternalApiTemplateImageRequest(
+      self, request: ImageRequest, context: grpc.aio.ServicerContext
+    ) -> ImageReply:
+        if not isinstance(request, ImageRequest):
+            logger.info(f"Failure in photo request call")
+            code = code_pb2.INVALID_ARGUMENT
+            details = any_pb2.Any()
+            # to access details for a particular error, use response[$index].details[0].value.decode('utf-8')
+            # as details is passed as a list and the value parameter is passed as a protobuf-serialized string
+            details.Pack(
+                error_details_pb2.DebugInfo(
+                    detail="Invalid argument: request must use ImageRequest protocol buffer."
+                )
+            )
+            message = "Invalid argument error."
+            yield status_pb2.Status(
+                code=code,
+                message=message,
+                details=[details]
+            )
+        logger.info(f"Serving photo request with detail: {request}")
+        # do something with the image, including but not limited to: scale down, crop, send request to other server
+        decoded_image = Image.open(BytesIO(base64.b64decode(request.b64image)))
+        logger.info(f"Type of decoded_image is: {type(decoded_image)}")
+        converted_image = ImageOps.grayscale(decoded_image)
+        logger.info(f"Type of converted_image is: {type(converted_image)}")
+        response_image = base64.b64encode(converted_image.tobytes())
+        logger.info(f"Type of response_image is: {type(response_image)}")
+        yield ImageReply(b64image=response_image)
 
 
 # Server Creation #

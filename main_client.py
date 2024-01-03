@@ -2,16 +2,21 @@ from src.app.internal_api_template_service_orchestrator_client import internal_a
 import asyncio
 from src.libraries.logging_file_format import configure_logger
 import logging
+from proto_models.internal_api_template_service_pb2 import (
+    ImageRequest, ImageReply, TemplateRequest, TemplateReply
+)
 
 
-def main():
+async def main():
     # logging.basicConfig(level=logging.INFO)
     # logging.info("Running main client script.")
     logger = logging.getLogger(__name__)
     configure_logger(logger, level=logging.INFO)
     logger.info("Running main client script.")
-    asyncio.run(internal_api_template_service_orchestrator_client.run())
+    await internal_api_template_service_orchestrator_client.run(
+        "template_request",
+        TemplateRequest(name="caleb"))
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

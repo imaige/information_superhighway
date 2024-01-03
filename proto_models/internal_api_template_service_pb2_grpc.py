@@ -6,7 +6,8 @@ from . import internal_api_template_service_pb2 as internal__api__template__serv
 
 
 class InternalApiTemplateServiceStub(object):
-    """Missing associated documentation comment in .proto file."""
+    """Template service definition
+    """
 
     def __init__(self, channel):
         """Constructor.
@@ -19,13 +20,27 @@ class InternalApiTemplateServiceStub(object):
                 request_serializer=internal__api__template__service__pb2.TemplateRequest.SerializeToString,
                 response_deserializer=internal__api__template__service__pb2.TemplateReply.FromString,
                 )
+        self.InternalApiTemplateImageRequest = channel.unary_stream(
+                '/internal_api_template_service.InternalApiTemplateService/InternalApiTemplateImageRequest',
+                request_serializer=internal__api__template__service__pb2.ImageRequest.SerializeToString,
+                response_deserializer=internal__api__template__service__pb2.ImageReply.FromString,
+                )
 
 
 class InternalApiTemplateServiceServicer(object):
-    """Missing associated documentation comment in .proto file."""
+    """Template service definition
+    """
 
     def InternalApiTemplateRequest(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Basic request
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def InternalApiTemplateImageRequest(self, request, context):
+        """Basic photo request
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -38,6 +53,11 @@ def add_InternalApiTemplateServiceServicer_to_server(servicer, server):
                     request_deserializer=internal__api__template__service__pb2.TemplateRequest.FromString,
                     response_serializer=internal__api__template__service__pb2.TemplateReply.SerializeToString,
             ),
+            'InternalApiTemplateImageRequest': grpc.unary_stream_rpc_method_handler(
+                    servicer.InternalApiTemplateImageRequest,
+                    request_deserializer=internal__api__template__service__pb2.ImageRequest.FromString,
+                    response_serializer=internal__api__template__service__pb2.ImageReply.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
             'internal_api_template_service.InternalApiTemplateService', rpc_method_handlers)
@@ -46,7 +66,8 @@ def add_InternalApiTemplateServiceServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class InternalApiTemplateService(object):
-    """Missing associated documentation comment in .proto file."""
+    """Template service definition
+    """
 
     @staticmethod
     def InternalApiTemplateRequest(request,
@@ -62,5 +83,22 @@ class InternalApiTemplateService(object):
         return grpc.experimental.unary_stream(request, target, '/internal_api_template_service.InternalApiTemplateService/InternalApiTemplateRequest',
             internal__api__template__service__pb2.TemplateRequest.SerializeToString,
             internal__api__template__service__pb2.TemplateReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def InternalApiTemplateImageRequest(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/internal_api_template_service.InternalApiTemplateService/InternalApiTemplateImageRequest',
+            internal__api__template__service__pb2.ImageRequest.SerializeToString,
+            internal__api__template__service__pb2.ImageReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

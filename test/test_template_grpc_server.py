@@ -9,8 +9,8 @@ from src.libraries.grpc_status_code_mapping import numeric_status_code_mapping
 
 
 # Notably, one thing this test package does not test is varied input types.  This is handled by the protocol buffer, #
-# which does not permit input of any data type other than the prescribed one.  E.g. if trying to initialize a #
-# TemplateRequest with parameter name=3 or name=["John", "Jim"], it will throw a TypeError. #
+# which does not permit input of any data type other than the prescribed one.  For ex., if trying to initialize a #
+# TemplateRequest with parameter name=3 (int) or name=["John", "Jim"] (list), it will throw a TypeError. #
 class TestTemplateRpc:
     def setUp(self):
         # add all servers/servicers to this list

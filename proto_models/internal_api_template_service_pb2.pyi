@@ -15,3 +15,15 @@ class TemplateReply(_message.Message):
     MESSAGE_FIELD_NUMBER: _ClassVar[int]
     message: str
     def __init__(self, message: _Optional[str] = ...) -> None: ...
+
+class ImageRequest(_message.Message):
+    __slots__ = ["b64image"]
+    B64IMAGE_FIELD_NUMBER: _ClassVar[int]
+    b64image: str
+    def __init__(self, b64image: _Optional[str] = ...) -> None: ...
+
+class ImageReply(_message.Message):
+    __slots__ = ["b64image"]
+    B64IMAGE_FIELD_NUMBER: _ClassVar[int]
+    b64image: str
+    def __init__(self, b64image: _Optional[str] = ...) -> None: ...

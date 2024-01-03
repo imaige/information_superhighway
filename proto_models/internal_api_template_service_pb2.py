@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n#internal_api_template_service.proto\x12\x1dinternal_api_template_service\"\x1f\n\x0fTemplateRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\" \n\rTemplateReply\x12\x0f\n\x07message\x18\x01 \x01(\t2\x9a\x01\n\x1aInternalApiTemplateService\x12|\n\x1aInternalApiTemplateRequest\x12..internal_api_template_service.TemplateRequest\x1a,.internal_api_template_service.TemplateReply0\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n#internal_api_template_service.proto\x12\x1dinternal_api_template_service\"\x1f\n\x0fTemplateRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\" \n\rTemplateReply\x12\x0f\n\x07message\x18\x01 \x01(\t\" \n\x0cImageRequest\x12\x10\n\x08\x62\x36\x34image\x18\x01 \x01(\t\"\x1e\n\nImageReply\x12\x10\n\x08\x62\x36\x34image\x18\x01 \x01(\t2\x99\x02\n\x1aInternalApiTemplateService\x12|\n\x1aInternalApiTemplateRequest\x12..internal_api_template_service.TemplateRequest\x1a,.internal_api_template_service.TemplateReply0\x01\x12}\n\x1fInternalApiTemplateImageRequest\x12+.internal_api_template_service.ImageRequest\x1a).internal_api_template_service.ImageReply\"\x00\x30\x01\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -24,6 +24,10 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['_TEMPLATEREQUEST']._serialized_end=101
   _globals['_TEMPLATEREPLY']._serialized_start=103
   _globals['_TEMPLATEREPLY']._serialized_end=135
-  _globals['_INTERNALAPITEMPLATESERVICE']._serialized_start=138
-  _globals['_INTERNALAPITEMPLATESERVICE']._serialized_end=292
+  _globals['_IMAGEREQUEST']._serialized_start=137
+  _globals['_IMAGEREQUEST']._serialized_end=169
+  _globals['_IMAGEREPLY']._serialized_start=171
+  _globals['_IMAGEREPLY']._serialized_end=201
+  _globals['_INTERNALAPITEMPLATESERVICE']._serialized_start=204
+  _globals['_INTERNALAPITEMPLATESERVICE']._serialized_end=485
 # @@protoc_insertion_point(module_scope)
