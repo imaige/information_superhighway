@@ -49,7 +49,4 @@ async def template_image_request(req: ImageRequest | None, port: str) -> None:
                 logger.info(f"Type of final_image is: {type(final_image)}")
                 decoded_image = Image.open(BytesIO(base64.b64decode(response.b64image)))
                 decoded_image.show()
-            async for response in stub.InternalApiTemplateImageRequest(req):
-                logger.info("Client received from async generator: " + response.message)
-
 
