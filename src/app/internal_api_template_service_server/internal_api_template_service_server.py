@@ -88,25 +88,21 @@ class TemplateRequester(InternalApiTemplateServiceServicer):
                 details=[details]
             )
         logger.info(f"Serving photo request with detail: {request}")
-        '''
-        # do something with the image, including but not limited to: scale down, crop, send request to other server
-        decoded_image = Image.open(BytesIO(base64.b64decode(request.b64image)))
-        #decoded_image.show()
-        logger.info(f"Type of decoded_image is: {type(decoded_image)}")
-        converted_image = ImageOps.grayscale(decoded_image)
-        #converted_image.show()
-        logger.info(f"Type of converted_image is: {type(converted_image)}")
-        '''
-        decoded_image = Image.open(BytesIO(base64.b64decode(request.b64image)))
-        image_stream = BytesIO()
-        decoded_image.save(image_stream, format="PNG")
 
+        # get image from request, decode from b64, cast to BytesIO, open
+        decoded_image = Image.open(BytesIO(base64.b64decode(request.b64image)))
+
+        # optionally, do something with the image, including but not limited to:
+        # modify color, scale down, crop, send request to other server
+        converted_image = ImageOps.grayscale(decoded_image)
+
+        image_stream = BytesIO()
+
+        decoded_image.save(image_stream, format="PNG")
         # converted_image.save(image_stream, format="PNG")
 
         bytes_image = image_stream.getvalue()
-        logger.info(f"Type of bytes_image is: {type(bytes_image)}")
         response_image = base64.b64encode(bytes_image)
-        logger.info(f"Type of response_image is: {type(response_image)}")
         yield ImageReply(b64image=response_image)
 
 

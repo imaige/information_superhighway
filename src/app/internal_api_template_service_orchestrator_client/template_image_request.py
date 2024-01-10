@@ -30,23 +30,18 @@ async def template_image_request(req: ImageRequest | None, port: str) -> None:
     # async with grpc.aio.secure_channel(port, channel_credentials) as channel:
     async with grpc.aio.insecure_channel(port) as channel:
         stub = InternalApiTemplateServiceStub(channel)
-        logger.info("Client making InternalApiTemplateRequest")
+        logger.info("Client making InternalApiTemplateImageRequest")
         with open('test_image.jpg', 'rb') as file:
             image = file.read()
-            print(f"Type of image is: {type(image)}")
             encoded_image = base64.b64encode(image)
             async for response in stub.InternalApiTemplateImageRequest(
                 ImageRequest(b64image=encoded_image)
             ):
-                print("received output:")
+                # get image
                 response_image = response.b64image
-                logger.info(f"Type of response_image is: {type(response_image)}")
+                # convert image: decode to b64, convert to BytesIO, convert to Pillow image using open, optionally show
                 decoded_image = base64.b64decode(response_image)
-                logger.info(f"Type of decoded_image is: {type(decoded_image)}")
                 bytes_image = BytesIO(decoded_image)
-                logger.info(f"Type of bytes_image is: {type(bytes_image)}")
                 final_image = Image.open(bytes_image)
-                logger.info(f"Type of final_image is: {type(final_image)}")
-                decoded_image = Image.open(BytesIO(base64.b64decode(response.b64image)))
-                decoded_image.show()
+                # final_image.show()
 
