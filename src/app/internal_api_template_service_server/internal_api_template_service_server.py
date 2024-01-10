@@ -19,6 +19,17 @@ import base64
 from PIL import Image, ImageOps
 from io import BytesIO
 
+from os import getenv
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+# Check env
+APP_ENV = getenv("IMAIGE_PYTHON_APP_ENVIRONMENT")
+match APP_ENV:
+    case "LOCAL":
+        load_dotenv(".env.local")
 
 logger = logging.getLogger(__name__)
 configure_logger(logger, level=logging.INFO)
@@ -79,10 +90,14 @@ class TemplateRequester(InternalApiTemplateServiceServicer):
         logger.info(f"Serving photo request with detail: {request}")
         # do something with the image, including but not limited to: scale down, crop, send request to other server
         decoded_image = Image.open(BytesIO(base64.b64decode(request.b64image)))
+        #decoded_image.show()
         logger.info(f"Type of decoded_image is: {type(decoded_image)}")
         converted_image = ImageOps.grayscale(decoded_image)
+        #converted_image.show()
         logger.info(f"Type of converted_image is: {type(converted_image)}")
-        response_image = base64.b64encode(converted_image.tobytes())
+        bytes_image = converted_image.tobytes()
+        logger.info(f"Type of encoded_image is: {type(bytes_image)}")
+        response_image = base64.b64encode(bytes_image)
         logger.info(f"Type of response_image is: {type(response_image)}")
         yield ImageReply(b64image=response_image)
 
@@ -92,7 +107,7 @@ async def serve() -> None:
     server_key = '../tls_certs/server-key.pem'
     server_cert = '../tls_certs/server-cert.pem'
     ca_cert = '../tls_certs/ca-cert.pem'
-    port = "localhost:50051"
+    port = getenv("GRPC_SERVER_PORT").strip()
     service_classes = [
         {
             "add_func": add_InternalApiTemplateServiceServicer_to_server,
