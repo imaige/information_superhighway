@@ -1,0 +1,48 @@
+name: AWS ECR Push
+
+on:
+  push:
+    branches: [ "main" ] # leaving this in for now.  for better CI/CD control, we should consider restricting pushes to main by requiring a PR?
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  AWS_REGION: "us-east-2"
+  ECR_REPOSITORY: ${{ vars.MEDIAVIZ_REPOSITORY_AWS_ECR_URI }}
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: development
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+      
+    - name: Build the Docker image & deploy to ECS
+      id: build-and-deploy-image # may want to separate in future; however, GHA is occasionally finnicky with sharing files across steps
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_PUSH_TAG: ${{ github.sha }} # the ID of the current Github Actions run
+      run: |
+        # Build a docker container and
+        # push it to ECR so that it can
+        # be deployed to ECS.
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
