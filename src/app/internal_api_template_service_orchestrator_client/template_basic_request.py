@@ -28,6 +28,7 @@ async def template_request(req: TemplateRequest, port: str) -> None:
     # async with grpc.aio.secure_channel(port, channel_credentials) as channel:
     async with grpc.aio.insecure_channel(port) as channel:
         stub = InternalApiTemplateServiceStub(channel)
+
         
         logger.info(f"Client making InternalApiTemplateRequest with data: {req}")
         async for response in stub.InternalApiTemplateRequest(req):
