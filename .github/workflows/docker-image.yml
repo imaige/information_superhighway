@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "main" ] # leaving this in for now.  for better CI/CD control, we should consider restricting pushes to main by requiring a PR?
     paths:
-      - '!.github/workflows/'
+     # - '!.github/workflows/'
       - '!README.md'
   pull_request:
     branches: [ "main" ]
