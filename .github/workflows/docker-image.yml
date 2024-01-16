@@ -46,13 +46,11 @@ jobs:
       id: build-and-deploy-image # may want to separate in future; however, GHA is occasionally finnicky with sharing files across steps
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_PUSH_TAG: ${{ github.event.repository.name }}latest # the name of the github repo
-        GH_REPO: ${{ github.event.repository.name }}
+        IMAGE_PUSH_TAG: ${{ github.event.repository.name }}:latest # the name of the github repo
       run: |
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        echo "github repo is: $GH_REPO"
         docker build -t $ECR_REPOSITORY:$IMAGE_PUSH_TAG .
         docker push $ECR_REPOSITORY:$IMAGE_PUSH_TAG
         
