@@ -51,4 +51,5 @@ jobs:
         # be deployed to ECS.
         docker build -t $ECR_REPOSITORY:$IMAGE_PUSH_TAG:latest .
         docker push $ECR_REPOSITORY:$IMAGE_PUSH_TAG:latest
+        
         echo "image=$ECR_REPOSITORY:$IMAGE_PUSH_TAG:latest" >> $GITHUB_OUTPUT
