@@ -1,0 +1,57 @@
+name: AWS ECR Push
+
+on:
+  push:
+    branches: [ "main" ] # leaving this in for now.  for better CI/CD control, we should consider restricting pushes to main by requiring a PR?
+    paths:
+      - '**/*'
+      - '!.github/workflows/*'
+      - '!README.md'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - '**/*'
+      - '!.github/workflows/*'
+      - '!README.md'
+
+env:
+  AWS_REGION: "us-east-2"
+  ECR_REPOSITORY: ${{ vars.MEDIAVIZ_REPOSITORY_AWS_ECR_URI }}
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: development
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+      
+    - name: Build the Docker image & deploy to ECS
+      id: build-and-deploy-image # may want to separate in future; however, GHA is occasionally finnicky with sharing files across steps
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_PUSH_TAG: ${{ github.event.repository.name }} # the name of the github repo.  This does not include ':latest' (as is typical Docker container convention) because extra colons cause an error in the build/deploy process.
+      run: |
+        # Build a docker container and
+        # push it to ECR so that it can
+        # be deployed to ECS.
+        docker build -t $ECR_REPOSITORY:$IMAGE_PUSH_TAG .
+        docker push $ECR_REPOSITORY:$IMAGE_PUSH_TAG
+        
+        echo "image=$ECR_REPOSITORY:$IMAGE_PUSH_TAG:latest" >> $GITHUB_OUTPUT
