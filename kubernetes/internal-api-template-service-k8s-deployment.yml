@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: internal-api-template-service-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: internal-api-template-service
+  template:
+    metadata:
+      labels:
+        app: internal-api-template-service
+    spec:
+      containers:
+      - name: internal-api-template-service-container
+        image: 379283424934.dkr.ecr.us-east-2.amazonaws.com/mediaviz-repository:internal_api_template_service
