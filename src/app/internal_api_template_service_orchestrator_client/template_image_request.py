@@ -30,7 +30,7 @@ async def template_image_request(req: ImageRequest | None, port: str) -> None:
     # async with grpc.aio.secure_channel(port, channel_credentials) as channel:
     async with grpc.aio.insecure_channel(port) as channel:
         stub = InternalApiTemplateServiceStub(channel)
-        logger.info("Client making InternalApiTemplateImageRequest")
+        logger.info(f"Client making InternalApiTemplateImageRequest to port {port}")
         with open('test_image.jpg', 'rb') as file:
             image = file.read()
             encoded_image = base64.b64encode(image)
@@ -43,5 +43,5 @@ async def template_image_request(req: ImageRequest | None, port: str) -> None:
                 decoded_image = base64.b64decode(response_image)
                 bytes_image = BytesIO(decoded_image)
                 final_image = Image.open(bytes_image)
-                # final_image.show()
+                final_image.show()
 
