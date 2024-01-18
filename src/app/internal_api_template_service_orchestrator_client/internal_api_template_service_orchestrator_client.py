@@ -22,14 +22,16 @@ logger = logging.getLogger(__name__)
 configure_logger(logger, level=logging.INFO)
 
 
-async def run(func_name: str, request_obj: any):
+async def run(func_name: str, request_obj: any, request_destination: str):
     match func_name:
         case "template_request":
             logger.info(f'Orchestrator making template basic request to port {getenv("GRPC_ACCESS_PORT")}')
             await template_request(request_obj, getenv("GRPC_ACCESS_PORT").strip())
         case "template_image_request":
             logger.info(f'Orchestrator making template image request to port {getenv("GRPC_ACCESS_PORT")}')
-            await template_image_request(None, getenv("GRPC_ACCESS_PORT").strip())
+            # await template_image_request(None, getenv("GRPC_ACCESS_PORT").strip())
+            await template_image_request(None, request_destination.strip())
+
 
 
 if __name__ == '__main__':

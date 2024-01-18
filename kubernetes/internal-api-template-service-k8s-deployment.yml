@@ -20,3 +20,17 @@ spec:
             value: 0.0.0.0:50051
           - name: IMAIGE_PYTHON_APP_ENVIRONMENT
             value: DEV
+
+---
+
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: internal-api-template-service-service
+spec:
+  selector:
+    app: internal-api-template-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 50051
