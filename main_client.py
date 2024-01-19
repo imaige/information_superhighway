@@ -13,7 +13,7 @@ async def main():
     configure_logger(logger, level=logging.INFO)
     logger.info("Running main client script.")
 
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         print("Usage: python script.py <request_destination>")
         sys.exit(1)
 
@@ -21,9 +21,10 @@ async def main():
     #     "template_request",
     #     TemplateRequest(name="caleb"))
     await internal_api_template_service_orchestrator_client.run(
-        "template_image_request",
-        None,
-        sys.argv[1]
+        # "template_image_request",
+        sys.argv[1],
+        TemplateRequest(name="caleb"),
+        sys.argv[2]
     )
 
 
