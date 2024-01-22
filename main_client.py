@@ -14,7 +14,7 @@ async def main():
     logger.info("Running main client script.")
 
     if len(sys.argv) != 3:
-        print("Usage: python script.py <request_destination>")
+        print("Usage: python script.py <function_name> <request_destination>")
         sys.exit(1)
 
     # await internal_api_template_service_orchestrator_client.run(
