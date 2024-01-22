@@ -2,7 +2,7 @@ to run server:
 - python main.py
 
 to run client:
-- python main_client.py
+- python main_client.py <function_name> <request_destination>
 
 to test:
 - python test.py
