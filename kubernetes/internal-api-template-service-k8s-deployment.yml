@@ -4,7 +4,7 @@ metadata:
   name: auth-test-internal-api-template-service-deployment
   namespace: test-auth-namespace
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: auth-test-internal-api-template-service
