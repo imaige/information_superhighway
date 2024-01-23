@@ -1,35 +1,40 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: internal-api-template-service-deployment
+  name: auth-test-internal-api-template-service-deployment
+  namespace: test-auth-namespace
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: internal-api-template-service
+      app: auth-test-internal-api-template-service
   template:
     metadata:
       labels:
-        app: internal-api-template-service
+        app: auth-test-internal-api-template-service
     spec:
       containers:
-      - name: internal-api-template-service-container
-        image: 379283424934.dkr.ecr.us-east-2.amazonaws.com/mediaviz-repository:internal_api_template_service
+      - name: auth-test-internal-api-template-service-container
+        image: 379283424934.dkr.ecr.us-east-2.amazonaws.com/mediaviz-repository:auth-test-internal_api_template_service
         env:
           - name: GRPC_SERVER_PORT
             value: 0.0.0.0:50052
           - name: IMAIGE_PYTHON_APP_ENVIRONMENT
             value: DEV
+      volumes:
+      - name: tls-secret
+        secret:
+          secretName: auth-test-secret
 
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: internal-api-template-service-service
+  name: auth-test-internal-api-template-service-service
 spec:
   selector:
-    app: internal-api-template-service
+    app: auth-test-internal-api-template-service
   ports:
   - protocol: TCP
     port: 81
