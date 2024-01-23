@@ -11,6 +11,6 @@ RUN apk add build-base linux-headers
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 50051
+EXPOSE 50052
 
 CMD ["python", "main.py"]
