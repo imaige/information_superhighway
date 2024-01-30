@@ -18,17 +18,16 @@ configure_logger(logger, level=logging.INFO)
 
 
 async def template_image_request(req: ImageRequest | None, port: str) -> None:
-    # logging.basicConfig(level=logging.INFO)
-    # client_key = open('../tls_certs/client-key.pem', 'rb').read()
-    # client_cert = open('../tls_certs/client-cert.pem', 'rb').read()
-    # ca_cert = open('../tls_certs/ca-cert.pem', 'rb').read()
+    client_key = open('./tls_certs/ca-key.pem', 'rb').read()
+    client_cert = open('./tls_certs/ca-cert.pem', 'rb').read()
+    ca_cert = open('./tls_certs/ca-cert.pem', 'rb').read()
 
-    # channel_credentials = grpc.ssl_channel_credentials(
-    #     root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
-    # )
+    channel_credentials = grpc.ssl_channel_credentials(
+        root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
+    )
 
-    # async with grpc.aio.secure_channel(port, channel_credentials) as channel:
-    async with grpc.aio.insecure_channel(port) as channel:
+    async with grpc.aio.secure_channel(port, channel_credentials) as channel:
+    # async with grpc.aio.insecure_channel(port) as channel:
         stub = InternalApiTemplateServiceStub(channel)
         logger.info(f"Client making InternalApiTemplateImageRequest to port {port}")
         with open('test_image.jpg', 'rb') as file:

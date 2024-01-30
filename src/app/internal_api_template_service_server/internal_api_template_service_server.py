@@ -108,9 +108,9 @@ class TemplateRequester(InternalApiTemplateServiceServicer):
 
 # Server Creation #
 async def serve() -> None:
-    server_key = '../tls_certs/server-key.pem'
-    server_cert = '../tls_certs/server-cert.pem'
-    ca_cert = '../tls_certs/ca-cert.pem'
+    server_key = './tls_certs/server-key.pem'
+    server_cert = './tls_certs/server-cert.pem'
+    ca_cert = './tls_certs/ca-cert.pem'
     port = getenv("GRPC_SERVER_PORT").strip()
     service_classes = [
         {
