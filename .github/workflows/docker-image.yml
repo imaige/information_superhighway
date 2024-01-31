@@ -47,7 +47,7 @@ jobs:
       shell: bash
 
     - name: Test echo
-      run: echo config.env
+      run: cat config.env
       
     - name: Build the Docker image & deploy to ECS
       id: build-and-deploy-image # may want to separate in future; however, GHA is occasionally finnicky with sharing files across steps
