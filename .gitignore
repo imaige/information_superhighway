@@ -10,3 +10,4 @@ test_image.jpg
 
 # encryption/authentication
 tls_certs/*
+tls_certs/!.gitkeep
