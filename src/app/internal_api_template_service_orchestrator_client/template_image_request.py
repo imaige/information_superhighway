@@ -18,8 +18,8 @@ configure_logger(logger, level=logging.INFO)
 
 
 async def template_image_request(req: ImageRequest | None, port: str) -> None:
-    client_key = open('./tls_certs/ca-key.pem', 'rb').read()
-    client_cert = open('./tls_certs/ca-cert.pem', 'rb').read()
+    client_key = open('./tls_certs/client-key.pem', 'rb').read()
+    client_cert = open('./tls_certs/client-cert.pem', 'rb').read()
     ca_cert = open('./tls_certs/ca-cert.pem', 'rb').read()
 
     channel_credentials = grpc.ssl_channel_credentials(
