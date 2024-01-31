@@ -47,6 +47,9 @@ class TemplateRequester(InternalApiTemplateServiceServicer):
         # in this case, for using a protocol buffer that is not the designated one
         # IMO, Python does not enforce the 'same protocol buffer' requirement as stringently as it should
         # so it would be good practice to enforce this on our end using simple logic like the below
+        # Note - all fields in gRPC protocol buffers are optional, which we can take advantage of to pass as little
+        # information as possible; as such, the following type checking is (probably) excessive, but helpful as an
+        # illustrative example of error handling
         if not isinstance(request, TemplateRequest):
             logger.info(f"Failure in method call")
             code = code_pb2.INVALID_ARGUMENT
