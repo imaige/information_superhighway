@@ -41,6 +41,10 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Create Config File
+      run: echo "export SECRET_KEY='${{ vars.TEST_SEMI_SECRET_VARIABLE }}'" > config.env
+      shell: bash
       
     - name: Build the Docker image & deploy to ECS
       id: build-and-deploy-image # may want to separate in future; however, GHA is occasionally finnicky with sharing files across steps
@@ -52,6 +56,7 @@ jobs:
         # push it to ECR so that it can
         # be deployed to ECS.
         docker build -t $ECR_REPOSITORY:$IMAGE_PUSH_TAG .
+        docker cp config.env $ECR_REPOSITORY:$IMAGE_PUSH_TAG:/tls_certs/
         docker push $ECR_REPOSITORY:$IMAGE_PUSH_TAG
         
         echo "image=$ECR_REPOSITORY:$IMAGE_PUSH_TAG:latest" >> $GITHUB_OUTPUT
