@@ -54,7 +54,7 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_PUSH_TAG: ${{ github.event.repository.name }} # the name of the github repo.  This does not include ':latest' (as is typical Docker container convention) because extra colons cause an error in the build/deploy process.
-        IMAGE_NAME: $ECR_REPOSITORY:$IMAGE_PUSH_TAG
+        IMAGE_NAME: ${{ vars.MEDIAVIZ_REPOSITORY_AWS_ECR_URI }}:${{ github.event.repository.name }}
       run: |
         # Build a docker container and
         # push it to ECR so that it can
