@@ -59,7 +59,7 @@ jobs:
         # push it to ECR so that it can
         # be deployed to ECS.
         docker build -t $ECR_REPOSITORY:$IMAGE_PUSH_TAG .
-        docker cp config.env $ECR_REPOSITORY:$IMAGE_PUSH_TAG:./tls_certs/
+        docker cp config.env $ECR_REPOSITORY:$IMAGE_PUSH_TAG:.
         docker push $ECR_REPOSITORY:$IMAGE_PUSH_TAG
         
         echo "image=$ECR_REPOSITORY:$IMAGE_PUSH_TAG:latest" >> $GITHUB_OUTPUT
