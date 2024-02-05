@@ -1,7 +1,7 @@
 from kubernetes import client, config
 from typing import Dict, Optional
 import logging
-from logging_file_format import configure_logger
+from .logging_file_format import configure_logger
 
 
 logger = logging.getLogger(__name__)
