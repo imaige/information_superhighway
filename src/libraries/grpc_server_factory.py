@@ -2,7 +2,7 @@ import grpc
 import asyncio
 import logging
 from typing import List, Dict
-from get_tls_certs import get_secret_data
+from .get_tls_certs import get_secret_data
 
 
 def create_secure_server(
