@@ -5,3 +5,4 @@ googleapis-common-protos
 pillow
 pytest
 python-dotenv
+kubernetes
