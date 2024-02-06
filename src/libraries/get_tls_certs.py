@@ -30,9 +30,9 @@ def get_secret_data(namespace: str, secret_name: str) -> Dict[str, str]:
         }
 
         # Decode base64-encoded data
-        decoded_data = {key: value.decode("utf-8") for key, value in secret_data.items()}
+        # decoded_data = {key: value.decode("utf-8") for key, value in secret_data.items()}
 
-        return decoded_data
+        return secret_data
 
     except Exception as e:
         logger.info(f"Error while fetching secrets: {e}")
