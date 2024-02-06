@@ -1,5 +1,7 @@
 from kubernetes import client, config
 from typing import Dict, Optional
+from io import BytesIO
+import base64
 import logging
 from .logging_file_format import configure_logger
 
@@ -22,11 +24,11 @@ def get_secret_data(namespace: str, secret_name: str) -> Dict[str, bytes]:
 
         # Access secret data
         secret_data = {
-            "client-key": secret.data.get("client-key.pem", "").open(),
-            "server-cert": secret.data.get("server-cert.pem", "").open(),
-            "server-key": secret.data.get("server-key.pem", "").open(),
-            "ca-cert": secret.data.get("ca-cert.pem", "").open(),
-            "client-cert": secret.data.get("client-cert.pem", "").open(),
+            "client-key": BytesIO(base64.b64decode(secret.data.get("client-key.pem", b""))),
+            "server-cert": BytesIO(base64.b64decode(secret.data.get("server-cert.pem", b""))),
+            "server-key": BytesIO(base64.b64decode(secret.data.get("server-key.pem", b""))),
+            "ca-cert": BytesIO(base64.b64decode(secret.data.get("ca-cert.pem", b""))),
+            "client-cert": BytesIO(base64.b64decode(secret.data.get("client-cert.pem", b""))),
         }
 
         # Decode base64-encoded data
