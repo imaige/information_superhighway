@@ -22,11 +22,11 @@ def get_secret_data(namespace: str, secret_name: str) -> Dict[str, str]:
 
         # Access secret data
         secret_data = {
-            "client-key": secret.data.get("client-key.pem", ""),
-            "server-cert": secret.data.get("server-cert.pem", ""),
-            "server-key": secret.data.get("server-key.pem", ""),
-            "ca-cert": secret.data.get("ca-cert.pem", ""),
-            "client-cert": secret.data.get("client-cert.pem", ""),
+            "client-key": secret.data.get("client-key.pem", b""),
+            "server-cert": secret.data.get("server-cert.pem", b""),
+            "server-key": secret.data.get("server-key.pem", b""),
+            "ca-cert": secret.data.get("ca-cert.pem", b""),
+            "client-cert": secret.data.get("client-cert.pem", b""),
         }
 
         # Decode base64-encoded data
