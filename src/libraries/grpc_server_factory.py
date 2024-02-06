@@ -15,7 +15,7 @@ def create_secure_server(
     # server_cert = open(server_cert_file, 'rb').read()
     # ca_cert = open(ca_cert_file, 'rb').read()
 
-    tls_certs = get_secret_data("default", "tls_certs")
+    tls_certs = get_secret_data("default", "tls-certs")
     logger.info("Getting secret data in get_tls_certs")
     server_key = tls_certs.get("server_key")
     server_cert = tls_certs.get("server_cert")
