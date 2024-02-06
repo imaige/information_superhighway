@@ -16,10 +16,10 @@ def create_secure_server(
     # ca_cert = open(ca_cert_file, 'rb').read()
 
     tls_certs = get_secret_data("default", "tls-certs")
-    logger.info("Getting secret data in get_tls_certs")
-    server_key = tls_certs.get("server_key")
-    server_cert = tls_certs.get("server_cert")
-    ca_cert = tls_certs.get("ca_cert")
+    logger.info("Secret data from get_tls_certs")
+    server_key = tls_certs.get("server-key")
+    server_cert = tls_certs.get("server-cert")
+    ca_cert = tls_certs.get("ca-cert")
 
     server_credentials = grpc.ssl_server_credentials(
         [(server_key, server_cert)], root_certificates=ca_cert,
