@@ -15,6 +15,7 @@ spec:
       containers:
       - name: internal-api-template-service-container
         image: 379283424934.dkr.ecr.us-east-2.amazonaws.com/mediaviz-repository:internal_api_template_service
+        imagePullPolicy: Always
         env:
           - name: GRPC_SERVER_PORT
             value: 0.0.0.0:50051
