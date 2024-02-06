@@ -1,9 +1,12 @@
 import grpc
 import asyncio
-import logging
 from typing import List, Dict
+import logging
+from .logging_file_format import configure_logger
 from .get_tls_certs import get_secret_data
 
+logger = logging.getLogger(__name__)
+configure_logger(logger, level=logging.INFO)
 
 def create_secure_server(
         port: str, service_classes: List[Dict], server_key_file: str, server_cert_file: str, ca_cert_file: str
@@ -13,6 +16,7 @@ def create_secure_server(
     # ca_cert = open(ca_cert_file, 'rb').read()
 
     tls_certs = get_secret_data("default", "tls_certs")
+    logger.info("Getting secret data in get_tls_certs")
     server_key = tls_certs.get("server_key")
     server_cert = tls_certs.get("server_cert")
     ca_cert = tls_certs.get("ca_cert")

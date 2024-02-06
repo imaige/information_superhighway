@@ -9,6 +9,7 @@ configure_logger(logger, level=logging.INFO)
 
 
 def get_secret_data(namespace: str, secret_name: str) -> Dict[str, str]:
+    logger.info("Getting secret data in get_tls_certs")
     try:
         # Load Kubernetes configuration
         config.load_incluster_config()
