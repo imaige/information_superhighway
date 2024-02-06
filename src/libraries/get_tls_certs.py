@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 configure_logger(logger, level=logging.INFO)
 
 
-def get_secret_data(namespace: str, secret_name: str) -> Dict[str, str]:
+def get_secret_data(namespace: str, secret_name: str) -> Dict[str, bytes]:
     logger.info("Getting secret data in get_tls_certs")
     try:
         # Load Kubernetes configuration
@@ -22,11 +22,11 @@ def get_secret_data(namespace: str, secret_name: str) -> Dict[str, str]:
 
         # Access secret data
         secret_data = {
-            "client-key": secret.data.get("client-key.pem", b""),
-            "server-cert": secret.data.get("server-cert.pem", b""),
-            "server-key": secret.data.get("server-key.pem", b""),
-            "ca-cert": secret.data.get("ca-cert.pem", b""),
-            "client-cert": secret.data.get("client-cert.pem", b""),
+            "client-key": secret.data.get("client-key.pem", "").encode("utf-8"),
+            "server-cert": secret.data.get("server-cert.pem", "").encode("utf-8"),
+            "server-key": secret.data.get("server-key.pem", "").encode("utf-8"),
+            "ca-cert": secret.data.get("ca-cert.pem", "").encode("utf-8"),
+            "client-cert": secret.data.get("client-cert.pem", "").encode("utf-8"),
         }
 
         # Decode base64-encoded data
