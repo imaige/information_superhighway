@@ -23,19 +23,19 @@ spec:
             value: DEV
         volumeMounts:
           - name: server-key
-            mountPath: /tls_certs/server-key.pem
+            mountPath: /tls_certs/k8s/server-key.pem
             subPath: server-key.pem
           - name: server-cert
-            mountPath: /tls_certs/server-cert.pem
+            mountPath: /tls_certs/k8s/server-cert.pem
             subPath: server-cert.pem
           - name: ca-cert
-            mountPath: /tls_certs/ca-cert.pem
+            mountPath: /tls_certs/k8s/ca-cert.pem
             subPath: ca-cert.pem
           - name: client-key
-            mountPath: /tls_certs/client-key.pem
+            mountPath: /tls_certs/k8s/client-key.pem
             subPath: client-key.pem
           - name: client-cert
-            mountPath: /tls_certs/client-cert.pem
+            mountPath: /tls_certs/k8s/client-cert.pem
             subPath: client-cert.pem
       volumes:
       - name: server-key

@@ -12,10 +12,10 @@ configure_logger(logger, level=logging.INFO)
 def create_secure_server(
         port: str, service_classes: List[Dict], server_key_file: str, server_cert_file: str, ca_cert_file: str
 ) -> grpc.aio.server:
-    # server_key_old = open(server_key_file, 'rb').read()
-    # logger.info(f"file data from original import - type is: {type(server_key_file)}")
-    # logger.info(f"file contents from original import - value is: {server_key_file}")
-
+    # server_key = open(server_key_file, 'rb').read()
+    # logger.info(f"Secret data from original import - type is: {type(server_key)}")
+    # logger.info(f"Secret contents from original import - value is: {server_key}")
+    #
     # server_cert = open(server_cert_file, 'rb').read()
     # ca_cert = open(ca_cert_file, 'rb').read()
 
