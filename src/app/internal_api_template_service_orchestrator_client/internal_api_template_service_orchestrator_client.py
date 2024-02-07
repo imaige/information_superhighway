@@ -28,13 +28,15 @@ async def run(func_name: str, request_obj: any, request_destination: str):
             # logger.info(f'Orchestrator making template basic request to port {getenv("GRPC_ACCESS_PORT")}')
             # await template_request(request_obj, getenv("GRPC_ACCESS_PORT").strip())
             logger.info(f'Orchestrator making template basic request to port {request_destination}')
-            await template_request(request_obj, request_destination.strip())
+            destination_tls_cert_path_var = 'local'
+            await template_request(request_obj, request_destination.strip(), destination_tls_cert_path_var)
 
         case "template_image_request":
             # logger.info(f'Orchestrator making template image request to port {getenv("GRPC_ACCESS_PORT")}')
             # await template_image_request(None, getenv("GRPC_ACCESS_PORT").strip())
             logger.info(f'Orchestrator making template image request to port {request_destination}')
-            await template_image_request(None, request_destination.strip())
+            destination_tls_cert_path_var = 'k8s'
+            await template_image_request(None, request_destination.strip(), destination_tls_cert_path_var)
 
 
 
