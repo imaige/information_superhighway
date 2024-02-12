@@ -7,7 +7,8 @@
 # Get user input for secret_name
 read -p "Enter the name of the secret: " secret_name
 
-# Get user input for the relative path to the folder containing certificates
+# Get user input for the relative path to the folder containing k8s certificates
+# While package is structured as-is, this will usually be '../tls_certs/k8s'
 read -p "Enter the relative path to the folder containing certificates: " cert_folder
 
 # Check if the secret exists
