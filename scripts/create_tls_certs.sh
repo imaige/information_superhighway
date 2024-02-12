@@ -54,5 +54,3 @@ rm "$SAN_CONFIG_FILE"
 
 # TODO future:
 # 1) take user input for SUBJECT and SAN params
-# 2) automatically move files to another directory
-# 3) take user input for name (and location, although for now we can at least assume ../tls_certs/$name) of directory
