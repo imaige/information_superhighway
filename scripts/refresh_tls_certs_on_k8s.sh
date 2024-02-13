@@ -4,12 +4,14 @@
 # b) registry auth, see 'Authenticate to your default registry' here:
 # https://docs.aws.amazon.com/AmazonECR/latest/userguide/getting-started-cli.html
 
+secret_name="tls-certs"
 # Get user input for secret_name
-read -p "Enter the name of the secret: " secret_name
+read -p "Enter the name of the secret (leave blank for default): " secret_name
 
 # Get user input for the relative path to the folder containing k8s certificates
-# While package is structured as-is, this will usually be '../tls_certs/k8s'
-read -p "Enter the relative path to the folder containing certificates: " cert_folder
+# While package is structured as-is, this will usually be "../tls_certs/k8s"
+cert_folder="../tls_certs/k8s"
+read -p "Enter the relative path to the folder containing certificates (leave blank for default): " cert_folder
 
 # Check if the secret exists
 if kubectl get secret "$secret_name" &> /dev/null; then

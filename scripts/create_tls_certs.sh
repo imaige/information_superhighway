@@ -4,9 +4,10 @@
 read -p "Enter the name for the new directory where certs will be stored: " dir_name
 
 # Take user input for existing directory location and validate
-# While package is structured as-is, this will usually be '../tls_certs'
+# While package is structured as-is, this will usually be "../tls_certs"
+dir_location="../tls_certs"
 while true; do
-    read -p "Enter the existing directory location (relative or absolute path): " dir_location
+    read -p "Enter the existing directory location (relative or absolute path; leave blank for default): " dir_location
     # Convert relative path to absolute path
     dir_location=$(realpath "$dir_location")
     if [ -d "$dir_location" ]; then
