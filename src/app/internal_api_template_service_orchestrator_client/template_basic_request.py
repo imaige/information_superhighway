@@ -16,10 +16,16 @@ configure_logger(logger, level=logging.INFO)
 
 
 async def template_request(req: TemplateRequest, port: str, request_location: str) -> None:
-    # logging.basicConfig(level=logging.INFO)
+    # flow for running locally
     client_key = open(f'./tls_certs/{request_location}/client-key.pem', 'rb').read()
     client_cert = open(f'./tls_certs/{request_location}/client-cert.pem', 'rb').read()
     ca_cert = open(f'./tls_certs/{request_location}/ca-cert.pem', 'rb').read()
+
+    # flow for running on k8s
+    # tls_certs = get_secret_data("default", "tls-certs")
+    # client_key = tls_certs.get("client-key")
+    # client_cert = tls_certs.get("client-cert")
+    # ca_cert = tls_certs.get("ca-cert")
 
     channel_credentials = grpc.ssl_channel_credentials(
         root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
