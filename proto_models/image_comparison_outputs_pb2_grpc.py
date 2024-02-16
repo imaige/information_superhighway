@@ -5,7 +5,7 @@ import grpc
 from . import image_comparison_outputs_pb2 as image__comparison__outputs__pb2
 
 
-class InternalApiTemplateServiceStub(object):
+class ImageComparisonOutputServiceStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -14,17 +14,17 @@ class InternalApiTemplateServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.InternalApiTemplateRequest = channel.unary_unary(
-                '/InternalApiTemplateService/InternalApiTemplateRequest',
+        self.ImageComparisonOutputRequest = channel.unary_unary(
+                '/ImageComparisonOutputService/ImageComparisonOutputRequest',
                 request_serializer=image__comparison__outputs__pb2.ImageComparisonOutput.SerializeToString,
                 response_deserializer=image__comparison__outputs__pb2.StatusResponse.FromString,
                 )
 
 
-class InternalApiTemplateServiceServicer(object):
+class ImageComparisonOutputServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def InternalApiTemplateRequest(self, request, context):
+    def ImageComparisonOutputRequest(self, request, context):
         """Basic request
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -32,25 +32,25 @@ class InternalApiTemplateServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_InternalApiTemplateServiceServicer_to_server(servicer, server):
+def add_ImageComparisonOutputServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'InternalApiTemplateRequest': grpc.unary_unary_rpc_method_handler(
-                    servicer.InternalApiTemplateRequest,
+            'ImageComparisonOutputRequest': grpc.unary_unary_rpc_method_handler(
+                    servicer.ImageComparisonOutputRequest,
                     request_deserializer=image__comparison__outputs__pb2.ImageComparisonOutput.FromString,
                     response_serializer=image__comparison__outputs__pb2.StatusResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'InternalApiTemplateService', rpc_method_handlers)
+            'ImageComparisonOutputService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
  # This class is part of an EXPERIMENTAL API.
-class InternalApiTemplateService(object):
+class ImageComparisonOutputService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def InternalApiTemplateRequest(request,
+    def ImageComparisonOutputRequest(request,
             target,
             options=(),
             channel_credentials=None,
@@ -60,7 +60,7 @@ class InternalApiTemplateService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/InternalApiTemplateService/InternalApiTemplateRequest',
+        return grpc.experimental.unary_unary(request, target, '/ImageComparisonOutputService/ImageComparisonOutputRequest',
             image__comparison__outputs__pb2.ImageComparisonOutput.SerializeToString,
             image__comparison__outputs__pb2.StatusResponse.FromString,
             options, channel_credentials,

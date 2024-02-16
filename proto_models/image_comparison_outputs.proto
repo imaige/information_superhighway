@@ -1,9 +1,9 @@
 syntax = "proto3";
 
 
-service InternalApiTemplateService {
+service ImageComparisonOutputService {
   // Basic request
-  rpc InternalApiTemplateRequest (ImageComparisonOutput) returns (StatusResponse) {}
+  rpc ImageComparisonOutputRequest (ImageComparisonOutput) returns (StatusResponse) {}
 }
 
 message StatusResponse {
