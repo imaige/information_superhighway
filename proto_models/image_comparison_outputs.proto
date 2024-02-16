@@ -3,7 +3,7 @@ syntax = "proto3";
 
 service ImageComparisonOutputService {
   // Basic request
-  rpc ImageComparisonOutputRequest (ImageComparisonOutput) returns (StatusResponse) {}
+  rpc ImageComparisonOutputRequest (ImageComparisonOutput) returns (stream StatusResponse) {}
 }
 
 message StatusResponse {

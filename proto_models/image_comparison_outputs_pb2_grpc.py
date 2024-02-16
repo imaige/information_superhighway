@@ -14,7 +14,7 @@ class ImageComparisonOutputServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.ImageComparisonOutputRequest = channel.unary_unary(
+        self.ImageComparisonOutputRequest = channel.unary_stream(
                 '/ImageComparisonOutputService/ImageComparisonOutputRequest',
                 request_serializer=image__comparison__outputs__pb2.ImageComparisonOutput.SerializeToString,
                 response_deserializer=image__comparison__outputs__pb2.StatusResponse.FromString,
@@ -34,7 +34,7 @@ class ImageComparisonOutputServiceServicer(object):
 
 def add_ImageComparisonOutputServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'ImageComparisonOutputRequest': grpc.unary_unary_rpc_method_handler(
+            'ImageComparisonOutputRequest': grpc.unary_stream_rpc_method_handler(
                     servicer.ImageComparisonOutputRequest,
                     request_deserializer=image__comparison__outputs__pb2.ImageComparisonOutput.FromString,
                     response_serializer=image__comparison__outputs__pb2.StatusResponse.SerializeToString,
@@ -60,7 +60,7 @@ class ImageComparisonOutputService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/ImageComparisonOutputService/ImageComparisonOutputRequest',
+        return grpc.experimental.unary_stream(request, target, '/ImageComparisonOutputService/ImageComparisonOutputRequest',
             image__comparison__outputs__pb2.ImageComparisonOutput.SerializeToString,
             image__comparison__outputs__pb2.StatusResponse.FromString,
             options, channel_credentials,

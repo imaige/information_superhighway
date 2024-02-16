@@ -6,7 +6,13 @@ from proto_models.internal_api_template_service_pb2 import (
 from proto_models.internal_api_template_service_pb2_grpc import (
     InternalApiTemplateServiceServicer, add_InternalApiTemplateServiceServicer_to_server
 )
-from ...libraries.grpc_server_factory import create_secure_server
+from proto_models.image_comparison_outputs_pb2 import (
+    ImageComparisonOutput, StatusResponse
+)
+from proto_models.image_comparison_outputs_pb2_grpc import (
+    ImageComparisonOutputServiceServicer, add_ImageComparisonOutputServiceServicer_to_server
+)
+from ...libraries.grpc_server_factory import create_secure_server, create_insecure_server
 from ...libraries.logging_file_format import configure_logger
 import logging
 
@@ -109,6 +115,20 @@ class TemplateRequester(InternalApiTemplateServiceServicer):
         yield ImageReply(b64image=response_image)
 
 
+class ImageComparisonOutputRequester(ImageComparisonOutputServiceServicer):
+    # Endpoint definition #
+    # Matches name in ImageComparisonOutputServiceServicer
+    async def ImageComparisonOutputRequest(
+      self, request: ImageComparisonOutput, context: grpc.aio.ServicerContext
+    ) -> StatusResponse:
+        logger.info(f"Serving image comparison output request with detail: {request}")
+
+        logger.info(f"Request model name is: {request.model_name}")
+        logger.info(f"Request contents is: {request.contents}")
+
+        yield StatusResponse(message="OK")
+
+
 # Server Creation #
 async def serve() -> None:
     server_key = './tls_certs/server-key.pem'
@@ -119,10 +139,15 @@ async def serve() -> None:
         {
             "add_func": add_InternalApiTemplateServiceServicer_to_server,
             "add_class": TemplateRequester()
+        },
+        {
+            "add_func": add_ImageComparisonOutputServiceServicer_to_server,
+            "add_class": ImageComparisonOutputRequester()
         }
     ]
 
-    server = create_secure_server(port, service_classes, server_key, server_cert, ca_cert)
+    # server = create_secure_server(port, service_classes, server_key, server_cert, ca_cert)
+    server = create_insecure_server(port, service_classes)
 
     logger.info("Starting server on %s", port)
     await server.start()

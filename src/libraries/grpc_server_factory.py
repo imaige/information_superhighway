@@ -39,3 +39,20 @@ def create_secure_server(
     # server.add_insecure_port(port)
 
     return server
+
+
+def create_insecure_server(
+        port: str, service_classes: List[Dict]
+) -> grpc.aio.server:
+
+    server = grpc.aio.server()
+
+    for function_class_pair in service_classes:
+        add_func = function_class_pair["add_func"]
+        add_class = function_class_pair["add_class"]
+        print(f"adding func: {add_func} and class: {add_class}")
+        add_func(add_class, server)
+
+    server.add_insecure_port(port)
+
+    return server
