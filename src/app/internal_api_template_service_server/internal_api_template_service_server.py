@@ -35,14 +35,14 @@ from io import BytesIO
 from os import getenv
 from dotenv import load_dotenv
 
+from typing import Union
 
 load_dotenv()
 
 # Check env
 APP_ENV = getenv("IMAIGE_PYTHON_APP_ENVIRONMENT")
-match APP_ENV:
-    case "LOCAL":
-        load_dotenv(".env.local")
+if APP_ENV == "LOCAL":
+    load_dotenv(".env.local")
 
 logger = logging.getLogger(__name__)
 configure_logger(logger, level=logging.INFO)
@@ -54,7 +54,7 @@ class TemplateRequester(InternalApiTemplateServiceServicer):
     # Matches name in InternalApiTemplateServiceServicer
     async def InternalApiTemplateRequest(
             self, request: TemplateRequest, context: grpc.ServicerContext
-    ) -> TemplateReply | status_pb2.Status:
+    ) -> Union[TemplateReply, status_pb2.Status]:
         logger.info(f"Serving basic request with detail: {request}")
         # Example error handling
         # in this case, for using a protocol buffer that is not the designated one
