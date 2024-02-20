@@ -12,6 +12,13 @@ from proto_models.image_comparison_outputs_pb2 import (
 from proto_models.image_comparison_outputs_pb2_grpc import (
     ImageComparisonOutputServiceServicer, add_ImageComparisonOutputServiceServicer_to_server
 )
+from proto_models.information_superhighway_pb2 import (
+    ImageAnalysisRequest
+)
+from proto_models.information_superhighway_pb2_grpc import (
+    InformationSuperhighwayServiceServicer, add_InformationSuperhighwayServiceServicer_to_server
+)
+from ..internal_api_template_service_orchestrator_client import kserve_request
 from ...libraries.grpc_server_factory import create_secure_server, create_insecure_server
 from ...libraries.logging_file_format import configure_logger
 import logging
@@ -119,12 +126,26 @@ class ImageComparisonOutputRequester(ImageComparisonOutputServiceServicer):
     # Endpoint definition #
     # Matches name in ImageComparisonOutputServiceServicer
     async def ImageComparisonOutputRequest(
-      self, request: ImageComparisonOutput, context: grpc.aio.ServicerContext
+        self, request: ImageComparisonOutput, context: grpc.aio.ServicerContext
     ) -> StatusResponse:
         logger.info(f"Serving image comparison output request with detail: {request}")
 
         logger.info(f"Request model name is: {request.model_name}")
         logger.info(f"Request contents is: {request.contents}")
+
+        yield StatusResponse(message="OK")
+
+
+class InformationSuperhighway(InformationSuperhighwayServiceServicer):
+    # Endpoint definition #
+    # Matches name in InformationSuperhighwayServiceServicer
+    async def ImageAiAnalysisRequest(
+        self, request: ImageAnalysisRequest, context: grpc.aio.ServicerContext
+    ) -> StatusResponse:
+        logger.info(f"Serving image comparison output request with detail: {request}")
+        logger.info(f"Request model name is: {request.model_name}")
+
+        await kserve_request.image_comparison_request('8081', request.b64image, request.model_name)
 
         yield StatusResponse(message="OK")
 
@@ -143,7 +164,11 @@ async def serve() -> None:
         {
             "add_func": add_ImageComparisonOutputServiceServicer_to_server,
             "add_class": ImageComparisonOutputRequester()
-        }
+        },
+        {
+            "add_func": add_InformationSuperhighwayServiceServicer_to_server,
+            "add_class": InformationSuperhighway()
+        },
     ]
 
     # server = create_secure_server(port, service_classes, server_key, server_cert, ca_cert)

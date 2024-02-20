@@ -6,3 +6,5 @@ pillow
 pytest
 python-dotenv
 kubernetes
+numpy
+kserve

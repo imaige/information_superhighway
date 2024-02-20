@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package information_superhighway;
+
+// Service definition
+service InformationSuperhighwayService {
+    // AI analysis request
+    rpc ImageAiAnalysisRequest (ImageAnalysisRequest) returns (stream StatusReply) {}
+}
+
+// AI analysis request message
+message ImageAnalysisRequest {
+    string b64image = 1;
+    string model_name = 2;
+}
+
+// A basic status response message
+message StatusReply {
+    string message = 1;
+}
