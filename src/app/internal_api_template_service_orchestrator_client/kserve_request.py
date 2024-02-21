@@ -14,6 +14,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 configure_logger(logger, level=logging.INFO)
+logger.propagate = False
 
 #TODO: add auth to gRPC server as well as to this below client
 async def image_comparison_request(port, b64image: str, model_name: str) -> None:
@@ -68,7 +69,7 @@ async def image_comparison_request(port, b64image: str, model_name: str) -> None
                 shape=shape,
                 contents=contents
             )
-            logger.info(f"grpc_output is: {grpc_output}")
+            # logger.info(f"grpc_output is: {grpc_output}")
 
             # async with grpc.aio.insecure_channel(port) as channel:
             #     stub = ImageComparisonOutputServiceStub(channel)
