@@ -18,7 +18,8 @@ configure_logger(logger, level=logging.INFO)
 #TODO: add auth to gRPC server as well as to this below client
 async def image_comparison_request(port, b64image: str, model_name: str) -> None:
     client = InferenceServerClient(url=os.environ.get("INGRESS_PORT", port),
-                                   channel_args=(('grpc.ssl_target_name_override', os.environ.get("SERVICE_HOSTNAME", "")),))
+                                   channel_args=(('grpc.ssl_target_name_override',
+                                                  os.environ.get("SERVICE_HOSTNAME", "")),))
     # json_file = open("./input.json") #Example image provided in kserving documentation
     # json_file = open("./input_9jpg.json") #Test image of dog, 9x8
     json_file = open("test_image.json")  # Test image of dog, 64x56
@@ -32,6 +33,7 @@ async def image_comparison_request(port, b64image: str, model_name: str) -> None
     t0 = time.time()
     for i in range(1):
         # make inference request via gRPC
+        logger.info(f"making infer_request request to port {port}")
         res = client.infer(infer_request=request)
         '''
         response format:
