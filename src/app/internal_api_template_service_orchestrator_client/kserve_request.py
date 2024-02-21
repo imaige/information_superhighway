@@ -22,9 +22,9 @@ async def image_comparison_request(port, b64image: str, model_name: str) -> None
                                                   os.environ.get("SERVICE_HOSTNAME", "")),))
     # json_file = open("./input.json") #Example image provided in kserving documentation
     # json_file = open("./input_9jpg.json") #Test image of dog, 9x8
-    json_file = open("test_image.json")  # Test image of dog, 64x56
-
-    data = json.load(json_file)
+    # json_file = open("test_image.json")  # Test image of dog, 64x56
+    #
+    # data = json.load(json_file)
     infer_input = InferInput(
         name="input-0", shape=[1], datatype="BYTES", data=[base64.b64decode(b64image)]
     )
