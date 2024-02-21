@@ -14,7 +14,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 configure_logger(logger, level=logging.INFO)
-logger.propagate = False
 
 #TODO: add auth to gRPC server as well as to this below client
 async def image_comparison_request(port, b64image: str, model_name: str) -> None:

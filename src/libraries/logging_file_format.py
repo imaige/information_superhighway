@@ -19,3 +19,4 @@ def configure_logger(logger, level=logging.DEBUG):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     logger.setLevel(level)
+    logger.propagate = False

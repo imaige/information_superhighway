@@ -46,7 +46,6 @@ if APP_ENV == "LOCAL":
 
 logger = logging.getLogger(__name__)
 configure_logger(logger, level=logging.INFO)
-logger.propagate = False
 
 
 # Service Class Definition #
