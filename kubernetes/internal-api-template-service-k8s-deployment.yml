@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: internal-api-template-service-deployment
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: internal-api-template-service
