@@ -153,9 +153,10 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 
 # Server Creation #
 async def serve() -> None:
-    server_key = './tls_certs/server-key.pem'
-    server_cert = './tls_certs/server-cert.pem'
-    ca_cert = './tls_certs/ca-cert.pem'
+    request_destination = 'local'
+    server_key = f'./tls_certs/{request_destination}/server-key.pem'
+    server_cert = f'./tls_certs/{request_destination}/server-cert.pem'
+    ca_cert = f'./tls_certs/{request_destination}/ca-cert.pem'
     port = getenv("GRPC_SERVER_PORT").strip()
     service_classes = [
         {
