@@ -28,12 +28,11 @@ async def image_comparison_request(port, b64image: str, model_name: str, request
     client_cert = f'./tls_certs/{request_location}/client-cert.pem'
     ca_cert = f'./tls_certs/{request_location}/ca-cert.pem'
     client = InferenceServerClient(url=os.environ.get("INGRESS_PORT", port),
-                                   # ssl=False,
-                                   # root_certificates=ca_cert,
-                                   # private_key=client_key,
-                                   # certificate_chain=client_cert,
-                                   channel_args=(('grpc.ssl_target_name_override',
-                                                  os.environ.get("SERVICE_HOSTNAME", "")),))
+                                   ssl=True,
+                                   root_certificates=ca_cert,
+                                   private_key=client_key,
+                                   certificate_chain=client_cert,
+                                   )
     # json_file = open("./input.json") #Example image provided in kserving documentation
     # json_file = open("./input_9jpg.json") #Test image of dog, 9x8
     # json_file = open("test_image.json")  # Test image of dog, 64x56

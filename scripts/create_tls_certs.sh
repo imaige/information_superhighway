@@ -30,8 +30,9 @@ else
     mkdir -p "$target_dir"
 fi
 
-SUBJECT="/C=US/ST=CO/L=Denver/O=Imaige/OU=MediaViz/CN=my-alias/emailAddress=caleb@imaige.com"
-SAN="DNS:localhost, IP:127.0.0.1"
+SUBJECT="/C=US/ST=CO/L=Denver/O=Imaige/OU=MediaViz/CN=localhost/emailAddress=caleb@imaige.com"
+SAN="IP:0.0.0.0,IP:127.0.0.1,DNS:localhost"
+# SAN="DNS:a9ffa50f4239140f1a19f8b8e811593a-1537691390.us-east-2.elb.amazonaws.com"
 
 # Create SAN config file
 SAN_CONFIG_FILE="$target_dir/san_config.cnf"
