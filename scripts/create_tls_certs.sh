@@ -5,9 +5,12 @@ read -p "Enter the name for the new directory where certs will be stored: " dir_
 
 # Take user input for existing directory location and validate
 # While package is structured as-is, this will usually be "../tls_certs"
-dir_location="../tls_certs"
+default_dir="../tls_certs"
 while true; do
     read -p "Enter the existing directory location (relative or absolute path; leave blank for default): " dir_location
+    if [ -z "$dir_location" ]; then
+        dir_location="$default_dir"
+    fi
     # Convert relative path to absolute path
     dir_location=$(realpath "$dir_location")
     if [ -d "$dir_location" ]; then
@@ -15,6 +18,7 @@ while true; do
     else
         echo "Directory does not exist. Please enter a valid directory location."
     fi
+
 done
 
 # Check if the directory with the same name already exists
@@ -27,7 +31,7 @@ else
 fi
 
 SUBJECT="/C=US/ST=CO/L=Denver/O=Imaige/OU=MediaViz/CN=my-alias/emailAddress=caleb@imaige.com"
-SAN="DNS:DNS:localhost, IP:127.0.0.1"
+SAN="DNS:localhost, IP:127.0.0.1"
 
 # Create SAN config file
 SAN_CONFIG_FILE="$target_dir/san_config.cnf"
