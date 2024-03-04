@@ -27,7 +27,7 @@ else
 fi
 
 SUBJECT="/C=US/ST=CO/L=Denver/O=Imaige/OU=MediaViz/CN=my-alias/emailAddress=caleb@imaige.com"
-SAN="DNS:a9ffa50f4239140f1a19f8b8e811593a-1537691390.us-east-2.elb.amazonaws.com"
+SAN="DNS:DNS:localhost, IP:127.0.0.1"
 
 # Create SAN config file
 SAN_CONFIG_FILE="$target_dir/san_config.cnf"

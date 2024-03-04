@@ -15,6 +15,7 @@ import logging
 logger = logging.getLogger(__name__)
 configure_logger(logger, level=logging.INFO)
 
+
 #TODO: add auth to gRPC server as well as to this below client
 # of note, kserve as of now does not support secure gRPC requests
 # may be worth making an open source contribution to enable secure servers
@@ -22,8 +23,15 @@ configure_logger(logger, level=logging.INFO)
 # https://github.com/kserve/kserve/blob/99ac7b2050fafb14b7114b94ad6e3fd7ecfe3d15/python/kserve/kserve/protocol/grpc/server.py#L61
 # the server class we use - ModelServer - has this as a dependency on line 131 (as of 2/22/24):
 # https://github.com/kserve/kserve/blob/99ac7b2050fafb14b7114b94ad6e3fd7ecfe3d15/python/kserve/kserve/model_server.py#L86
-async def image_comparison_request(port, b64image: str, model_name: str) -> None:
+async def image_comparison_request(port, b64image: str, model_name: str, request_location: str) -> None:
+    client_key = f'./tls_certs/{request_location}/client-key.pem'
+    client_cert = f'./tls_certs/{request_location}/client-cert.pem'
+    ca_cert = f'./tls_certs/{request_location}/ca-cert.pem'
     client = InferenceServerClient(url=os.environ.get("INGRESS_PORT", port),
+                                   # ssl=False,
+                                   # root_certificates=ca_cert,
+                                   # private_key=client_key,
+                                   # certificate_chain=client_cert,
                                    channel_args=(('grpc.ssl_target_name_override',
                                                   os.environ.get("SERVICE_HOSTNAME", "")),))
     # json_file = open("./input.json") #Example image provided in kserving documentation
