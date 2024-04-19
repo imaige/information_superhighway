@@ -32,6 +32,9 @@ async def image_comparison_request(port, b64image: str, model_name: str, request
                                    root_certificates=ca_cert,
                                    private_key=client_key,
                                    certificate_chain=client_cert,
+                                   channel_args=(
+                                   # grpc.ssl_target_name_override must be set to match CN used in cert gen
+                                   ('grpc.ssl_target_name_override', 'model.mediaviz.ai'),)
                                    )
     # json_file = open("./input.json") #Example image provided in kserving documentation
     # json_file = open("./input_9jpg.json") #Test image of dog, 9x8
