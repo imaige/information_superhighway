@@ -157,6 +157,7 @@ async def serve() -> None:
     server_key = f'./tls_certs/{request_location}/server-key.pem'
     server_cert = f'./tls_certs/{request_location}/server-cert.pem'
     ca_cert = f'./tls_certs/{request_location}/ca-cert.pem'
+
     port = getenv("GRPC_SERVER_PORT").strip()
     service_classes = [
         {
