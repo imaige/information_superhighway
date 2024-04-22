@@ -145,18 +145,19 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         logger.info(f"Serving image comparison output request with model name: {request.model_name}")
 
         await kserve_request.image_comparison_request(
-            'adea6b821626048b2a3c0032f0f71841-1183079.us-east-2.elb.amazonaws.com:80',
-            request.b64image, request.model_name)
+            'localhost:8081',
+            request.b64image, request.model_name, 'test')
 
         yield StatusResponse(message="OK")
 
 
 # Server Creation #
 async def serve() -> None:
-    request_destination = 'local'
-    server_key = f'./tls_certs/{request_destination}/server-key.pem'
-    server_cert = f'./tls_certs/{request_destination}/server-cert.pem'
-    ca_cert = f'./tls_certs/{request_destination}/ca-cert.pem'
+    request_location = "test"
+    server_key = f'./tls_certs/{request_location}/server-key.pem'
+    server_cert = f'./tls_certs/{request_location}/server-cert.pem'
+    ca_cert = f'./tls_certs/{request_location}/ca-cert.pem'
+
     port = getenv("GRPC_SERVER_PORT").strip()
     service_classes = [
         {

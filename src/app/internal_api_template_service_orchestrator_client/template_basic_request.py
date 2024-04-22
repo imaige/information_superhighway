@@ -6,6 +6,7 @@ from proto_models.internal_api_template_service_pb2_grpc import (
     InternalApiTemplateServiceStub
 )
 from ...libraries.logging_file_format import configure_logger
+from ...libraries.get_tls_certs import get_secret_data
 
 import asyncio
 import logging
@@ -17,6 +18,7 @@ configure_logger(logger, level=logging.INFO)
 
 async def template_request(req: TemplateRequest, port: str, request_location: str) -> None:
     # flow for running locally
+    print(f"file source: ./tls_certs/{request_location}/client-key.pem")
     client_key = open(f'./tls_certs/{request_location}/client-key.pem', 'rb').read()
     client_cert = open(f'./tls_certs/{request_location}/client-cert.pem', 'rb').read()
     ca_cert = open(f'./tls_certs/{request_location}/ca-cert.pem', 'rb').read()

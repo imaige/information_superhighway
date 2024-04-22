@@ -13,15 +13,15 @@ def create_secure_server(
         port: str, service_classes: List[Dict], server_key_file: str, server_cert_file: str, ca_cert_file: str
 ) -> grpc.aio.server:
     # flow for local server creation
-    # server_key = open(server_key_file, 'rb').read()
-    # server_cert = open(server_cert_file, 'rb').read()
-    # ca_cert = open(ca_cert_file, 'rb').read()
+    server_key = open(server_key_file, 'rb').read()
+    server_cert = open(server_cert_file, 'rb').read()
+    ca_cert = open(ca_cert_file, 'rb').read()
 
     # flow for k8s server creation
-    tls_certs = get_secret_data("default", "tls-certs")
-    server_key = tls_certs.get("server-key")
-    server_cert = tls_certs.get("server-cert")
-    ca_cert = tls_certs.get("ca-cert")
+    # tls_certs = get_secret_data("default", "tls-certs")
+    # server_key = tls_certs.get("server-key")
+    # server_cert = tls_certs.get("server-cert")
+    # ca_cert = tls_certs.get("ca-cert")
 
     server_credentials = grpc.ssl_server_credentials(
         [(server_key, server_cert)], root_certificates=ca_cert,
