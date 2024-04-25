@@ -3,10 +3,13 @@ from typing import Dict, Union, List
 import logging
 from logging_file_format import configure_logger
 import json
-
+from os import getenv
+from dotenv import load_dotenv
 
 logger = logging.getLogger(__name__)
 configure_logger(logger, level=logging.INFO)
+
+load_dotenv()
 
 
 def request(url: str, request_type: str, headers: Union[Dict, None]):
@@ -63,9 +66,10 @@ if __name__ == '__main__':
             "other-model"
         ]
     }
+    token = getenv("LOCAL_EXTERNAL_API_BEARER_TOKEN")
 
     heads = {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMSIsImNvbXBhbnlfaWQiOiJOb25lIiwiZXhwIjoxNzE1MTc2NDkyfQ.SxJ93UO_3yRdBXCnOxo6ImxUb4hYcQyrCa6iMIGdtZQ',
+        'Authorization': f'Bearer {token}',
     }
 
     request_with_body_and_photo("http://0.0.0.0:8000/api/v1/photos/model_request", recipe, "post",
