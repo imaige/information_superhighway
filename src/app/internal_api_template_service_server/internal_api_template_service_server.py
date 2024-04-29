@@ -19,6 +19,7 @@ from proto_models.information_superhighway_pb2_grpc import (
     InformationSuperhighwayServiceServicer, add_InformationSuperhighwayServiceServicer_to_server
 )
 from ..internal_api_template_service_orchestrator_client import kserve_request
+from ...libraries.get_tls_certs import get_secret_data
 from ...libraries.grpc_server_factory import create_secure_server, create_insecure_server
 from ...libraries.logging_file_format import configure_logger
 import logging
@@ -143,10 +144,17 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         self, request: ImageAnalysisRequest, context: grpc.aio.ServicerContext
     ) -> StatusResponse:
         logger.info(f"Serving image comparison output request with model name: {request.model_name}")
+        logger.info(f"and detail: {request.b64image}")
+        request_image = request.b64image
+        # convert image: decode to b64, convert to BytesIO, convert to Pillow image using open, optionally show
+        decoded_image = base64.b64decode(request_image)
+        bytes_image = BytesIO(decoded_image)
+        final_image = Image.open(bytes_image)
+        final_image.show()
 
         await kserve_request.image_comparison_request(
             # 'adea6b821626048b2a3c0032f0f71841-1183079.us-east-2.elb.amazonaws.com:80',
-            # 'localhost:8081',
+            # '0.0.0.0:8081',
             'ac5ba39f7cbdb40ffb2e8b2e1c9672cd-1882491926.us-east-2.elb.amazonaws.com:80',
             request.b64image, request.model_name, 'k8s_ai_service')
 
@@ -155,10 +163,17 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 
 # Server Creation #
 async def serve() -> None:
-    request_location = "test"
-    server_key = f'./tls_certs/{request_location}/server-key.pem'
-    server_cert = f'./tls_certs/{request_location}/server-cert.pem'
-    ca_cert = f'./tls_certs/{request_location}/ca-cert.pem'
+    # flow for running locally
+    request_location = "local"
+    # server_key = f'./tls_certs/{request_location}/server-key.pem'
+    # server_cert = f'./tls_certs/{request_location}/server-cert.pem'
+    # ca_cert = f'./tls_certs/{request_location}/ca-cert.pem'
+
+    # flow for running on k8s
+    tls_certs = get_secret_data("default", "tls-certs")
+    server_key = tls_certs.get("server-key")
+    server_cert = tls_certs.get("server-cert")
+    ca_cert = tls_certs.get("ca-cert")
 
     port = getenv("GRPC_SERVER_PORT").strip()
     service_classes = [
@@ -176,8 +191,8 @@ async def serve() -> None:
         },
     ]
 
-    # server = create_secure_server(port, service_classes, server_key, server_cert, ca_cert)
-    server = create_insecure_server(port, service_classes)
+    server = create_secure_server(port, service_classes, server_key, server_cert, ca_cert)
+    # server = create_insecure_server(port, service_classes)
 
     logger.info("Starting server on %s", port)
     await server.start()

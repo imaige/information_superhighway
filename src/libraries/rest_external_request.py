@@ -49,7 +49,6 @@ def request_with_body_and_photo(url: str, recipe: List[str], request_type: str, 
     if request_type == 'get':
         response = requests.get(url, data=recipe, headers=heads)
     elif request_type == 'post':
-        print("making post request")
         response = requests.post(url, data=recipe, files=files, headers=heads)
 
     response_json = response.json()
