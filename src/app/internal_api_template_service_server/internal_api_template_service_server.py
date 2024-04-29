@@ -164,7 +164,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 # Server Creation #
 async def serve() -> None:
     # flow for running locally
-    request_location = "local"
+    request_location = "k8s_ai_service"
     # server_key = f'./tls_certs/{request_location}/server-key.pem'
     # server_cert = f'./tls_certs/{request_location}/server-cert.pem'
     # ca_cert = f'./tls_certs/{request_location}/ca-cert.pem'
