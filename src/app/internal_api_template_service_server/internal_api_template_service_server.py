@@ -164,16 +164,10 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 # Server Creation #
 async def serve() -> None:
     # flow for running locally
-    request_location = "k8s_ai_service"
-    # server_key = f'./tls_certs/{request_location}/server-key.pem'
-    # server_cert = f'./tls_certs/{request_location}/server-cert.pem'
-    # ca_cert = f'./tls_certs/{request_location}/ca-cert.pem'
-
-    # flow for running on k8s
-    tls_certs = get_secret_data("default", "tls-certs")
-    server_key = tls_certs.get("server-key")
-    server_cert = tls_certs.get("server-cert")
-    ca_cert = tls_certs.get("ca-cert")
+    request_location = "k8s_info_superhighway"
+    server_key = f'./tls_certs/{request_location}/server-key.pem'
+    server_cert = f'./tls_certs/{request_location}/server-cert.pem'
+    ca_cert = f'./tls_certs/{request_location}/ca-cert.pem'
 
     port = getenv("GRPC_SERVER_PORT").strip()
     service_classes = [

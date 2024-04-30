@@ -18,7 +18,7 @@ def create_secure_server(
     # ca_cert = open(ca_cert_file, 'rb').read()
 
     # flow for k8s server creation
-    tls_certs = get_secret_data("default", "tls-certs")
+    tls_certs = get_secret_data("default", "k8s-info-superhighway-tls-certs")
     server_key = tls_certs.get("server-key")
     server_cert = tls_certs.get("server-cert")
     ca_cert = tls_certs.get("ca-cert")
