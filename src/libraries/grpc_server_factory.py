@@ -4,6 +4,7 @@ from typing import List, Dict
 import logging
 from .logging_file_format import configure_logger
 from .get_tls_certs import get_secret_data
+# from .get_ssl_cert_details import get_san_from_cert, parse_certificate
 
 logger = logging.getLogger(__name__)
 configure_logger(logger, level=logging.INFO)
@@ -22,6 +23,10 @@ def create_secure_server(
     server_key = tls_certs.get("server-key")
     server_cert = tls_certs.get("server-cert")
     ca_cert = tls_certs.get("ca-cert")
+
+    # parse_certificate(server_cert)
+    # san = get_san_from_cert(server_cert)
+    # print(f"SAN is: {san}")
 
     server_credentials = grpc.ssl_server_credentials(
         [(server_key, server_cert)], root_certificates=ca_cert,
