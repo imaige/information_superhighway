@@ -7,6 +7,7 @@ import grpc
 from proto_models.image_comparison_outputs_pb2 import ImageComparisonOutput, StatusResponse
 from proto_models.image_comparison_outputs_pb2_grpc import ImageComparisonOutputServiceStub
 from ...libraries.logging_file_format import configure_logger
+from ...libraries.get_tls_certs import get_secret_data
 
 import asyncio
 import logging
@@ -24,9 +25,17 @@ configure_logger(logger, level=logging.INFO)
 # the server class we use - ModelServer - has this as a dependency on line 131 (as of 2/22/24):
 # https://github.com/kserve/kserve/blob/99ac7b2050fafb14b7114b94ad6e3fd7ecfe3d15/python/kserve/kserve/model_server.py#L86
 async def image_comparison_request(port, b64image: str, model_name: str, request_location: str) -> None:
-    client_key = f'./tls_certs/{request_location}/client-key.pem'
-    client_cert = f'./tls_certs/{request_location}/client-cert.pem'
-    ca_cert = f'./tls_certs/{request_location}/ca-cert.pem'
+    # flow for local request
+    # client_key = f'./tls_certs/{request_location}/client-key.pem'
+    # client_cert = f'./tls_certs/{request_location}/client-cert.pem'
+    # ca_cert = f'./tls_certs/{request_location}/ca-cert.pem'
+
+    # flow for request to server running on k8s
+    tls_certs = get_secret_data("default", "k8s-image-compare-service-tls-certs")
+    client_key = tls_certs.get("client-key")
+    client_cert = tls_certs.get("client-cert")
+    ca_cert = tls_certs.get("ca-cert")
+
     client = InferenceServerClient(url=os.environ.get("INGRESS_PORT", port),
                                    ssl=True,
                                    root_certificates=ca_cert,

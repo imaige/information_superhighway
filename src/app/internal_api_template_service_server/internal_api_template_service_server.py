@@ -147,10 +147,10 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         logger.info(f"and detail: {request.b64image}")
         request_image = request.b64image
         # convert image: decode to b64, convert to BytesIO, convert to Pillow image using open, optionally show
-        decoded_image = base64.b64decode(request_image)
-        bytes_image = BytesIO(decoded_image)
-        final_image = Image.open(bytes_image)
-        final_image.show()
+        # decoded_image = base64.b64decode(request_image)
+        # bytes_image = BytesIO(decoded_image)
+        # final_image = Image.open(bytes_image)
+        # final_image.show()
 
         await kserve_request.image_comparison_request(
             # 'adea6b821626048b2a3c0032f0f71841-1183079.us-east-2.elb.amazonaws.com:80',
