@@ -7,7 +7,7 @@ import grpc
 from proto_models.image_comparison_outputs_pb2 import ImageComparisonOutput, StatusResponse
 from proto_models.image_comparison_outputs_pb2_grpc import ImageComparisonOutputServiceStub
 from ...libraries.logging_file_format import configure_logger
-from ...libraries.get_tls_certs import get_secret_data
+from ...libraries.get_tls_certs import get_secret_data, get_secret_files
 
 import asyncio
 import logging
@@ -31,7 +31,7 @@ async def image_comparison_request(port, b64image: str, model_name: str, request
     # ca_cert = f'./tls_certs/{request_location}/ca-cert.pem'
 
     # flow for request to server running on k8s
-    tls_certs = get_secret_data("default", "k8s-image-compare-service-tls-certs")
+    tls_certs = get_secret_files("default", "k8s-image-compare-service-tls-certs")
     client_key = tls_certs.get("client-key")
     client_cert = tls_certs.get("client-cert")
     ca_cert = tls_certs.get("ca-cert")
