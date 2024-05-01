@@ -49,13 +49,15 @@ def get_secret_files(namespace: str, secret_name: str) -> Dict[str, bytes]:
         # Retrieve the secret
         secret = v1_api_client.read_namespaced_secret(secret_name, namespace)
 
+        logger.info(f"secret is: {secret}")
+
         # Access secret data
         secret_data = {
-            "server-cert": secret.data.get("server-cert.pem", b""),
-            "server-key": secret.data.get("server-key.pem", b""),
-            "ca-cert": secret.data.get("ca-cert.pem", b""),
-            "client-cert": secret.data.get("client-cert.pem", b""),
-            "client-key": secret.data.get("client-key.pem", b""),
+            "server-cert": secret.data.get("server-cert.pem"),
+            "server-key": secret.data.get("server-key.pem"),
+            "ca-cert": secret.data.get("ca-cert.pem"),
+            "client-cert": secret.data.get("client-cert.pem"),
+            "client-key": secret.data.get("client-key.pem"),
         }
 
         return secret_data

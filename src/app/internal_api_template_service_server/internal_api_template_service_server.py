@@ -144,7 +144,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         self, request: ImageAnalysisRequest, context: grpc.aio.ServicerContext
     ) -> StatusResponse:
         logger.info(f"Serving image comparison output request with model name: {request.model_name}")
-        logger.info(f"and detail: {request.b64image}")
+        # logger.info(f"and detail: {request.b64image}")
         request_image = request.b64image
         # convert image: decode to b64, convert to BytesIO, convert to Pillow image using open, optionally show
         # decoded_image = base64.b64decode(request_image)
