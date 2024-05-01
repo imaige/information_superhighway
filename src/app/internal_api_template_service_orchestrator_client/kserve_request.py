@@ -34,15 +34,20 @@ async def image_comparison_request(port, b64image: str, model_name: str, request
 
     # flow for request to server running on k8s
     tls_certs = get_secret_data("default", "k8s-image-compare-service-tls-certs")
-    client_key = io.BytesIO(tls_certs.get("client-key"))
-    client_cert = io.BytesIO(tls_certs.get("client-cert"))
-    ca_cert = io.BytesIO(tls_certs.get("ca-cert"))
+    client_key = tls_certs.get("client-key")
+    client_cert = tls_certs.get("client-cert")
+    ca_cert = tls_certs.get("ca-cert")
+
+    creds = grpc.ssl_channel_credentials(
+        root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
+    )
 
     client = InferenceServerClient(url=os.environ.get("INGRESS_PORT", port),
                                    ssl=True,
-                                   root_certificates=ca_cert,
-                                   private_key=client_key,
-                                   certificate_chain=client_cert,
+                                   # root_certificates=ca_cert,
+                                   # private_key=client_key,
+                                   # certificate_chain=client_cert,
+                                   creds=creds,
                                    channel_args=(
                                    # grpc.ssl_target_name_override must be set to match CN used in cert gen
                                    ('grpc.ssl_target_name_override', 'model.mediaviz.ai'),)
