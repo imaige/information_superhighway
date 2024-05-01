@@ -1,3 +1,5 @@
+import io
+
 from kserve import InferRequest, InferInput, InferenceServerClient
 import json
 import base64
@@ -31,10 +33,10 @@ async def image_comparison_request(port, b64image: str, model_name: str, request
     # ca_cert = f'./tls_certs/{request_location}/ca-cert.pem'
 
     # flow for request to server running on k8s
-    tls_certs = get_secret_files("default", "k8s-image-compare-service-tls-certs")
-    client_key = tls_certs.get("client-key")
-    client_cert = tls_certs.get("client-cert")
-    ca_cert = tls_certs.get("ca-cert")
+    tls_certs = get_secret_data("default", "k8s-image-compare-service-tls-certs")
+    client_key = io.BytesIO(tls_certs.get("client-key"))
+    client_cert = io.BytesIO(tls_certs.get("client-cert"))
+    ca_cert = io.BytesIO(tls_certs.get("ca-cert"))
 
     client = InferenceServerClient(url=os.environ.get("INGRESS_PORT", port),
                                    ssl=True,

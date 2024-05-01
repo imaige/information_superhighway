@@ -1,3 +1,5 @@
+import io
+
 from kubernetes import client, config
 from typing import Dict, Optional
 import base64
@@ -53,7 +55,7 @@ def get_secret_files(namespace: str, secret_name: str) -> Dict[str, bytes]:
 
         # Access secret data
         secret_data = {
-            "server-cert": secret.data.get("server-cert.pem"),
+            "server-cert": io.BytesIO(base64.b64decode(secret.data.get("server-cert.pem"))),
             "server-key": secret.data.get("server-key.pem"),
             "ca-cert": secret.data.get("ca-cert.pem"),
             "client-cert": secret.data.get("client-cert.pem"),
