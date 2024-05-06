@@ -27,7 +27,7 @@ class InformationSuperhighwayServiceServicer(object):
     """
 
     def ImageAiAnalysisRequest(self, request, context):
-        """AI analysis  request
+        """AI analysis request
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')

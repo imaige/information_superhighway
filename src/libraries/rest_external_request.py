@@ -1,6 +1,9 @@
 import requests
 from typing import Dict, Union, List
 import logging
+
+from requests import JSONDecodeError
+
 from logging_file_format import configure_logger
 import json
 from os import getenv
@@ -38,6 +41,19 @@ def request_with_body(url: str, obj: Dict, request_type: str, headers: Union[Dic
     return response_json
 
 
+def request_with_body_ssl_secured(url: str, obj: Dict, request_type: str, headers: Union[Dict, None]):
+    response = ''
+
+    if request_type == 'get':
+        response = requests.get(url, json=obj, headers=headers)
+    elif request_type == 'post':
+        response = requests.post(url, json=obj, headers=headers)
+
+    response_json = response.json()
+    # logger.info(f"Request with body {response.status_code}: {response_json}")
+    return response_json
+
+
 def request_with_body_and_photo(url: str, recipe: List[str], request_type: str, heads: Union[Dict, None], photo_path: str):
     response = ''
 
@@ -51,9 +67,12 @@ def request_with_body_and_photo(url: str, recipe: List[str], request_type: str, 
     elif request_type == 'post':
         response = requests.post(url, data=recipe, files=files, headers=heads)
 
-    response_json = response.json()
-    logger.info(f"Request with body {response.status_code}: {response_json}")
-    return response_json
+    try:
+        response_json = response.json()
+        logger.info(f"Request with body {response.status_code}: {response_json}")
+        return response_json
+    except JSONDecodeError as e:
+        print(f"Caught error: {e}")
 
 
 if __name__ == '__main__':
@@ -61,8 +80,7 @@ if __name__ == '__main__':
         "name": "test-recipe",
         "description": "describe me",
         "models": [
-            "model",
-            "other-model"
+            "custom-model"
         ]
     }
     token = getenv("LOCAL_EXTERNAL_API_BEARER_TOKEN")

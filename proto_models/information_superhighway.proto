@@ -10,9 +10,9 @@ service InformationSuperhighwayService {
 
 // AI analysis request message
 message ImageAnalysisRequest {
-    string b64image = 1;
-    string model_name = 2;
-
+    int64 photo_id = 1;
+    string b64image = 2;
+    string model_name = 3;
 }
 
 // A basic status response message

@@ -26,7 +26,7 @@ configure_logger(logger, level=logging.INFO)
 # https://github.com/kserve/kserve/blob/99ac7b2050fafb14b7114b94ad6e3fd7ecfe3d15/python/kserve/kserve/protocol/grpc/server.py#L61
 # the server class we use - ModelServer - has this as a dependency on line 131 (as of 2/22/24):
 # https://github.com/kserve/kserve/blob/99ac7b2050fafb14b7114b94ad6e3fd7ecfe3d15/python/kserve/kserve/model_server.py#L86
-async def image_comparison_request(port, b64image: str, model_name: str, request_location: str) -> None:
+async def image_comparison_request(port, b64image: str, model_name: str, request_location: str = None):
     # flow for local request
     # client_key = f'./tls_certs/{request_location}/client-key.pem'
     # client_cert = f'./tls_certs/{request_location}/client-cert.pem'
@@ -100,12 +100,5 @@ async def image_comparison_request(port, b64image: str, model_name: str, request
                 shape=shape,
                 contents=contents
             )
-            # logger.info(f"grpc_output is: {grpc_output}")
 
-            # async with grpc.aio.insecure_channel(port) as channel:
-            #     stub = ImageComparisonOutputServiceStub(channel)
-            #     logger.info(f"making request to {port}")
-            #     async for response in stub.ImageComparisonOutputRequest(grpc_output):
-            #         logger.info("Received response: ")
-            #         logger.info(response)
-
+            return grpc_output

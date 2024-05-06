@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1einformation_superhighway.proto\x12\x18information_superhighway\"<\n\x14ImageAnalysisRequest\x12\x10\n\x08\x62\x36\x34image\x18\x01 \x01(\t\x12\x12\n\nmodel_name\x18\x02 \x01(\t\"\x1e\n\x0bStatusReply\x12\x0f\n\x07message\x18\x01 \x01(\t2\x95\x01\n\x1eInformationSuperhighwayService\x12s\n\x16ImageAiAnalysisRequest\x12..information_superhighway.ImageAnalysisRequest\x1a%.information_superhighway.StatusReply\"\x00\x30\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1einformation_superhighway.proto\x12\x18information_superhighway\"N\n\x14ImageAnalysisRequest\x12\x10\n\x08photo_id\x18\x01 \x01(\x03\x12\x10\n\x08\x62\x36\x34image\x18\x02 \x01(\t\x12\x12\n\nmodel_name\x18\x03 \x01(\t\"\x1e\n\x0bStatusReply\x12\x0f\n\x07message\x18\x01 \x01(\t2\x95\x01\n\x1eInformationSuperhighwayService\x12s\n\x16ImageAiAnalysisRequest\x12..information_superhighway.ImageAnalysisRequest\x1a%.information_superhighway.StatusReply\"\x00\x30\x01\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -22,9 +22,9 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'information_superhighway_pb
 if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
   _globals['_IMAGEANALYSISREQUEST']._serialized_start=60
-  _globals['_IMAGEANALYSISREQUEST']._serialized_end=120
-  _globals['_STATUSREPLY']._serialized_start=122
-  _globals['_STATUSREPLY']._serialized_end=152
-  _globals['_INFORMATIONSUPERHIGHWAYSERVICE']._serialized_start=155
-  _globals['_INFORMATIONSUPERHIGHWAYSERVICE']._serialized_end=304
+  _globals['_IMAGEANALYSISREQUEST']._serialized_end=138
+  _globals['_STATUSREPLY']._serialized_start=140
+  _globals['_STATUSREPLY']._serialized_end=170
+  _globals['_INFORMATIONSUPERHIGHWAYSERVICE']._serialized_start=173
+  _globals['_INFORMATIONSUPERHIGHWAYSERVICE']._serialized_end=322
 # @@protoc_insertion_point(module_scope)
