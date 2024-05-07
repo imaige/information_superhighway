@@ -19,7 +19,7 @@ spec:
         env:
           - name: DATABASE_URL
 #            TODO: UPDATE ME
-            value: postgresql+asyncpg://postgres:testpassword@localhost/postgres
+            value: postgresql://postgres:GMSF#9d^Syo8uvU@mediaviz-dev.cotsmbbj0vgr.us-east-2.rds.amazonaws.com:5432/postgres
 #            TODO: replace placeholders & make these secrets on k8s
           - name: SECRET_KEY
             valueFrom:
@@ -29,9 +29,9 @@ spec:
           - name: ALGORITHM
             value: HS256
           - name: ACCESS_TOKEN_EXPIRE_MINUTES
-            value: 300
+            value: "300"
           - name: REFRESH_TOKEN_EXPIRE_DAYS
-            value: 30
+            value: "30"
           - name: SECRET_KEY
             valueFrom:
               secretKeyRef:
