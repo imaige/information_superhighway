@@ -8,8 +8,8 @@ import time
 import grpc
 from proto_models.image_comparison_outputs_pb2 import ImageComparisonOutput, StatusResponse
 from proto_models.image_comparison_outputs_pb2_grpc import ImageComparisonOutputServiceStub
-from ...libraries.logging_file_format import configure_logger
-from ...libraries.get_tls_certs import get_secret_data, get_secret_files
+from src.libraries.logging_file_format import configure_logger
+from src.libraries.get_tls_certs import get_secret_data, get_secret_files
 
 import asyncio
 import logging

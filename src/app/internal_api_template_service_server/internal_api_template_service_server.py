@@ -1,5 +1,3 @@
-import grpc
-
 from proto_models.internal_api_template_service_pb2 import (
     TemplateRequest, TemplateReply, ImageRequest, ImageReply
 )
@@ -18,9 +16,8 @@ from proto_models.information_superhighway_pb2 import (
 from proto_models.information_superhighway_pb2_grpc import (
     InformationSuperhighwayServiceServicer, add_InformationSuperhighwayServiceServicer_to_server
 )
-from ..internal_api_template_service_orchestrator_client import kserve_request
-from ...libraries.get_tls_certs import get_secret_data
-from ...libraries.grpc_server_factory import create_secure_server, create_insecure_server
+from src.libraries import kserve_request
+from ...libraries.grpc_server_factory import create_secure_server
 from ...libraries.logging_file_format import configure_logger
 import logging
 
