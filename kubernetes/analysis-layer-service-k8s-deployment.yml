@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analysis-layer-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: analysis-layer-service
+  template:
+    metadata:
+      labels:
+        app: analysis-layer-service
+    spec:
+      containers:
+      - name: analysis-layer-service-container
+        image: 379283424934.dkr.ecr.us-east-2.amazonaws.com/mediaviz-repository:analysis-layer-service
+        imagePullPolicy: Always
+        env:
+          - name: DATABASE_URL
+#            TODO: UPDATE ME
+            value: postgresql+asyncpg://postgres:testpassword@localhost/postgres
+#            TODO: replace placeholders & make these secrets on k8s
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: backend-user
+                key: backend-username
+          - name: ALGORITHM
+            value: HS256
+          - name: ACCESS_TOKEN_EXPIRE_MINUTES
+            value: 300
+          - name: REFRESH_TOKEN_EXPIRE_DAYS
+            value: 30
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: backend-user
+                key: backend-username
+        volumeMounts:
+          - name: server-key
+            mountPath: /tls_certs/analysis_layer/server-key.pem
+            subPath: server-key.pem
+          - name: server-cert
+            mountPath: /tls_certs/analysis_layer/server-cert.pem
+            subPath: server-cert.pem
+          - name: ca-cert
+            mountPath: /tls_certs/analysis_layer/ca-cert.pem
+            subPath: ca-cert.pem
+          - name: client-key
+            mountPath: /tls_certs/analysis_layer/client-key.pem
+            subPath: client-key.pem
+          - name: client-cert
+            mountPath: /tls_certs/analysis_layer/client-cert.pem
+            subPath: client-cert.pem
+      volumes:
+      - name: server-key
+        secret:
+          secretName: analysis-layer-tls-certs
+          items:
+            - key: server-key.pem
+              path: server-key.pem
+      - name: server-cert
+        secret:
+          secretName: analysis-layer-tls-certs
+          items:
+            - key: server-cert.pem
+              path: server-cert.pem
+      - name: ca-cert
+        secret:
+          secretName: analysis-layer-tls-certs
+          items:
+            - key: ca-cert.pem
+              path: ca-cert.pem
+      - name: client-key
+        secret:
+          secretName: analysis-layer-tls-certs
+          items:
+            - key: client-key.pem
+              path: client-key.pem
+      - name: client-cert
+        secret:
+          secretName: analysis-layer-tls-certs
+          items:
+            - key: client-cert.pem
+              path: client-cert.pem
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: analysis-layer-service-service
+spec:
+  selector:
+    app: analysis-layer-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+  type: LoadBalancer
