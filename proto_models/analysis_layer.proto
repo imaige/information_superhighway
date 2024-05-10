@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package information_superhighway;
+
+// Service definition
+service AnalysisLayer {
+    // AI output request
+    rpc AiModelOutputRequestHandler (AiModelOutputRequest) returns (stream StatusReply);
+}
+
+// AI analysis request message
+message AiModelOutputRequest {
+    int64 photo_id = 1;
+    // image comparison outputs
+    string image_comparison_run_id = 2;
+    string image_comparison_name = 3;
+    string image_comparison_datatype = 4;
+    int32 image_comparison_shape = 5;
+    repeated bytes image_comparison_contents = 6;
+    // next model outputs
+
+}
+
+// A basic status response message
+message StatusReply {
+    int64 photo_id = 1;
+}

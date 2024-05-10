@@ -5,6 +5,7 @@ import logging
 from proto_models.internal_api_template_service_pb2 import (
     ImageRequest, ImageReply, TemplateRequest, TemplateReply
 )
+from proto_models.analysis_layer_pb2 import AiModelOutputRequest
 import sys
 
 
@@ -23,7 +24,15 @@ async def main():
     await internal_api_template_service_orchestrator_client.run(
         # "template_image_request",
         sys.argv[1],
-        TemplateRequest(name="caleb"),
+        # TemplateRequest(name="caleb"),
+        AiModelOutputRequest(
+            photo_id=1,
+            image_comparison_run_id="run-id-test",
+            image_comparison_name="img-comparison-name",
+            image_comparison_datatype="test-datatype",
+            image_comparison_shape=3,
+            image_comparison_contents=["test1".encode(), "test2".encode()]
+        ),
         sys.argv[2]
     )
 
