@@ -76,18 +76,19 @@ def request_with_body_and_photo(url: str, recipe: List[str], request_type: str, 
 
 
 if __name__ == '__main__':
-    recipe = {
-        "name": "test-recipe",
-        "description": "describe me",
-        "models": [
-            "custom-model"
-        ]
-    }
-    token = getenv("LOCAL_EXTERNAL_API_BEARER_TOKEN")
+    # recipe = {
+    #     "name": "test-recipe",
+    #     "description": "describe me",
+    #     "models": [
+    #         "custom-model"
+    #     ]
+    # }
+    # token = getenv("LOCAL_EXTERNAL_API_BEARER_TOKEN")
+    #
+    # heads = {
+    #     'Authorization': f'Bearer {token}',
+    # }
+    #
+    # request_with_body_and_photo("http://0.0.0.0:8000/api/v1/photos/model_request", recipe, "post",
+    #                             heads, "test_image.jpg")
 
-    heads = {
-        'Authorization': f'Bearer {token}',
-    }
-
-    request_with_body_and_photo("http://0.0.0.0:8000/api/v1/photos/model_request", recipe, "post",
-                                heads, "test_image.jpg")
