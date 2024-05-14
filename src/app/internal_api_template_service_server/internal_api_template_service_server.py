@@ -142,7 +142,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
     ) -> StatusResponse:
         logger.info(f"Serving image comparison request with photo id: {request.photo_id}")
         logger.info(f"Serving image comparison request with model name: {request.model_name}")
-        logger.info(f"and image: {request.b64image}")
+        # logger.info(f"and image: {request.b64image}")
         request_image = request.b64image
         # convert image: decode to b64, convert to BytesIO, convert to Pillow image using open, optionally show
         # decoded_image = base64.b64decode(request_image)
@@ -150,7 +150,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         # final_image = Image.open(bytes_image)
         # final_image.show()
 
-        if request.model_name == "image_comparison":
+        if request.model_name == "image-comparison":
             image_comparison_output = await kserve_request.image_comparison_request(
                 # 'adea6b821626048b2a3c0032f0f71841-1183079.us-east-2.elb.amazonaws.com:80',
                 # '0.0.0.0:8081',
