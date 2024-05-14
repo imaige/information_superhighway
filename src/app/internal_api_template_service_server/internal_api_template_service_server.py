@@ -158,11 +158,13 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 request.b64image, request.model_name, 'k8s_ai_service')
             # TODO: turn output into valid protobuf object (incl. photo id) and send via gRPC to analysis layer
 
+            logger.info(f"output is: {image_comparison_output}")
+
             yield StatusResponse(message="OK")
 
         elif request.model_name == "color":
             # TODO: implement me, similar to above; do same for other AI models
-            pass
+            logger.info(f"output is: ")
 
 
 # Server Creation #
