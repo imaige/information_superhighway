@@ -140,8 +140,9 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
     async def ImageAiAnalysisRequest(
         self, request: ImageAnalysisRequest, context: grpc.aio.ServicerContext
     ) -> StatusResponse:
-        logger.info(f"Serving image comparison output request with model name: {request.model_name}")
-        # logger.info(f"and detail: {request.b64image}")
+        logger.info(f"Serving image comparison request with photo id: {request.photo_id}")
+        logger.info(f"Serving image comparison request with model name: {request.model_name}")
+        logger.info(f"and image: {request.b64image}")
         request_image = request.b64image
         # convert image: decode to b64, convert to BytesIO, convert to Pillow image using open, optionally show
         # decoded_image = base64.b64decode(request_image)
@@ -162,8 +163,6 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         elif request.model_name == "color":
             # TODO: implement me, similar to above; do same for other AI models
             pass
-
-
 
 
 # Server Creation #
