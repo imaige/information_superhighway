@@ -54,7 +54,27 @@ def request_with_body_ssl_secured(url: str, obj: Dict, request_type: str, header
     return response_json
 
 
-def request_with_body_and_photo(url: str, recipe: List[str], request_type: str, heads: Union[Dict, None], photo_path: str):
+def request_with_photo(url: str, request_type: str, heads: Union[Dict, None], photo_path: str):
+    response = ''
+
+    with open(photo_path, 'rb') as photo_file:
+        photo_data = photo_file.read()
+    files = [("photo", photo_data)]
+
+    if request_type == 'get':
+        response = requests.get(url, headers=heads)
+    elif request_type == 'post':
+        response = requests.post(url, files=files, headers=heads)
+
+    try:
+        response_json = response.json()
+        logger.info(f"Request with body {response.status_code}: {response_json}")
+        return response_json
+    except JSONDecodeError as e:
+        print(f"Caught error: {e}")
+
+
+def request_with_body_and_photo(url: str, recipe: Union[List[str], None], request_type: str, heads: Union[Dict, None], photo_path: str):
     response = ''
 
     with open(photo_path, 'rb') as photo_file:
@@ -76,19 +96,23 @@ def request_with_body_and_photo(url: str, recipe: List[str], request_type: str, 
 
 
 if __name__ == '__main__':
-    # recipe = {
-    #     "name": "test-recipe",
-    #     "description": "describe me",
-    #     "models": [
-    #         "custom-model"
-    #     ]
-    # }
-    # token = getenv("LOCAL_EXTERNAL_API_BEARER_TOKEN")
-    #
-    # heads = {
-    #     'Authorization': f'Bearer {token}',
-    # }
-    #
-    # request_with_body_and_photo("http://0.0.0.0:8000/api/v1/photos/model_request", recipe, "post",
-    #                             heads, "test_image.jpg")
+    recipe = {
+        "name": "test-recipe",
+        "description": "describe me",
+        "models": [
+            "image-comparison"
+        ]
+    }
+    token = getenv("K8S_EXTERNAL_API_BEARER_TOKEN")
+
+    heads = {
+        'Authorization': f'Bearer {token}',
+    }
+
+    # url = "http://0.0.0.0:8000/api/v1/photos/model_request"
+    # url = "http://0.0.0.0:8000/api/v1/photos/"
+    url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/photos/"
+
+    request_with_body_and_photo(url, recipe, "post", heads, "test_image.jpg")
+    # request_with_photo(url, "post", heads, "test_image.jpg")
 

@@ -47,4 +47,4 @@ async def template_analysis_layer_request(req: AiModelOutputRequest, port: str, 
         async for response in stub.AiModelOutputRequestHandler(req):
             # logger.info("Client received from async generator with detail: " + response.photo_id)
             logger.info("Client received from async generator with detail: ")
-            logger.info(response.photo_id)
+            logger.info(response)
