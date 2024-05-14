@@ -109,9 +109,15 @@ if __name__ == '__main__':
         'Authorization': f'Bearer {token}',
     }
 
+    # local photo ai request
     # url = "http://0.0.0.0:8000/api/v1/photos/model_request"
+    # local vanilla photo create
     # url = "http://0.0.0.0:8000/api/v1/photos/"
-    url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/photos/"
+
+    # k8s vanilla photo create
+    # url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/photos/"
+    # k8s photo ai request
+    url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/photos/model_request"
 
     request_with_body_and_photo(url, recipe, "post", heads, "test_image.jpg")
     # request_with_photo(url, "post", heads, "test_image.jpg")
