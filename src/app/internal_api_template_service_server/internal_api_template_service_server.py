@@ -150,7 +150,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         # final_image = Image.open(bytes_image)
         # final_image.show()
 
-        if request.model_name == "image-comparison":
+        if request.model_name == "image_comparison":
             image_comparison_output = await kserve_request.image_comparison_request(
                 # 'adea6b821626048b2a3c0032f0f71841-1183079.us-east-2.elb.amazonaws.com:80',
                 # '0.0.0.0:8081',
