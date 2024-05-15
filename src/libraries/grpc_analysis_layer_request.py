@@ -11,8 +11,8 @@ from proto_models.analysis_layer_pb2 import (
 from proto_models.analysis_layer_pb2_grpc import (
     AnalysisLayerStub
 )
-from ...libraries.logging_file_format import configure_logger
-from ...libraries.get_tls_certs import get_secret_data
+from .logging_file_format import configure_logger
+from .get_tls_certs import get_secret_data
 
 import asyncio
 import logging
@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 configure_logger(logger, level=logging.INFO)
 
 
-async def template_analysis_layer_request(req: AiModelOutputRequest, port: str, request_location: str) -> None:
+async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_location: str = None) -> None:
     # flow for running locally
     # client_key = open(f'./tls_certs/{request_location}/client-key.pem', 'rb').read()
     # client_cert = open(f'./tls_certs/{request_location}/client-cert.pem', 'rb').read()

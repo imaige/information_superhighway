@@ -98,7 +98,7 @@ async def image_comparison_request(port, b64image: str, model_name: str, request
                 name=output.name,
                 datatype=output.datatype,
                 shape=shape,
-                contents=contents
+                contents=res.contents
             )
 
             return grpc_output

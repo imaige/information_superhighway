@@ -16,8 +16,12 @@ from proto_models.information_superhighway_pb2 import (
 from proto_models.information_superhighway_pb2_grpc import (
     InformationSuperhighwayServiceServicer, add_InformationSuperhighwayServiceServicer_to_server
 )
+from proto_models.analysis_layer_pb2 import (
+    AiModelOutputRequest,
+)
 from src.libraries import kserve_request
 from ...libraries.grpc_server_factory import create_secure_server
+from ...libraries.grpc_analysis_layer_request import analysis_layer_request
 from ...libraries.logging_file_format import configure_logger
 import logging
 
@@ -158,6 +162,19 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 # TODO: turn output into valid protobuf object (incl. photo id) and send via gRPC to analysis layer
 
                 logger.info(f"output is: {image_comparison_output}")
+                analysis_layer_input = AiModelOutputRequest(
+                    photo_id=request.photo_id,
+                    image_comparison_run_id=image_comparison_output.id,
+                    image_comparison_name=image_comparison_output.name,
+                    image_comparison_datatype=image_comparison_output.datatype,
+                    image_comparison_shape=image_comparison_output.shape,
+                    image_comparison_contents=image_comparison_output.contents
+                )
+
+                analysis_layer_port = "aef33e947022a4ba49b3544cdc0b629a-215644690.us-east-2.elb.amazonaws.com:80"
+
+                analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
+                logger.info(f"response from analysis layer is: {analysis_layer_response}")
 
                 yield StatusResponse(message="OK")
 
