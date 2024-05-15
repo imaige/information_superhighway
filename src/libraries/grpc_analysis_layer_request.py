@@ -29,7 +29,7 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
     # ca_cert = open(f'./tls_certs/{request_location}/ca-cert.pem', 'rb').read()
 
     # flow for running on k8s
-    tls_certs = get_secret_data("default", "tls-certs")
+    tls_certs = get_secret_data("default", "analysis-layer-tls-certs")
     client_key = tls_certs.get("client-key")
     client_cert = tls_certs.get("client-cert")
     ca_cert = tls_certs.get("ca-cert")
