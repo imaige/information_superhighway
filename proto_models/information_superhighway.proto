@@ -20,7 +20,7 @@ message ImageAnalysisResponse {
     string message = 1;
 }
 
-message StatusReply {
+message SuperhighwayStatusReply {
     string message = 1;
 }
 

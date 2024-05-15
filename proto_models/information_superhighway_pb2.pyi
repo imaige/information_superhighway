@@ -21,7 +21,7 @@ class ImageAnalysisResponse(_message.Message):
     message: str
     def __init__(self, message: _Optional[str] = ...) -> None: ...
 
-class StatusReply(_message.Message):
+class SuperhighwayStatusReply(_message.Message):
     __slots__ = ("message",)
     MESSAGE_FIELD_NUMBER: _ClassVar[int]
     message: str
