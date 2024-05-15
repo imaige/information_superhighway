@@ -5,17 +5,24 @@ package information_superhighway;
 // Service definition
 service InformationSuperhighwayService {
     // AI analysis request
-    rpc ImageAiAnalysisRequest (ImageAnalysisRequest) returns (stream StatusReply) {}
+    rpc ImageAiAnalysisRequest (ImageAnalysisRequest) returns (stream Empty) {}
 }
 
 // AI analysis request message
 message ImageAnalysisRequest {
     int64 photo_id = 1;
     string b64image = 2;
-    string model_name = 3;
+    repeated string models = 3;
 }
 
-// A basic status response message
-message StatusReply {
+// AI analysis response message
+message ImageAnalysisResponse {
     string message = 1;
 }
+
+// Empty response message
+message Empty {
+
+}
+// Empty response may be helpful where there's a lot of processing going on in between the gRPC send and response
+// In this case, we'll probably have a different gRPC server set up to receive the output on the photo

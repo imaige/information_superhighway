@@ -149,22 +149,23 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         # bytes_image = BytesIO(decoded_image)
         # final_image = Image.open(bytes_image)
         # final_image.show()
+        for model in request.models:
+            # TODO: validate model_name
+            if model == "image_comparison":
+                image_comparison_output = await kserve_request.image_comparison_request(
+                    # 'adea6b821626048b2a3c0032f0f71841-1183079.us-east-2.elb.amazonaws.com:80',
+                    # '0.0.0.0:8081',
+                    'ac5ba39f7cbdb40ffb2e8b2e1c9672cd-1882491926.us-east-2.elb.amazonaws.com:80',
+                    request.b64image, model, 'k8s_ai_service')
+                # TODO: turn output into valid protobuf object (incl. photo id) and send via gRPC to analysis layer
 
-        if request.model_name == "image_comparison":
-            image_comparison_output = await kserve_request.image_comparison_request(
-                # 'adea6b821626048b2a3c0032f0f71841-1183079.us-east-2.elb.amazonaws.com:80',
-                # '0.0.0.0:8081',
-                'ac5ba39f7cbdb40ffb2e8b2e1c9672cd-1882491926.us-east-2.elb.amazonaws.com:80',
-                request.b64image, request.model_name, 'k8s_ai_service')
-            # TODO: turn output into valid protobuf object (incl. photo id) and send via gRPC to analysis layer
+                logger.info(f"output is: {image_comparison_output}")
 
-            logger.info(f"output is: {image_comparison_output}")
+                yield StatusResponse(message="OK")
 
-            yield StatusResponse(message="OK")
-
-        elif request.model_name == "color":
-            # TODO: implement me, similar to above; do same for other AI models
-            logger.info(f"output is: ")
+            elif model == "color":
+                # TODO: implement me, similar to above; do same for other AI models
+                logger.info(f"output is: ")
 
 
 # Server Creation #
