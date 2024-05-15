@@ -6,7 +6,7 @@ from proto_models.internal_api_template_service_pb2_grpc import (
     InternalApiTemplateServiceStub
 )
 from proto_models.analysis_layer_pb2 import (
-    AiModelOutputRequest, StatusReply
+    AiModelOutputRequest,
 )
 from proto_models.analysis_layer_pb2_grpc import (
     AnalysisLayerStub

@@ -20,6 +20,10 @@ message ImageAnalysisResponse {
     string message = 1;
 }
 
+message StatusReply {
+    string message = 1;
+}
+
 // Empty response message
 message Empty {
 
