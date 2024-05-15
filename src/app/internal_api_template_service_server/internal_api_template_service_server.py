@@ -128,7 +128,6 @@ class ImageComparisonOutputRequester(ImageComparisonOutputServiceServicer):
     ) -> StatusResponse:
         logger.info(f"Serving image comparison output request with detail: {request}")
 
-        logger.info(f"Request model name is: {request.model_name}")
         logger.info(f"Request contents is: {request.contents}")
 
         yield StatusResponse(message="OK")
@@ -141,7 +140,6 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         self, request: ImageAnalysisRequest, context: grpc.aio.ServicerContext
     ) -> StatusResponse:
         logger.info(f"Serving image comparison request with photo id: {request.photo_id}")
-        logger.info(f"Serving image comparison request with model name: {request.model_name}")
         # logger.info(f"and image: {request.b64image}")
         request_image = request.b64image
         # convert image: decode to b64, convert to BytesIO, convert to Pillow image using open, optionally show
