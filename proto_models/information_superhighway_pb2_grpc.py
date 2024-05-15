@@ -18,7 +18,7 @@ class InformationSuperhighwayServiceStub(object):
         self.ImageAiAnalysisRequest = channel.unary_stream(
                 '/information_superhighway.InformationSuperhighwayService/ImageAiAnalysisRequest',
                 request_serializer=information__superhighway__pb2.ImageAnalysisRequest.SerializeToString,
-                response_deserializer=information__superhighway__pb2.StatusReply.FromString,
+                response_deserializer=information__superhighway__pb2.Empty.FromString,
                 )
 
 
@@ -39,7 +39,7 @@ def add_InformationSuperhighwayServiceServicer_to_server(servicer, server):
             'ImageAiAnalysisRequest': grpc.unary_stream_rpc_method_handler(
                     servicer.ImageAiAnalysisRequest,
                     request_deserializer=information__superhighway__pb2.ImageAnalysisRequest.FromString,
-                    response_serializer=information__superhighway__pb2.StatusReply.SerializeToString,
+                    response_serializer=information__superhighway__pb2.Empty.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -65,6 +65,6 @@ class InformationSuperhighwayService(object):
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/information_superhighway.InformationSuperhighwayService/ImageAiAnalysisRequest',
             information__superhighway__pb2.ImageAnalysisRequest.SerializeToString,
-            information__superhighway__pb2.StatusReply.FromString,
+            information__superhighway__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
