@@ -166,11 +166,17 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 for output in image_comparison_output.outputs:
                     shape = output.shape[0]
                     contents = []
-                    average_hash = output.contents[0].bytes_contents
-                    perceptual_hash = output.contents[1].bytes_contents
-                    difference_hash = output.contents[2].bytes_contents
-                    wavelet_hash_haar = output.contents[3].bytes_contents
-                    color_hash = output.contents[4].bytes_contents
+                    for j in range(0, shape):
+                        byte_string = output.contents.bytes_contents[j]
+                        contents.extend([byte_string])
+                    average_hash = output.contents.bytes_contents[0]
+                    logger.info(f"average_has is: {average_hash}")
+                    perceptual_hash = output.contents.bytes_contents[1]
+                    logger.info(f"perceptual_hash is: {perceptual_hash}")
+                    difference_hash = output.contents.bytes_contents[2]
+                    wavelet_hash_haar = output.contents.bytes_contents[3]
+                    color_hash = output.contents.bytes_contents[4]
+                    logger.info(f"contents array is: {contents}")
 
                     analysis_layer_input = AiModelOutputRequest(
                         photo_id=request.photo_id,
