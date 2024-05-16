@@ -173,10 +173,10 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     logger.info(f"output is: {image_comparison_output}")
                     analysis_layer_input = AiModelOutputRequest(
                         photo_id=request.photo_id,
-                        image_comparison_run_id=image_comparison_output.id,
-                        image_comparison_name=image_comparison_output.name,
-                        image_comparison_datatype=image_comparison_output.datatype,
-                        image_comparison_shape=image_comparison_output.shape,
+                        image_comparison_run_id=output.id,
+                        image_comparison_name=output.name,
+                        image_comparison_datatype=output.datatype,
+                        image_comparison_shape=output.shape,
                         average_hash=average_hash,
                         perceptual_hash=perceptual_hash,
                         difference_hash=difference_hash,
