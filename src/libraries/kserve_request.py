@@ -8,6 +8,7 @@ import time
 import grpc
 from proto_models.image_comparison_outputs_pb2 import ImageComparisonOutput, StatusResponse
 from proto_models.image_comparison_outputs_pb2_grpc import ImageComparisonOutputServiceStub
+from proto_models.analysis_layer_pb2 import AiModelOutputRequest
 from src.libraries.logging_file_format import configure_logger
 from src.libraries.get_tls_certs import get_secret_data, get_secret_files
 
@@ -85,20 +86,5 @@ async def image_comparison_request(port, b64image: str, model_name: str, request
         }
         '''
         logger.info(f"received response: {res}")
-        for output in res.outputs:
-            shape = output.shape[0]
-            contents = []
-            for j in range(0, shape):
-                byte_string = output.contents.bytes_contents[j]
-                contents.extend([byte_string])
 
-            grpc_output = ImageComparisonOutput(
-                model_name=res.model_name,
-                id=res.id,
-                name=output.name,
-                datatype=output.datatype,
-                shape=shape,
-                contents=contents
-            )
-
-            return grpc_output
+        return res

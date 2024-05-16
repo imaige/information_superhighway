@@ -161,22 +161,35 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     request.b64image, model, 'k8s_ai_service')
                 # TODO: turn output into valid protobuf object (incl. photo id) and send via gRPC to analysis layer
 
-                logger.info(f"output is: {image_comparison_output}")
-                analysis_layer_input = AiModelOutputRequest(
-                    photo_id=request.photo_id,
-                    image_comparison_run_id=image_comparison_output.id,
-                    image_comparison_name=image_comparison_output.name,
-                    image_comparison_datatype=image_comparison_output.datatype,
-                    image_comparison_shape=image_comparison_output.shape,
-                    image_comparison_contents=image_comparison_output.contents
-                )
+                for output in image_comparison_output.outputs:
+                    shape = output.shape[0]
+                    contents = []
+                    average_hash = output.contents.bytes_contents[0]
+                    perceptual_hash = output.contents.bytes_contents[1]
+                    difference_hash = output.contents.bytes_contents[2]
+                    wavelet_hash_haar = output.contents.bytes_contents[3]
+                    color_hash = output.contents.bytes_contents[4]
 
-                analysis_layer_port = "aef33e947022a4ba49b3544cdc0b629a-215644690.us-east-2.elb.amazonaws.com:80"
+                    logger.info(f"output is: {image_comparison_output}")
+                    analysis_layer_input = AiModelOutputRequest(
+                        photo_id=request.photo_id,
+                        image_comparison_run_id=image_comparison_output.id,
+                        image_comparison_name=image_comparison_output.name,
+                        image_comparison_datatype=image_comparison_output.datatype,
+                        image_comparison_shape=image_comparison_output.shape,
+                        average_hash=average_hash,
+                        perceptual_hash=perceptual_hash,
+                        difference_hash=difference_hash,
+                        wavelet_hash_haar=wavelet_hash_haar,
+                        color_hash=color_hash
+                    )
 
-                analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
-                logger.info(f"response from analysis layer is: {analysis_layer_response}")
+                    analysis_layer_port = "aef33e947022a4ba49b3544cdc0b629a-215644690.us-east-2.elb.amazonaws.com:80"
 
-                yield StatusResponse(message="OK")
+                    analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
+                    logger.info(f"response from analysis layer is: {analysis_layer_response}")
+
+                    yield StatusResponse(message="OK")
 
             elif model == "color":
                 # TODO: implement me, similar to above; do same for other AI models

@@ -16,7 +16,11 @@ message AiModelOutputRequest {
     string image_comparison_name = 3;
     string image_comparison_datatype = 4;
     int32 image_comparison_shape = 5;
-    repeated bytes image_comparison_contents = 6;
+    bytes average_hash = 6;
+    bytes perceptual_hash = 7;
+    bytes difference_hash = 8;
+    bytes wavelet_hash_haar = 9;
+    bytes color_hash = 10;
     // next model outputs
 
 }
