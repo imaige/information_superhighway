@@ -8,6 +8,7 @@ __pycache__/
 # test images
 test_image.jpg
 test_image.json
+test_images/
 
 # encryption/authentication
 tls_certs/*

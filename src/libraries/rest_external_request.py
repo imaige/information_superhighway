@@ -6,7 +6,7 @@ from requests import JSONDecodeError
 
 from logging_file_format import configure_logger
 import json
-from os import getenv
+from os import getenv, path, listdir
 from dotenv import load_dotenv
 
 logger = logging.getLogger(__name__)
@@ -119,6 +119,15 @@ if __name__ == '__main__':
     # k8s photo ai request
     url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/photos/model_request"
 
-    request_with_body_and_photo(url, recipe, "post", heads, "test_image.jpg")
+    # for i in range(0, 300):
+    # request_with_body_and_photo(url, recipe, "post", heads, "test_image.jpg")
     # request_with_photo(url, "post", heads, "test_image.jpg")
 
+    directory = 'test_images'
+
+    for filename in listdir(directory):
+        ext = path.splitext(filename)[1]
+        if ext.lower() == '.jpg':
+            file_path = path.join(directory, filename)
+            logger.info(f"file path is: {file_path}")
+            request_with_body_and_photo(url, recipe, "post", heads, file_path)
