@@ -85,6 +85,6 @@ async def image_comparison_request(port, b64image: str, model_name: str, request
             }
         }
         '''
-        logger.info(f"received response: {res}")
+        logger.info(f"received response from kserve request: {res}")
 
         return res

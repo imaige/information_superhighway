@@ -159,8 +159,10 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     # '0.0.0.0:8081',
                     'ac5ba39f7cbdb40ffb2e8b2e1c9672cd-1882491926.us-east-2.elb.amazonaws.com:80',
                     request.b64image, model, 'k8s_ai_service')
-                # TODO: turn output into valid protobuf object (incl. photo id) and send via gRPC to analysis layer
 
+                # TODO: turn output into valid protobuf object (incl. photo id) and send via gRPC to analysis layer
+                # TODO: do we need a loop here? there was one in the file that became kserve_request, but potentially can be nixed
+                logger.info(f"in server - image_comparison_output is: {image_comparison_output}")
                 for output in image_comparison_output.outputs:
                     shape = output.shape[0]
                     contents = []
@@ -173,7 +175,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     logger.info(f"output is: {image_comparison_output}")
                     analysis_layer_input = AiModelOutputRequest(
                         photo_id=request.photo_id,
-                        image_comparison_run_id=output.id,
+                        image_comparison_run_id=image_comparison_output.id,
                         image_comparison_name=output.name,
                         image_comparison_datatype=output.datatype,
                         image_comparison_shape=output.shape,
