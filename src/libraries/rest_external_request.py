@@ -105,6 +105,15 @@ if __name__ == '__main__':
     }
     token = getenv("K8S_EXTERNAL_API_BEARER_TOKEN")
 
+    token_body = {
+        "name": "Test1 User1",
+        "email": "test1@example.com",
+        "password": "Password1!",
+        "profile_picture": "test1.jpg",
+        "account_type": 1,
+        "company_id": 1
+    }
+
     heads = {
         'Authorization': f'Bearer {token}',
     }
@@ -119,11 +128,14 @@ if __name__ == '__main__':
     # k8s photo ai request
     url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/photos/model_request"
 
+    # token
+    # url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/token"
+
     # for i in range(0, 300):
     # request_with_body_and_photo(url, recipe, "post", heads, "test_image.jpg")
     # request_with_photo(url, "post", heads, "test_image.jpg")
 
-    directory = 'test_images'
+    directory = 'test_images/small'
 
     for filename in listdir(directory):
         ext = path.splitext(filename)[1]
@@ -131,3 +143,6 @@ if __name__ == '__main__':
             file_path = path.join(directory, filename)
             logger.info(f"file path is: {file_path}")
             request_with_body_and_photo(url, recipe, "post", heads, file_path)
+
+    # get token
+    # request_with_body(url, token_body, "post", heads)

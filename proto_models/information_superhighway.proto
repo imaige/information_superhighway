@@ -5,7 +5,7 @@ package information_superhighway;
 // Service definition
 service InformationSuperhighwayService {
     // AI analysis request
-    rpc ImageAiAnalysisRequest (ImageAnalysisRequest) returns (stream Empty) {}
+    rpc ImageAiAnalysisRequest (ImageAnalysisRequest) returns (stream SuperhighwayStatusReply) {}
 }
 
 // AI analysis request message

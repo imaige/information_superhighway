@@ -11,7 +11,7 @@ from proto_models.image_comparison_outputs_pb2_grpc import (
     ImageComparisonOutputServiceServicer, add_ImageComparisonOutputServiceServicer_to_server
 )
 from proto_models.information_superhighway_pb2 import (
-    ImageAnalysisRequest
+    ImageAnalysisRequest, SuperhighwayStatusReply
 )
 from proto_models.information_superhighway_pb2_grpc import (
     InformationSuperhighwayServiceServicer, add_InformationSuperhighwayServiceServicer_to_server
@@ -193,7 +193,8 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
                     logger.info(f"response from analysis layer is: {analysis_layer_response}")
 
-                    yield StatusResponse(message="OK")
+                    # TODO: there is an issue with this response - either send or receive is bugged
+                    yield SuperhighwayStatusReply(message="OK")
 
             elif model == "color":
                 # TODO: implement me, similar to above; do same for other AI models
