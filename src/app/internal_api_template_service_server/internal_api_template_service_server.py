@@ -19,9 +19,10 @@ from proto_models.information_superhighway_pb2_grpc import (
 from proto_models.analysis_layer_pb2 import (
     AiModelOutputRequest,
 )
-from src.libraries import kserve_request
+from ...libraries import kserve_request
 from ...libraries.grpc_server_factory import create_secure_server
 from ...libraries.grpc_analysis_layer_request import analysis_layer_request
+from ...libraries.enums import AiModel
 from ...libraries.logging_file_format import configure_logger
 import logging
 
@@ -142,7 +143,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
     # Matches name in InformationSuperhighwayServiceServicer
     async def ImageAiAnalysisRequest(
         self, request: ImageAnalysisRequest, context: grpc.aio.ServicerContext
-    ) -> StatusResponse:
+    ) -> Union[SuperhighwayStatusReply, status_pb2.Status]:
         logger.info(f"Serving image comparison request with photo id: {request.photo_id}")
         # logger.info(f"and image: {request.b64image}")
         request_image = request.b64image
@@ -153,7 +154,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         # final_image.show()
         for model in request.models:
             # TODO: validate model_name
-            if model == "image_comparison":
+            if model == "image_comparison_hash_model":
                 image_comparison_output = await kserve_request.image_comparison_request(
                     # 'adea6b821626048b2a3c0032f0f71841-1183079.us-east-2.elb.amazonaws.com:80',
                     # '0.0.0.0:8081',
@@ -162,7 +163,6 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 
                 # TODO: turn output into valid protobuf object (incl. photo id) and send via gRPC to analysis layer
                 # TODO: do we need a loop here? there was one in the file that became kserve_request, but potentially can be nixed
-                logger.info(f"in server - image_comparison_output is: {image_comparison_output}")
                 for output in image_comparison_output.outputs:
                     shape = output.shape[0]
                     contents = []
@@ -196,9 +196,34 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     # TODO: there is an issue with this response - either send or receive is bugged
                     yield SuperhighwayStatusReply(message="OK")
 
-            elif model == "color":
+            elif model == "colors_basic_model":
                 # TODO: implement me, similar to above; do same for other AI models
-                logger.info(f"output is: ")
+                logger.info(f"model is: {model}")
+                # logger.info(f"output is: ")
+
+            elif model == "image_classification_model":
+                logger.info(f"model is: {model}")
+
+            elif model == "face_detect_model":
+                logger.info(f"model is: {model}")
+
+            else:
+                logger.info(f"Provided model name of {model} is invalid.")
+                code = code_pb2.INVALID_ARGUMENT
+                details = any_pb2.Any()
+                # to access details for a particular error, use response[$index].details[0].value.decode('utf-8')
+                # as details is passed as a list and the value parameter is passed as a protobuf-serialized string
+                details.Pack(
+                    error_details_pb2.DebugInfo(
+                        detail=f"Invalid argument: model name of {model} is invalid."
+                    )
+                )
+                message = "Invalid argument error."
+                yield status_pb2.Status(
+                    code=code,
+                    message=message,
+                    details=[details]
+                )
 
 
 # Server Creation #
