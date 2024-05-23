@@ -152,6 +152,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         # bytes_image = BytesIO(decoded_image)
         # final_image = Image.open(bytes_image)
         # final_image.show()
+        analysis_layer_port = "aef33e947022a4ba49b3544cdc0b629a-215644690.us-east-2.elb.amazonaws.com:80"
         for model in request.models:
             # TODO: validate model_name
             if model == "image_comparison_hash_model":
@@ -188,8 +189,6 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                         color_hash=color_hash
                     )
 
-                    analysis_layer_port = "aef33e947022a4ba49b3544cdc0b629a-215644690.us-east-2.elb.amazonaws.com:80"
-
                     analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
                     logger.info(f"response from analysis layer is: {analysis_layer_response}")
 
@@ -214,6 +213,12 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     photo_id=request.photo_id,
                     color_averages=contents
                 )
+
+                analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
+                logger.info(f"response from analysis layer is: {analysis_layer_response}")
+
+                # TODO: there is an issue with this response - either send or receive is bugged
+                yield SuperhighwayStatusReply(message="OK")
 
             elif model == "image_classification_model":
                 logger.info(f"model is: {model}")
