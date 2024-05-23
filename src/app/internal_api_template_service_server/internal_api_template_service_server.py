@@ -199,7 +199,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
             elif model == "colors_basic_model":
                 # TODO: implement me, similar to above; do same for other AI models
                 logger.info(f"model is: {model}")
-                colors_output = await kserve_request.image_comparison_request(
+                colors_output = await kserve_request.colors_request(
                     'a953bbcdf877d4b71a9bef151c1deb96-1211783641.us-east-2.elb.amazonaws.com:80',
                     request.b64image, model)
 
