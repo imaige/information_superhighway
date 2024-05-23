@@ -226,6 +226,27 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 
             elif model == "face_detect_model":
                 logger.info(f"model is: {model}")
+                face_detect_output = await kserve_request.face_detect_request(
+                    'a2fc2a960127c4ae39934fea4cd3d808-1294449898.us-east-2.elb.amazonaws.com:80',
+                    request.b64image, model
+                )
+
+                logger.info(f"output (excl. raw) is: {face_detect_output.outputs[0]}")
+
+                contents = []
+                # TODO: once face model decoding is ready, split into the different faces
+                contents.extend(face_detect_output.raw_output_contents)
+
+                analysis_layer_input = AiModelOutputRequest(
+                    photo_id=request.photo_id,
+                    bounding_boxes_from_faces_model=json.dumps(contents)
+                )
+
+                analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
+                logger.info(f"response from analysis layer is: {analysis_layer_response}")
+
+                # TODO: there is an issue with this response - either send or receive is bugged
+                yield SuperhighwayStatusReply(message="OK")
 
             else:
                 logger.info(f"Provided model name of {model} is invalid.")
