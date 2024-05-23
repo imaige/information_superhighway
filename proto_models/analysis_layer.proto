@@ -22,7 +22,7 @@ message AiModelOutputRequest {
     bytes wavelet_hash_haar = 9;
     bytes color_hash = 10;
     // colors model outputs
-    repeated string color_averages = 11;
+    string color_averages = 11;
 
 }
 

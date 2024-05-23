@@ -19,6 +19,7 @@ from proto_models.information_superhighway_pb2_grpc import (
 from proto_models.analysis_layer_pb2 import (
     AiModelOutputRequest,
 )
+import json
 from ...libraries import kserve_request
 from ...libraries.grpc_server_factory import create_secure_server
 from ...libraries.grpc_analysis_layer_request import analysis_layer_request
@@ -207,11 +208,11 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 contents = []
                 for j in range(0, shape):
                     byte_string = colors_output.outputs[0].contents.bytes_contents[j]
-                    contents.extend([byte_string])
+                    contents.extend(byte_string)
 
                 analysis_layer_input = AiModelOutputRequest(
                     photo_id=request.photo_id,
-                    color_averages=contents
+                    color_averages=json.dumps(contents)
                 )
 
                 analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
