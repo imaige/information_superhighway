@@ -43,7 +43,7 @@ async def image_comparison_request(port, b64image: str, model_name: str, request
         root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
     )
 
-    client = InferenceServerClient(url=os.environ.get("INGRESS_PORT", port),
+    client = InferenceServerClient(url=port,
                                    ssl=True,
                                    # root_certificates=ca_cert,
                                    # private_key=client_key,
@@ -66,7 +66,7 @@ async def image_comparison_request(port, b64image: str, model_name: str, request
     t0 = time.time()
     for i in range(1):
         # make inference request via gRPC
-        logger.info(f"making infer_request request to port {port}")
+        logger.info(f"making infer_request request to image comparison model")
         res = client.infer(infer_request=request)
         '''
         response format:
@@ -85,6 +85,40 @@ async def image_comparison_request(port, b64image: str, model_name: str, request
             }
         }
         '''
-        logger.info(f"received response from kserve request: {res}")
+        logger.info(f"received response from kserve image compare request: {res}")
 
         return res
+
+
+async def colors_request(port, b64image: str, model_name: str, request_location: str = None):
+    # flow for request to server running on k8s
+    tls_certs = get_secret_data("default", "k8s-colors-model-tls-certs")
+    client_key = tls_certs.get("client-key")
+    client_cert = tls_certs.get("client-cert")
+    ca_cert = tls_certs.get("ca-cert")
+
+    creds = grpc.ssl_channel_credentials(
+        root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
+    )
+
+    client = InferenceServerClient(url=port,
+                                   ssl=True,
+                                   creds=creds,
+                                   channel_args=(
+                                       # grpc.ssl_target_name_override must be set to match CN used in cert gen
+                                       ('grpc.ssl_target_name_override',
+                                        'a953bbcdf877d4b71a9bef151c1deb96-1211783641.us-east-2.elb.amazonaws.com'),)
+                                   )
+    infer_input = InferInput(
+        name="input-0", shape=[1], datatype="BYTES", data=[base64.b64decode(b64image)]
+    )
+    request = InferRequest(infer_inputs=[infer_input], model_name=model_name)
+
+    t0 = time.time()
+    for i in range(1):
+        # make inference request via gRPC
+        logger.info("making infer request to colors model")
+        res = client.infer(infer_request=request)
+        logger.info(f"received response from kserve colors request: {res}")
+        return res
+

@@ -159,7 +159,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     # 'adea6b821626048b2a3c0032f0f71841-1183079.us-east-2.elb.amazonaws.com:80',
                     # '0.0.0.0:8081',
                     'ac5ba39f7cbdb40ffb2e8b2e1c9672cd-1882491926.us-east-2.elb.amazonaws.com:80',
-                    request.b64image, model, 'k8s_ai_service')
+                    request.b64image, model)
 
                 # TODO: turn output into valid protobuf object (incl. photo id) and send via gRPC to analysis layer
                 # TODO: do we need a loop here? there was one in the file that became kserve_request, but potentially can be nixed
@@ -199,7 +199,19 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
             elif model == "colors_basic_model":
                 # TODO: implement me, similar to above; do same for other AI models
                 logger.info(f"model is: {model}")
-                # logger.info(f"output is: ")
+                colors_output = await kserve_request.image_comparison_request(
+                    'a953bbcdf877d4b71a9bef151c1deb96-1211783641.us-east-2.elb.amazonaws.com:80',
+                    request.b64image, model)
+
+                for output in colors_output:
+                    shape = output.shape[0]
+                    contents = []
+                    for j in range(0, shape):
+                        byte_string = output.contents.bytes_contents[j]
+                        contents.extend([byte_string])
+
+                    logger.info(f"after parse, contents array from colors model is:")
+                    logger.info(f"{contents}")
 
             elif model == "image_classification_model":
                 logger.info(f"model is: {model}")

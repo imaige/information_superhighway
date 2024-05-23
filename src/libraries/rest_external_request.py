@@ -100,7 +100,8 @@ if __name__ == '__main__':
         "name": "test-recipe",
         "description": "describe me",
         "models": [
-            "image_comparison"
+            "image_comparison_hash_model",
+            "colors_basic_model"
         ]
     }
     token = getenv("K8S_EXTERNAL_API_BEARER_TOKEN")
