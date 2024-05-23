@@ -203,14 +203,17 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     'a953bbcdf877d4b71a9bef151c1deb96-1211783641.us-east-2.elb.amazonaws.com:80',
                     request.b64image, model)
 
-                shape = colors_output.outputs.shape[0]
+                logger.info(f"output is: {colors_output.outputs}")
+                shape = colors_output.outputs[0].shape[0]
                 contents = []
                 for j in range(0, shape):
-                    byte_string = colors_output.outputs.contents.bytes_contents[j]
+                    byte_string = colors_output.outputs[0].contents.bytes_contents[j]
                     contents.extend([byte_string])
 
-                logger.info(f"after parse, contents array from colors model is:")
-                logger.info(f"{contents}")
+                analysis_layer_input = AiModelOutputRequest(
+                    photo_id=request.photo_id,
+                    color_averages=contents
+                )
 
             elif model == "image_classification_model":
                 logger.info(f"model is: {model}")
