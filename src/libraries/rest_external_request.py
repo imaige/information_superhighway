@@ -101,7 +101,8 @@ if __name__ == '__main__':
         "description": "describe me",
         "models": [
             "image_comparison_hash_model",
-            "colors_basic_model"
+            "colors_basic_model",
+            "face_detect_model"
         ]
     }
     token = getenv("K8S_EXTERNAL_API_BEARER_TOKEN")

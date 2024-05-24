@@ -24,7 +24,7 @@ message AiModelOutputRequest {
     // colors model outputs
     string color_averages = 11;
     // face detection model outputs
-    string bounding_boxes_from_faces_model = 12;
+    int32 bounding_boxes_from_faces_model = 12;
 
 }
 
