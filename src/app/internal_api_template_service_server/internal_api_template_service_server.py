@@ -208,15 +208,14 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 contents = []
                 for j in range(0, shape):
                     byte_string = colors_output.outputs[0].contents.bytes_contents[j]
+                    logger.info(f"byte_string is {byte_string}")
                     contents.extend(byte_string)
 
                 logger.info(f"before send, contents is: {contents}")
-                dumped_contents =json.dumps(contents)
-                logger.info(f"before send but after dump, contents is: {dumped_contents}")
 
                 analysis_layer_input = AiModelOutputRequest(
                     photo_id=request.photo_id,
-                    color_averages=dumped_contents
+                    color_averages=json.dumps(contents)
                 )
 
                 analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
