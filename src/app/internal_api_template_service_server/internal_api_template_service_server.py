@@ -242,7 +242,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 analysis_layer_input = AiModelOutputRequest(
                     photo_id=request.photo_id,
                     # bounding_boxes_from_faces_model=json.dumps(contents)
-                    bounding_boxes_from_faces_model=shape
+                    bounding_boxes_from_faces_model=shape.to_bytes()
                 )
 
                 analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
