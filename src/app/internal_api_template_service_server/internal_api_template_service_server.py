@@ -231,6 +231,8 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     request.b64image, model
                 )
 
+                shape = face_detect_output.outputs[0].shape[0]
+
                 logger.info(f"output (excl. raw) is: {face_detect_output.outputs[0]}")
 
                 contents = []
@@ -239,7 +241,8 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 
                 analysis_layer_input = AiModelOutputRequest(
                     photo_id=request.photo_id,
-                    bounding_boxes_from_faces_model=json.dumps(contents)
+                    # bounding_boxes_from_faces_model=json.dumps(contents)
+                    bounding_boxes_from_faces_model=shape
                 )
 
                 analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
