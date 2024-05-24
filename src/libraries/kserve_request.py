@@ -125,7 +125,7 @@ async def colors_request(port, b64image: str, model_name: str, request_location:
 
 async def face_detect_request(port, b64image: str, model_name: str, request_location: str = None):
     # flow for request to server running on k8s
-    tls_certs = get_secret_data("default", "k8s-colors-model-tls-certs")
+    tls_certs = get_secret_data("default", "k8s-face-detection-model-tls-certs")
     client_key = tls_certs.get("client-key")
     client_cert = tls_certs.get("client-cert")
     ca_cert = tls_certs.get("ca-cert")
@@ -140,7 +140,7 @@ async def face_detect_request(port, b64image: str, model_name: str, request_loca
                                    channel_args=(
                                        # grpc.ssl_target_name_override must be set to match CN used in cert gen
                                        ('grpc.ssl_target_name_override',
-                                        'a953bbcdf877d4b71a9bef151c1deb96-1211783641.us-east-2.elb.amazonaws.com'),)
+                                        'a2fc2a960127c4ae39934fea4cd3d808-1294449898.us-east-2.elb.amazonaws.com'),)
                                    )
     infer_input = InferInput(
         name="input-0", shape=[1], datatype="BYTES", data=[base64.b64decode(b64image)]
@@ -150,7 +150,7 @@ async def face_detect_request(port, b64image: str, model_name: str, request_loca
     t0 = time.time()
     for i in range(1):
         # make inference request via gRPC
-        logger.info("making infer request to colors model")
+        logger.info("making infer request to face detection model")
         res = client.infer(infer_request=request)
-        logger.info(f"received response from kserve colors request: {res}")
+        logger.info(f"received response from kserve face detect request: {res}")
         return res
