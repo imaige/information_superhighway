@@ -209,7 +209,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 for j in range(0, shape):
                     byte_string = colors_output.outputs[0].contents.bytes_contents[j].decode('utf-8')
                     logger.info(f"byte_string is {byte_string}")
-                    contents.extend(byte_string)
+                    contents.append(byte_string)
 
                 logger.info(f"before send, contents is: {contents}")
 
