@@ -152,5 +152,5 @@ async def face_detect_request(port, b64image: str, model_name: str, request_loca
         # make inference request via gRPC
         logger.info("making infer request to face detection model")
         res = client.infer(infer_request=request)
-        logger.info(f"received response from kserve face detect request: {res}")
+        # logger.info(f"received response from kserve face detect request: {res}")   # commented this out because raw output was polluting logs
         return res
