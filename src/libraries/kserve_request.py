@@ -61,7 +61,7 @@ async def image_comparison_request(port, b64image: str, model_name: str, request
     infer_input = InferInput(
         name="input-0", shape=[1], datatype="BYTES", data=[base64.b64decode(b64image)]
     )
-    request = InferRequest(infer_inputs=[infer_input], model_name="custom-model")
+    request = InferRequest(infer_inputs=[infer_input], model_name="image-comparison-model")
 
     t0 = time.time()
     for i in range(1):
