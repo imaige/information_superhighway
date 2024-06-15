@@ -145,7 +145,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
     async def ImageAiAnalysisRequest(
         self, request: ImageAnalysisRequest, context: grpc.aio.ServicerContext
     ) -> Union[SuperhighwayStatusReply, status_pb2.Status]:
-        logger.info(f"Serving image comparison request with photo id: {request.photo_id}")
+        logger.info(f"Serving AI model request with photo id: {request.photo_id}")
         # logger.info(f"and image: {request.b64image}")
         request_image = request.b64image
         # convert image: decode to b64, convert to BytesIO, convert to Pillow image using open, optionally show
