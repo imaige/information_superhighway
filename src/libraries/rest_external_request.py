@@ -128,7 +128,7 @@ if __name__ == '__main__':
     # k8s vanilla photo create
     # url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/photos/"
     # k8s photo ai request
-    url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/photos/model_request"
+    url = "https://api.mediaviz.ai/api/v1/photos/model_request"
 
     # token
     # url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/token"

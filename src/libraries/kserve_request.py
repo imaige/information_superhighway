@@ -154,3 +154,36 @@ async def face_detect_request(port, b64image: str, model_name: str, request_loca
         res = client.infer(infer_request=request)
         # logger.info(f"received response from kserve face detect request: {res}")   # commented this out because raw output was polluting logs
         return res
+
+
+async def image_classification_request(port, b64image: str, model_name: str, request_location: str = None):
+    # flow for request to server running on k8s
+    tls_certs = get_secret_data("default", "k8s-image-classification-model-tls-certs")
+    client_key = tls_certs.get("client-key")
+    client_cert = tls_certs.get("client-cert")
+    ca_cert = tls_certs.get("ca-cert")
+
+    creds = grpc.ssl_channel_credentials(
+        root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
+    )
+
+    client = InferenceServerClient(url=port,
+                                   ssl=True,
+                                   creds=creds,
+                                   channel_args=(
+                                       # grpc.ssl_target_name_override must be set to match CN used in cert gen
+                                       ('grpc.ssl_target_name_override',
+                                        'a61fccbed8bdd4d95b9b23edb00e3417-701221482.us-east-2.elb.amazonaws.com'),)
+                                   )
+    infer_input = InferInput(
+        name="input-0", shape=[1], datatype="BYTES", data=[base64.b64decode(b64image)]
+    )
+    request = InferRequest(infer_inputs=[infer_input], model_name=model_name)
+
+    t0 = time.time()
+    for i in range(1):
+        # make inference request via gRPC
+        logger.info("making infer request to face detection model")
+        res = client.infer(infer_request=request)
+        # logger.info(f"received response from kserve face detect request: {res}")   # commented this out because raw output was polluting logs
+        return res
