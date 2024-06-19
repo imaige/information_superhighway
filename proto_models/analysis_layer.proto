@@ -5,7 +5,7 @@ package information_superhighway;
 // Service definition
 service AnalysisLayer {
     // AI output request
-    rpc AiModelOutputRequestHandler (AiModelOutputRequest) returns (StatusReply);
+    rpc AiModelOutputRequestHandler (AiModelOutputRequest) returns (stream StatusReply);
 }
 
 // AI analysis request message

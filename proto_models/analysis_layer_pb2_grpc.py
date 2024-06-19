@@ -15,7 +15,7 @@ class AnalysisLayerStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.AiModelOutputRequestHandler = channel.unary_unary(
+        self.AiModelOutputRequestHandler = channel.unary_stream(
                 '/information_superhighway.AnalysisLayer/AiModelOutputRequestHandler',
                 request_serializer=analysis__layer__pb2.AiModelOutputRequest.SerializeToString,
                 response_deserializer=analysis__layer__pb2.StatusReply.FromString,
@@ -36,7 +36,7 @@ class AnalysisLayerServicer(object):
 
 def add_AnalysisLayerServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'AiModelOutputRequestHandler': grpc.unary_unary_rpc_method_handler(
+            'AiModelOutputRequestHandler': grpc.unary_stream_rpc_method_handler(
                     servicer.AiModelOutputRequestHandler,
                     request_deserializer=analysis__layer__pb2.AiModelOutputRequest.FromString,
                     response_serializer=analysis__layer__pb2.StatusReply.SerializeToString,
@@ -63,7 +63,7 @@ class AnalysisLayer(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/information_superhighway.AnalysisLayer/AiModelOutputRequestHandler',
+        return grpc.experimental.unary_stream(request, target, '/information_superhighway.AnalysisLayer/AiModelOutputRequestHandler',
             analysis__layer__pb2.AiModelOutputRequest.SerializeToString,
             analysis__layer__pb2.StatusReply.FromString,
             options, channel_credentials,

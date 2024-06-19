@@ -43,12 +43,12 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
         stub = AnalysisLayerStub(channel)
 
         logger.info(f"Client making AiModelOutputRequest with data: {req}")
-        # async for response in stub.AiModelOutputRequestHandler(req):
-        #     # logger.info("Client received from async generator with detail: " + response.photo_id)
-        #     logger.info("Client received from async generator with detail: ")
-        #     logger.info(response)
+        async for response in stub.AiModelOutputRequestHandler(req):
+            # logger.info("Client received from async generator with detail: " + response.photo_id)
+            logger.info("Client received from async generator with detail: ")
+            logger.info(response)
 
-        response = stub.AiModelOutputRequestHandler(req)
-        # logger.info("Client received from async generator with detail: " + response.photo_id)
-        logger.info("Client received from async generator with detail: ")
-        logger.info(response)
+        # response = stub.AiModelOutputRequestHandler(req)
+        # # logger.info("Client received from async generator with detail: " + response.photo_id)
+        # logger.info("Client received from async generator with detail: ")
+        # logger.info(response)
