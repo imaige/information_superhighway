@@ -146,13 +146,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         self, request: ImageAnalysisRequest, context: grpc.aio.ServicerContext
     ) -> Union[SuperhighwayStatusReply, status_pb2.Status]:
         logger.info(f"Serving AI model request with photo id: {request.photo_id}")
-        # logger.info(f"and image: {request.b64image}")
         request_image = request.b64image
-        # convert image: decode to b64, convert to BytesIO, convert to Pillow image using open, optionally show
-        # decoded_image = base64.b64decode(request_image)
-        # bytes_image = BytesIO(decoded_image)
-        # final_image = Image.open(bytes_image)
-        # final_image.show()
         analysis_layer_port = "aef33e947022a4ba49b3544cdc0b629a-215644690.us-east-2.elb.amazonaws.com:80"
         for model in request.models:
             if model == "image_comparison_hash_model":
@@ -161,7 +155,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     # 'adea6b821626048b2a3c0032f0f71841-1183079.us-east-2.elb.amazonaws.com:80',
                     # '0.0.0.0:8081',
                     'ac5ba39f7cbdb40ffb2e8b2e1c9672cd-1882491926.us-east-2.elb.amazonaws.com:80',
-                    request.b64image, model)
+                    request_image, model)
 
                 # TODO: turn output into valid protobuf object (incl. photo id) and send via gRPC to analysis layer
                 # TODO: do we need a loop here? there was one in the file that became kserve_request, but potentially can be nixed
@@ -200,14 +194,12 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 logger.info(f"model is: {model}")
                 colors_output = await kserve_request.colors_request(
                     'a953bbcdf877d4b71a9bef151c1deb96-1211783641.us-east-2.elb.amazonaws.com:80',
-                    request.b64image, model)
+                    request_image, model)
 
-                logger.info(f"output is: {colors_output.outputs}")
                 shape = colors_output.outputs[0].shape[0]
                 contents = []
                 for j in range(0, shape):
                     byte_string = colors_output.outputs[0].contents.bytes_contents[j].decode('utf-8')
-                    logger.info(f"byte_string is {byte_string}")
                     contents.append(byte_string)
 
                 logger.info(f"before send, contents is: {contents}")
@@ -227,7 +219,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 logger.info(f"model is: {model}")
                 classification_output = await kserve_request.image_classification_request(
                     'a61fccbed8bdd4d95b9b23edb00e3417-701221482.us-east-2.elb.amazonaws.com:80',
-                    request.b64image, model)
+                    request_image, model)
 
                 logger.info(f"output is: {classification_output}")
                 # logger.info(f"output is: {classification_output.outputs}")
@@ -255,12 +247,10 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 logger.info(f"model is: {model}")
                 face_detect_output = await kserve_request.face_detect_request(
                     'a2fc2a960127c4ae39934fea4cd3d808-1294449898.us-east-2.elb.amazonaws.com:80',
-                    request.b64image, model
+                    request_image, model
                 )
 
                 shape = face_detect_output.outputs[0].shape[0]
-
-                logger.info(f"output (excl. raw) is: {face_detect_output.outputs[0]}")
 
                 contents = []
                 # TODO: once face model decoding is ready, split into the different faces
