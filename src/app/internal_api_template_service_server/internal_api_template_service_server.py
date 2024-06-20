@@ -188,7 +188,9 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     logger.info(f"response from analysis layer is: {analysis_layer_response}")
 
                     # TODO: there is an issue with this response - either send or receive is bugged
-                    yield SuperhighwayStatusReply(message="OK")
+                    response = SuperhighwayStatusReply(message="OK")
+                    logger.info(f"Server sending response: {response}")
+                    yield response
 
             elif model == "colors_basic_model":
                 logger.info(f"model is: {model}")
@@ -213,7 +215,9 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 logger.info(f"response from analysis layer is: {analysis_layer_response}")
 
                 # TODO: there is an issue with this response - either send or receive is bugged
-                yield SuperhighwayStatusReply(message="OK")
+                response = SuperhighwayStatusReply(message="OK")
+                logger.info(f"Server sending response: {response}")
+                yield response
 
             elif model == "image_classification_model":
                 logger.info(f"model is: {model}")
@@ -241,7 +245,9 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 # logger.info(f"response from analysis layer is: {analysis_layer_response}")
                 #
                 # # TODO: there is an issue with this response - either send or receive is bugged
-                # yield SuperhighwayStatusReply(message="OK")
+                # response = SuperhighwayStatusReply(message="OK")
+                # logger.info(f"Server sending response: {response}")
+                # yield response
 
             elif model == "face_detect_model":
                 logger.info(f"model is: {model}")
@@ -266,7 +272,9 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 logger.info(f"response from analysis layer is: {analysis_layer_response}")
 
                 # TODO: there is an issue with this response - either send or receive is bugged
-                yield SuperhighwayStatusReply(message="OK")
+                response = SuperhighwayStatusReply(message="OK")
+                logger.info(f"Server sending response: {response}")
+                yield response
 
             else:
                 logger.info(f"Provided model name of {model} is invalid.")
