@@ -189,7 +189,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 
                     # TODO: there is an issue with this response - either send or receive is bugged
                     response = SuperhighwayStatusReply(message="OK")
-                    logger.info(f"Server sending response: {response}")
+                    logger.info(f"Superhighway sending response: {response}")
                     yield response
 
             elif model == "colors_basic_model":
@@ -216,7 +216,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 
                 # TODO: there is an issue with this response - either send or receive is bugged
                 response = SuperhighwayStatusReply(message="OK")
-                logger.info(f"Server sending response: {response}")
+                logger.info(f"Superhighway sending response: {response}")
                 yield response
 
             elif model == "image_classification_model":
@@ -246,7 +246,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 #
                 # # TODO: there is an issue with this response - either send or receive is bugged
                 # response = SuperhighwayStatusReply(message="OK")
-                # logger.info(f"Server sending response: {response}")
+                # logger.info(f"Superhighway sending response: {response}")
                 # yield response
 
             elif model == "face_detect_model":
@@ -273,7 +273,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 
                 # TODO: there is an issue with this response - either send or receive is bugged
                 response = SuperhighwayStatusReply(message="OK")
-                logger.info(f"Server sending response: {response}")
+                logger.info(f"Superhighway sending response: {response}")
                 yield response
 
             else:

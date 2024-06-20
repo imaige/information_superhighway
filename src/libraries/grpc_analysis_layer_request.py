@@ -43,10 +43,13 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
         stub = AnalysisLayerStub(channel)
 
         logger.info(f"Client making AiModelOutputRequest with data: {req}")
-        async for response in stub.AiModelOutputRequestHandler(req):
-            # logger.info("Client received from async generator with detail: " + response.photo_id)
-            logger.info("Client received from async generator with detail: ")
-            logger.info(response)
+        try:
+            async for response in stub.AiModelOutputRequestHandler(
+                    req
+            ):
+                logger.info(f"Superhighway received Analysis Layer's StatusReply with detail: {response}")
+        except Exception as e:
+            logger.error(f"Error occurred in gRPC request: {e}")
 
         # response = stub.AiModelOutputRequestHandler(req)
         # # logger.info("Client received from async generator with detail: " + response.photo_id)
