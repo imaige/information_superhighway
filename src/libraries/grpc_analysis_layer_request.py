@@ -48,6 +48,7 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
                     req
             ):
                 logger.info(f"Superhighway received Analysis Layer's StatusReply with detail: {response}")
+                return response
         except Exception as e:
             logger.error(f"Error occurred in gRPC request: {e}")
 
