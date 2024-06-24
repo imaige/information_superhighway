@@ -27,7 +27,7 @@ configure_logger(logger, level=logging.INFO)
 # https://github.com/kserve/kserve/blob/99ac7b2050fafb14b7114b94ad6e3fd7ecfe3d15/python/kserve/kserve/protocol/grpc/server.py#L61
 # the server class we use - ModelServer - has this as a dependency on line 131 (as of 2/22/24):
 # https://github.com/kserve/kserve/blob/99ac7b2050fafb14b7114b94ad6e3fd7ecfe3d15/python/kserve/kserve/model_server.py#L86
-async def image_comparison_request(port, b64image: str, model_name: str, request_location: str = None):
+async def image_comparison_request(url: str, b64image: str, model_name: str, request_location: str = None):
     # flow for local request
     # client_key = f'./tls_certs/{request_location}/client-key.pem'
     # client_cert = f'./tls_certs/{request_location}/client-cert.pem'
@@ -43,7 +43,7 @@ async def image_comparison_request(port, b64image: str, model_name: str, request
         root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
     )
 
-    client = InferenceServerClient(url=port,
+    client = InferenceServerClient(url=url+':80',
                                    ssl=True,
                                    # root_certificates=ca_cert,
                                    # private_key=client_key,
@@ -51,7 +51,7 @@ async def image_comparison_request(port, b64image: str, model_name: str, request
                                    creds=creds,
                                    channel_args=(
                                    # grpc.ssl_target_name_override must be set to match CN used in cert gen
-                                   ('grpc.ssl_target_name_override', 'ac5ba39f7cbdb40ffb2e8b2e1c9672cd-1882491926.us-east-2.elb.amazonaws.com'),)
+                                   ('grpc.ssl_target_name_override', url),)
                                    )
     # json_file = open("./input.json") #Example image provided in kserving documentation
     # json_file = open("./input_9jpg.json") #Test image of dog, 9x8
@@ -90,7 +90,7 @@ async def image_comparison_request(port, b64image: str, model_name: str, request
         return res
 
 
-async def colors_request(port, b64image: str, model_name: str, request_location: str = None):
+async def colors_request(url: str, b64image: str, model_name: str, request_location: str = None):
     # flow for request to server running on k8s
     tls_certs = get_secret_data("default", "k8s-colors-model-tls-certs")
     client_key = tls_certs.get("client-key")
@@ -101,7 +101,7 @@ async def colors_request(port, b64image: str, model_name: str, request_location:
         root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
     )
 
-    client = InferenceServerClient(url=port,
+    client = InferenceServerClient(url=url+':80',
                                    ssl=True,
                                    creds=creds,
                                    channel_args=(
@@ -123,7 +123,7 @@ async def colors_request(port, b64image: str, model_name: str, request_location:
         return res
 
 
-async def face_detect_request(port, b64image: str, model_name: str, request_location: str = None):
+async def face_detect_request(url: str, b64image: str, model_name: str, request_location: str = None):
     # flow for request to server running on k8s
     tls_certs = get_secret_data("default", "k8s-face-detection-model-tls-certs")
     client_key = tls_certs.get("client-key")
@@ -134,7 +134,7 @@ async def face_detect_request(port, b64image: str, model_name: str, request_loca
         root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
     )
 
-    client = InferenceServerClient(url=port,
+    client = InferenceServerClient(url=url+':80',
                                    ssl=True,
                                    creds=creds,
                                    channel_args=(
@@ -156,7 +156,7 @@ async def face_detect_request(port, b64image: str, model_name: str, request_loca
         return res
 
 
-async def image_classification_request(port, b64image: str, model_name: str, request_location: str = None):
+async def image_classification_request(url: str, b64image: str, model_name: str, request_location: str = None):
     # flow for request to server running on k8s
     tls_certs = get_secret_data("default", "k8s-image-classification-model-tls-certs")
     client_key = tls_certs.get("client-key")
@@ -167,7 +167,7 @@ async def image_classification_request(port, b64image: str, model_name: str, req
         root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
     )
 
-    client = InferenceServerClient(url=port,
+    client = InferenceServerClient(url=url+':80',
                                    ssl=True,
                                    creds=creds,
                                    channel_args=(

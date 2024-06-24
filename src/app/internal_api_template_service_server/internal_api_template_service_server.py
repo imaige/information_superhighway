@@ -27,6 +27,7 @@ from ...libraries.enums import AiModel
 from ...libraries.logging_file_format import configure_logger
 import logging
 
+from os import getenv
 import grpc
 import asyncio
 from google.rpc import status_pb2, code_pb2, error_details_pb2
@@ -147,17 +148,16 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
     ) -> Union[SuperhighwayStatusReply, status_pb2.Status]:
         logger.info(f"Serving AI model request with photo id: {request.photo_id}")
         request_image = request.b64image
-        analysis_layer_port = "aef33e947022a4ba49b3544cdc0b629a-215644690.us-east-2.elb.amazonaws.com:80"
+        analysis_layer_port = f'{getenv("ANALYSIS_LAYER_URL")}:80'
         for model in request.models:
             if model == "image_comparison_hash_model":
-                # TODO: this needs better error handling
+                # TODO: this could use better error handling
                 image_comparison_output = await kserve_request.image_comparison_request(
                     # 'adea6b821626048b2a3c0032f0f71841-1183079.us-east-2.elb.amazonaws.com:80',
                     # '0.0.0.0:8081',
-                    'ac5ba39f7cbdb40ffb2e8b2e1c9672cd-1882491926.us-east-2.elb.amazonaws.com:80',
+                    getenv("IMAGE_COMPARISON_MODEL_URL"),
                     request_image, model)
 
-                # TODO: turn output into valid protobuf object (incl. photo id) and send via gRPC to analysis layer
                 # TODO: do we need a loop here? there was one in the file that became kserve_request, but potentially can be nixed
                 for output in image_comparison_output.outputs:
                     shape = output.shape[0]
@@ -187,7 +187,6 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
                     logger.info(f"response from analysis layer is: {analysis_layer_response}")
 
-                    # TODO: there is an issue with this response - either send or receive is bugged
                     response = SuperhighwayStatusReply(message="OK")
                     logger.info(f"Superhighway sending response: {response}")
                     yield response
@@ -204,8 +203,6 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     byte_string = colors_output.outputs[0].contents.bytes_contents[j].decode('utf-8')
                     contents.append(byte_string)
 
-                logger.info(f"before send, contents is: {contents}")
-
                 analysis_layer_input = AiModelOutputRequest(
                     photo_id=request.photo_id,
                     color_averages=json.dumps(contents)
@@ -214,7 +211,6 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
                 logger.info(f"response from analysis layer is: {analysis_layer_response}")
 
-                # TODO: there is an issue with this response - either send or receive is bugged
                 response = SuperhighwayStatusReply(message="OK")
                 logger.info(f"Superhighway sending response: {response}")
                 yield response
@@ -244,7 +240,6 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 # analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
                 # logger.info(f"response from analysis layer is: {analysis_layer_response}")
                 #
-                # # TODO: there is an issue with this response - either send or receive is bugged
                 # response = SuperhighwayStatusReply(message="OK")
                 # logger.info(f"Superhighway sending response: {response}")
                 # yield response
@@ -271,7 +266,6 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
                 logger.info(f"response from analysis layer is: {analysis_layer_response}")
 
-                # TODO: there is an issue with this response - either send or receive is bugged
                 response = SuperhighwayStatusReply(message="OK")
                 logger.info(f"Superhighway sending response: {response}")
                 yield response
