@@ -194,7 +194,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
             elif model == "colors_basic_model":
                 logger.info(f"model is: {model}")
                 colors_output = await kserve_request.colors_request(
-                    'a953bbcdf877d4b71a9bef151c1deb96-1211783641.us-east-2.elb.amazonaws.com:80',
+                    getenv("COLORS_MODEL_URL"),
                     request_image, model)
 
                 shape = colors_output.outputs[0].shape[0]
@@ -218,7 +218,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
             elif model == "image_classification_model":
                 logger.info(f"model is: {model}")
                 classification_output = await kserve_request.image_classification_request(
-                    'a61fccbed8bdd4d95b9b23edb00e3417-701221482.us-east-2.elb.amazonaws.com:80',
+                    getenv("IMAGE_CLASSIFICATION_MODEL_URL"),
                     request_image, model)
 
                 logger.info(f"output is: {classification_output}")
@@ -247,7 +247,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
             elif model == "face_detect_model":
                 logger.info(f"model is: {model}")
                 face_detect_output = await kserve_request.face_detect_request(
-                    'a2fc2a960127c4ae39934fea4cd3d808-1294449898.us-east-2.elb.amazonaws.com:80',
+                    getenv("FACE_DETECT_MODEL_URL"),
                     request_image, model
                 )
 
