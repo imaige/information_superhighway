@@ -31,8 +31,8 @@ class AiModelOutputRequest(_message.Message):
     color_hash: bytes
     color_averages: str
     bounding_boxes_from_faces_model: int
-    labels_from_classification_model: str
-    def __init__(self, photo_id: _Optional[int] = ..., image_comparison_run_id: _Optional[str] = ..., image_comparison_name: _Optional[str] = ..., image_comparison_datatype: _Optional[str] = ..., image_comparison_shape: _Optional[int] = ..., average_hash: _Optional[bytes] = ..., perceptual_hash: _Optional[bytes] = ..., difference_hash: _Optional[bytes] = ..., wavelet_hash_haar: _Optional[bytes] = ..., color_hash: _Optional[bytes] = ..., color_averages: _Optional[str] = ..., bounding_boxes_from_faces_model: _Optional[int] = ..., labels_from_classification_model: _Optional[str] = ...) -> None: ...
+    labels_from_classification_model: bytes
+    def __init__(self, photo_id: _Optional[int] = ..., image_comparison_run_id: _Optional[str] = ..., image_comparison_name: _Optional[str] = ..., image_comparison_datatype: _Optional[str] = ..., image_comparison_shape: _Optional[int] = ..., average_hash: _Optional[bytes] = ..., perceptual_hash: _Optional[bytes] = ..., difference_hash: _Optional[bytes] = ..., wavelet_hash_haar: _Optional[bytes] = ..., color_hash: _Optional[bytes] = ..., color_averages: _Optional[str] = ..., bounding_boxes_from_faces_model: _Optional[int] = ..., labels_from_classification_model: _Optional[bytes] = ...) -> None: ...
 
 class StatusReply(_message.Message):
     __slots__ = ("photo_id",)
