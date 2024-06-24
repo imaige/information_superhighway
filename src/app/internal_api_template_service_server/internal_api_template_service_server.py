@@ -222,27 +222,22 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     request_image, model)
 
                 logger.info(f"output is: {classification_output}")
-                # logger.info(f"output is: {classification_output.outputs}")
-                # shape = classification_output.outputs[0].shape[0]
                 # contents = []
-                # for j in range(0, shape):
-                #     byte_string = classification_output.outputs[0].contents.bytes_contents[j].decode('utf-8')
-                #     logger.info(f"byte_string is {byte_string}")
-                #     contents.append(byte_string)
-
-                # logger.info(f"before send, contents is: {contents}")
+                # contents.extend(classification_output.raw_output_contents)
                 #
-                # analysis_layer_input = AiModelOutputRequest(
-                #     photo_id=request.photo_id,
-                #     labels_from_classification_model=json.dumps(contents)
-                # )
+                logger.info(f"before send, contents is: {classification_output.raw_output_contents}")
 
-                # analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
-                # logger.info(f"response from analysis layer is: {analysis_layer_response}")
-                #
-                # response = SuperhighwayStatusReply(message="OK")
-                # logger.info(f"Superhighway sending response: {response}")
-                # yield response
+                analysis_layer_input = AiModelOutputRequest(
+                    photo_id=request.photo_id,
+                    labels_from_classification_model=classification_output.raw_output_contents
+                )
+
+                analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
+                logger.info(f"response from analysis layer is: {analysis_layer_response}")
+
+                response = SuperhighwayStatusReply(message="OK")
+                logger.info(f"Superhighway sending response: {response}")
+                yield response
 
             elif model == "face_detect_model":
                 logger.info(f"model is: {model}")
