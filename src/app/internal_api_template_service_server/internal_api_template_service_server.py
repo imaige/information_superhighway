@@ -146,12 +146,12 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
     async def ImageAiAnalysisRequest(
         self, request: ImageAnalysisRequest, context: grpc.aio.ServicerContext
     ) -> Union[SuperhighwayStatusReply, status_pb2.Status]:
-        logger.info(f"Serving AI model request with photo id: {request.photo_id}")
+        logger.info(f"Serving AI model request with photo id: {request.photo_id} and models: {request.models}")
         request_image = request.b64image
         analysis_layer_port = f'{getenv("ANALYSIS_LAYER_URL")}:80'
         for model in request.models:
+            logger.info(f"starting {model} flow for photo {request.photo_id}")
             if model == "image_comparison_hash_model":
-                logger.info(f"starting {model} flow for photo {request.photo_id}")
                 try:
                     # TODO: this could use better error handling
                     image_comparison_output = await kserve_request.image_comparison_request(
@@ -209,7 +209,6 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     ) 
 
             elif model == "colors_basic_model":
-                logger.info(f"starting {model} flow for photo {request.photo_id}")
                 try:
                     colors_output = await kserve_request.colors_request(
                         getenv("COLORS_MODEL_URL"),
@@ -249,7 +248,6 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     )
 
             elif model == "image_classification_model":
-                logger.info(f"starting {model} flow for photo {request.photo_id}")
                 try:
                     classification_output = await kserve_request.image_classification_request(
                         getenv("IMAGE_CLASSIFICATION_MODEL_URL"),
@@ -288,7 +286,6 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     ) 
 
             elif model == "face_detect_model":
-                logger.info(f"starting {model} flow for photo {request.photo_id}")
                 try:
                     face_detect_output = await kserve_request.face_detect_request(
                         getenv("FACE_DETECT_MODEL_URL"),
