@@ -228,7 +228,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 
                 analysis_layer_input = AiModelOutputRequest(
                     photo_id=request.photo_id,
-                    labels_from_classification_model=json.dumps(contents)
+                    labels_from_classification_model=classification_output.raw_output_contents
                 )
 
                 analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
