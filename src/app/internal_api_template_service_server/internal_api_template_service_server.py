@@ -224,7 +224,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 logger.info(f"output is: {classification_output}")
                 contents = []
                 contents.extend(classification_output.raw_output_contents)
-                logger.info(f"before send, contents is: {contents}")
+                logger.info(f"before send for photo {request.photo_id}, contents is: {contents}")
 
                 analysis_layer_input = AiModelOutputRequest(
                     photo_id=request.photo_id,
