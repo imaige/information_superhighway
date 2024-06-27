@@ -1,4 +1,8 @@
 import grpc
+from grpc_interceptor import ClientInterceptor, ClientCallDetails
+from typing import Callable, Any
+
+
 from proto_models.internal_api_template_service_pb2 import (
     TemplateRequest, TemplateReply
 )
@@ -22,6 +26,46 @@ logger = logging.getLogger(__name__)
 configure_logger(logger, level=logging.INFO)
 
 
+class LoggingClientInterceptor(grpc.aio.ClientInterceptor):
+    async def intercept_unary_unary(self, continuation, client_call_details, request):
+        self.log_request(client_call_details, request)
+        response = await continuation(client_call_details, request)
+        self.log_response(response)
+        return response
+
+    async def intercept_unary_stream(self, continuation, client_call_details, request):
+        self.log_request(client_call_details, request)
+        response = await continuation(client_call_details, request)
+        async for resp in response:
+            self.log_response(resp)
+        return response
+
+    async def intercept_stream_unary(self, continuation, client_call_details, request_iterator):
+        self.log_request(client_call_details, request_iterator)
+        response = await continuation(client_call_details, request_iterator)
+        self.log_response(response)
+        return response
+
+    async def intercept_stream_stream(self, continuation, client_call_details, request_iterator):
+        self.log_request(client_call_details, request_iterator)
+        response = await continuation(client_call_details, request_iterator)
+        async for resp in response:
+            self.log_response(resp)
+        return response
+
+    def log_request(self, client_call_details, request):
+        method = client_call_details.method
+        timeout = client_call_details.timeout
+        metadata = client_call_details.metadata
+        logger.info(f"Request Method: {method}")
+        logger.info(f"Request Timeout: {timeout}")
+        logger.info(f"Request Metadata: {metadata}")
+        logger.info(f"Request: {request}")
+
+    def log_response(self, response):
+        logger.info(f"Response: {response}")
+
+
 async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_location: str = None) -> None:
     # flow for running locally
     # client_key = open(f'./tls_certs/{request_location}/client-key.pem', 'rb').read()
@@ -40,6 +84,8 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
 
     async with grpc.aio.secure_channel(port, channel_credentials) as channel:
     # async with grpc.aio.insecure_channel(port) as channel:
+        interceptors = [LoggingClientInterceptor()]
+        channel = grpc.intercept_channel(channel, *interceptors)
         stub = AnalysisLayerStub(channel)
 
         logger.info(f"Client making AiModelOutputRequest with data: {req}")
