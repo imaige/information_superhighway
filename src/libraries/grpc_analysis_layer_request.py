@@ -88,10 +88,9 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
         root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
     )
 
-    async with grpc.aio.secure_channel(port, channel_credentials) as channel:
+    interceptors = [LoggingClientInterceptor()]
+    async with grpc.aio.secure_channel(port, channel_credentials, interceptors=interceptors) as channel:
     # async with grpc.aio.insecure_channel(port) as channel:
-        interceptors = [LoggingClientInterceptor()]
-        channel = grpc.aio.intercept_channel(channel, *interceptors)
         stub = AnalysisLayerStub(channel)
 
         logger.info(f"Client making AiModelOutputRequest with data: {req}")
