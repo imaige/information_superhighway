@@ -33,7 +33,7 @@ configure_logger(logger, level=logging.INFO)
 
 class LoggingClientInterceptor(UnaryStreamClientInterceptor):
     async def intercept_unary_stream(self, continuation, client_call_details, request):
-        logger.info("intercept_unary_stream called")
+        # logger.info("intercept_unary_stream called")
         # method = client_call_details.method
         # timeout = client_call_details.timeout
         # metadata = client_call_details.metadata
@@ -43,6 +43,7 @@ class LoggingClientInterceptor(UnaryStreamClientInterceptor):
         logger.info(f"Request: {request}")
 
         call = await continuation(client_call_details, request)
+        logger.info(f"Call: {call.__dict__}")
 
         logger.info("Response stream started")
         async for response in call:
