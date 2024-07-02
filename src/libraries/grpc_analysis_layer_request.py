@@ -34,12 +34,14 @@ configure_logger(logger, level=logging.INFO)
 class LoggingClientInterceptor(UnaryUnaryClientInterceptor, UnaryStreamClientInterceptor,
                                StreamUnaryClientInterceptor, StreamStreamClientInterceptor):
     async def intercept_unary_unary(self, continuation, client_call_details, request):
+        logger.info("interecept_unary_unary called")
         self.log_request(client_call_details, request)
         response = await continuation(client_call_details, request)
         self.log_response(response)
         return response
 
     async def intercept_unary_stream(self, continuation, client_call_details, request):
+        logger.info("interecept_unary_stream called")
         self.log_request(client_call_details, request)
         response = await continuation(client_call_details, request)
         async for resp in response:
@@ -47,12 +49,14 @@ class LoggingClientInterceptor(UnaryUnaryClientInterceptor, UnaryStreamClientInt
         return response
 
     async def intercept_stream_unary(self, continuation, client_call_details, request_iterator):
+        logger.info("interecept_stream_unary called")
         self.log_request(client_call_details, request_iterator)
         response = await continuation(client_call_details, request_iterator)
         self.log_response(response)
         return response
 
     async def intercept_stream_stream(self, continuation, client_call_details, request_iterator):
+        logger.info("interecept_stream_stream called")
         self.log_request(client_call_details, request_iterator)
         response = await continuation(client_call_details, request_iterator)
         async for resp in response:
@@ -60,6 +64,7 @@ class LoggingClientInterceptor(UnaryUnaryClientInterceptor, UnaryStreamClientInt
         return response
 
     def log_request(self, client_call_details, request):
+        logger.info("log_request called")
         method = client_call_details.method
         timeout = client_call_details.timeout
         metadata = client_call_details.metadata
@@ -69,6 +74,7 @@ class LoggingClientInterceptor(UnaryUnaryClientInterceptor, UnaryStreamClientInt
         logger.info(f"Request: {request}")
 
     def log_response(self, response):
+        logger.info("log_response called")
         logger.info(f"Response: {response}")
 
 
@@ -88,8 +94,9 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
         root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
     )
 
-    interceptors = [LoggingClientInterceptor()]
-    async with grpc.aio.secure_channel(port, channel_credentials, interceptors=interceptors) as channel:
+    # interceptors = [LoggingClientInterceptor()]
+    interceptor = LoggingClientInterceptor()
+    async with grpc.aio.secure_channel(port, channel_credentials, interceptors=[interceptor]) as channel:
     # async with grpc.aio.insecure_channel(port) as channel:
         stub = AnalysisLayerStub(channel)
 
@@ -102,6 +109,8 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
             logger.info(f"Initiating gRPC call for {req.photo_id}")
             logger.info(f"Channel state before initiating call: {channel.get_state()}")
             call = stub.AiModelOutputRequestHandler(req, timeout=30)
+            logger.info(f"gRPC method type: {stub.AiModelOutputRequestHandler.is_client_streaming}, {stub.AiModelOutputRequestHandler.is_server_streaming}")
+
             logger.info(f"gRPC call initiated for {req.photo_id}")
 
             async for response in call:
