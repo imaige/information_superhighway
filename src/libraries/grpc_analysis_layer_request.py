@@ -41,14 +41,15 @@ class LoggingClientInterceptor(UnaryStreamClientInterceptor):
         # logger.info(f"Request Timeout: {timeout}")
         # logger.info(f"Request Metadata: {metadata}")
         logger.info(f"Request: {request}")
+        logger.info(f"Details: {client_call_details}")
 
         call = await continuation(client_call_details, request)
         logger.info(f"Call: {call.__dict__}")
 
-        logger.info("Response stream started")
-        async for response in call:
-            logger.info(f"Response: {response}")
-        logger.info("Response stream ended")
+        # logger.info("Response stream started")
+        # async for response in call:
+        #     logger.info(f"Response: {response}")
+        # logger.info("Response stream ended")
 
         return call
 
