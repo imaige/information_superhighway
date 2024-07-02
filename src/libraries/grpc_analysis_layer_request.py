@@ -122,7 +122,6 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
             logger.info(f"Initiating gRPC call for {req.photo_id}")
             logger.info(f"Channel state before initiating call: {channel.get_state()}")
             call = stub.AiModelOutputRequestHandler(req, timeout=30)
-            logger.info(f"gRPC method type: {stub.AiModelOutputRequestHandler.is_client_streaming}, {stub.AiModelOutputRequestHandler.is_server_streaming}")
 
             logger.info(f"gRPC call initiated for {req.photo_id}")
 
