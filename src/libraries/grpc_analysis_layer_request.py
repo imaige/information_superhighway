@@ -33,19 +33,31 @@ configure_logger(logger, level=logging.INFO)
 
 class LoggingClientInterceptor(UnaryUnaryClientInterceptor, UnaryStreamClientInterceptor,
                                StreamUnaryClientInterceptor, StreamStreamClientInterceptor):
+    async def intercept_unary_stream(self, continuation, client_call_details, request):
+        logger.info("intercept_unary_stream called")
+        method = client_call_details.method
+        timeout = client_call_details.timeout
+        metadata = client_call_details.metadata
+        logger.info(f"Request Method: {method}")
+        logger.info(f"Request Timeout: {timeout}")
+        logger.info(f"Request Metadata: {metadata}")
+        logger.info(f"Request: {request}")
+
+        call = await continuation(client_call_details, request)
+
+        logger.info("Response stream started")
+        async for response in call:
+            logger.info(f"Response: {response}")
+        logger.info("Response stream ended")
+
+        return call
+
+    # The next 3 methods should not get used (as we are using a unary_stream channel)
     async def intercept_unary_unary(self, continuation, client_call_details, request):
         logger.info("interecept_unary_unary called")
         self.log_request(client_call_details, request)
         response = await continuation(client_call_details, request)
         self.log_response(response)
-        return response
-
-    async def intercept_unary_stream(self, continuation, client_call_details, request):
-        logger.info("interecept_unary_stream called")
-        self.log_request(client_call_details, request)
-        response = await continuation(client_call_details, request)
-        async for resp in response:
-            self.log_response(resp)
         return response
 
     async def intercept_stream_unary(self, continuation, client_call_details, request_iterator):
@@ -96,6 +108,7 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
 
     # interceptors = [LoggingClientInterceptor()]
     interceptor = LoggingClientInterceptor()
+    logger.info(f"Interceptor created: {interceptor}")
     async with grpc.aio.secure_channel(port, channel_credentials, interceptors=[interceptor]) as channel:
     # async with grpc.aio.insecure_channel(port) as channel:
         stub = AnalysisLayerStub(channel)
