@@ -1,12 +1,4 @@
 import grpc
-from grpc_interceptor import ClientInterceptor, ClientCallDetails
-from typing import Callable, Any
-from grpc.aio import (
-    UnaryUnaryClientInterceptor,
-    UnaryStreamClientInterceptor,
-    StreamUnaryClientInterceptor,
-    StreamStreamClientInterceptor
-)
 
 from proto_models.internal_api_template_service_pb2 import (
     TemplateRequest, TemplateReply
@@ -22,6 +14,7 @@ from proto_models.analysis_layer_pb2_grpc import (
 )
 from .logging_file_format import configure_logger
 from .get_tls_certs import get_secret_data
+from .grpc_client_request_interceptor import LoggingClientInterceptor
 
 import asyncio
 import logging
@@ -29,66 +22,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 configure_logger(logger, level=logging.INFO)
-
-
-class LoggingClientInterceptor(UnaryStreamClientInterceptor):
-    async def intercept_unary_stream(self, continuation, client_call_details, request):
-        # logger.info("intercept_unary_stream called")
-        # method = client_call_details.method
-        # timeout = client_call_details.timeout
-        # metadata = client_call_details.metadata
-        # logger.info(f"Request Method: {method}")
-        # logger.info(f"Request Timeout: {timeout}")
-        # logger.info(f"Request Metadata: {metadata}")
-        logger.info(f"Request: {request}")
-        logger.info(f"Details: {client_call_details}")
-
-        call = await continuation(client_call_details, request)
-        logger.info(f"Call: {call.__dict__}")
-
-        # logger.info("Response stream started")
-        # async for response in call:
-        #     logger.info(f"Response: {response}")
-        # logger.info("Response stream ended")
-
-        return call
-
-    # The next 3 methods should not get used (as we are using a unary_stream channel)
-    # async def intercept_unary_unary(self, continuation, client_call_details, request):
-    #     logger.info("interecept_unary_unary called")
-    #     self.log_request(client_call_details, request)
-    #     response = await continuation(client_call_details, request)
-    #     self.log_response(response)
-    #     return response
-    #
-    # async def intercept_stream_unary(self, continuation, client_call_details, request_iterator):
-    #     logger.info("interecept_stream_unary called")
-    #     self.log_request(client_call_details, request_iterator)
-    #     response = await continuation(client_call_details, request_iterator)
-    #     self.log_response(response)
-    #     return response
-    #
-    # async def intercept_stream_stream(self, continuation, client_call_details, request_iterator):
-    #     logger.info("interecept_stream_stream called")
-    #     self.log_request(client_call_details, request_iterator)
-    #     response = await continuation(client_call_details, request_iterator)
-    #     async for resp in response:
-    #         self.log_response(resp)
-    #     return response
-    #
-    # def log_request(self, client_call_details, request):
-    #     logger.info("log_request called")
-    #     method = client_call_details.method
-    #     timeout = client_call_details.timeout
-    #     metadata = client_call_details.metadata
-    #     logger.info(f"Request Method: {method}")
-    #     logger.info(f"Request Timeout: {timeout}")
-    #     logger.info(f"Request Metadata: {metadata}")
-    #     logger.info(f"Request: {request}")
-    #
-    # def log_response(self, response):
-    #     logger.info("log_response called")
-    #     logger.info(f"Response: {response}")
 
 
 async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_location: str = None) -> None:
@@ -121,7 +54,7 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
         #     ):
         #         logger.info(f"Superhighway received Analysis Layer's StatusReply with detail: {response}")
             logger.info(f"Initiating gRPC call for {req.photo_id}")
-            logger.info(f"Channel state before initiating call: {channel.get_state()}")
+            logger.info(f"Channel state before initiating call: {await channel.get_state()}")
             call = stub.AiModelOutputRequestHandler(req, timeout=30)
 
             logger.info(f"gRPC call initiated for {req.photo_id}")
