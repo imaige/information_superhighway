@@ -1,7 +1,12 @@
 import grpc
 from grpc_interceptor import ClientInterceptor, ClientCallDetails
 from typing import Callable, Any
-
+from grpc.aio import (
+    UnaryUnaryClientInterceptor,
+    UnaryStreamClientInterceptor,
+    StreamUnaryClientInterceptor,
+    StreamStreamClientInterceptor
+)
 
 from proto_models.internal_api_template_service_pb2 import (
     TemplateRequest, TemplateReply
@@ -26,7 +31,8 @@ logger = logging.getLogger(__name__)
 configure_logger(logger, level=logging.INFO)
 
 
-class LoggingClientInterceptor(grpc.aio.ClientInterceptor):
+class LoggingClientInterceptor(UnaryUnaryClientInterceptor, UnaryStreamClientInterceptor,
+                               StreamUnaryClientInterceptor, StreamStreamClientInterceptor):
     async def intercept_unary_unary(self, continuation, client_call_details, request):
         self.log_request(client_call_details, request)
         response = await continuation(client_call_details, request)
@@ -85,7 +91,7 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
     async with grpc.aio.secure_channel(port, channel_credentials) as channel:
     # async with grpc.aio.insecure_channel(port) as channel:
         interceptors = [LoggingClientInterceptor()]
-        channel = grpc.intercept_channel(channel, *interceptors)
+        channel = grpc.aio.intercept_channel(channel, *interceptors)
         stub = AnalysisLayerStub(channel)
 
         logger.info(f"Client making AiModelOutputRequest with data: {req}")
