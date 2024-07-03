@@ -54,7 +54,7 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
         #     ):
         #         logger.info(f"Superhighway received Analysis Layer's StatusReply with detail: {response}")
             logger.info(f"Initiating gRPC call for {req.photo_id}")
-            logger.info(f"Channel state before initiating call: {await channel.get_state()}")
+            logger.info(f"Channel state before initiating call: {channel.get_state()}")
             call = stub.AiModelOutputRequestHandler(req, timeout=30)
 
             logger.info(f"gRPC call initiated for {req.photo_id}")
