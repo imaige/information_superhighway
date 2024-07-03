@@ -11,26 +11,28 @@ service AnalysisLayer {
 // AI analysis request message
 message AiModelOutputRequest {
     int64 photo_id = 1;
+    string model_name = 2;
     // image comparison outputs
-    string image_comparison_run_id = 2;
-    string image_comparison_name = 3;
-    string image_comparison_datatype = 4;
-    int32 image_comparison_shape = 5;
-    bytes average_hash = 6;
-    bytes perceptual_hash = 7;
-    bytes difference_hash = 8;
-    bytes wavelet_hash_haar = 9;
-    bytes color_hash = 10;
+    string image_comparison_run_id = 3;
+    string image_comparison_name = 4;
+    string image_comparison_datatype = 5;
+    int32 image_comparison_shape = 6;
+    bytes average_hash = 7;
+    bytes perceptual_hash = 8;
+    bytes difference_hash = 9;
+    bytes wavelet_hash_haar = 10;
+    bytes color_hash = 11;
     // colors model outputs
-    string color_averages = 11;
+    string color_averages = 12;
     // face detection model outputs
-    int32 bounding_boxes_from_faces_model = 12;
+    int32 bounding_boxes_from_faces_model = 13;
     // image classification model outputs
-    repeated bytes labels_from_classifications_model = 13;
+    repeated bytes labels_from_classifications_model = 14;
 
 }
 
 // A basic status response message
 message StatusReply {
     int64 photo_id = 1;
+    string model_name = 2;
 }

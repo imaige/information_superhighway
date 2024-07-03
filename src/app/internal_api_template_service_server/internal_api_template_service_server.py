@@ -175,6 +175,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
     
                         analysis_layer_input = AiModelOutputRequest(
                             photo_id=request.photo_id,
+                            model_name=model,
                             image_comparison_run_id=image_comparison_output.id,
                             image_comparison_name=output.name,
                             image_comparison_datatype=output.datatype,
@@ -222,6 +223,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
     
                     analysis_layer_input = AiModelOutputRequest(
                         photo_id=request.photo_id,
+                        model_name=model,
                         color_averages=json.dumps(contents)
                     )
     
@@ -260,6 +262,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
     
                     analysis_layer_input = AiModelOutputRequest(
                         photo_id=request.photo_id,
+                        model_name=model,
                         labels_from_classifications_model=contents
                     )
     
@@ -300,6 +303,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 
                     analysis_layer_input = AiModelOutputRequest(
                         photo_id=request.photo_id,
+                        model_name=model,
                         # bounding_boxes_from_faces_model=json.dumps(contents)
                         bounding_boxes_from_faces_model=shape
                     )
