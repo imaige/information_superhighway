@@ -42,7 +42,6 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
 
     # interceptors = [LoggingClientInterceptor()]
     interceptor = LoggingClientInterceptor()
-    logger.info(f"Interceptor created: {interceptor}")
     async with grpc.aio.secure_channel(port, channel_credentials, interceptors=[interceptor]) as channel:
     # async with grpc.aio.insecure_channel(port) as channel:
         stub = AnalysisLayerStub(channel)
@@ -57,17 +56,17 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
             logger.info(f"Channel state before initiating call: {channel.get_state()}")
             call = stub.AiModelOutputRequestHandler(req, timeout=30)
 
-            logger.info(f"gRPC call initiated for {req.photo_id}")
+            logger.info(f"gRPC call initiated for {req.photo_id} and model {req.model_name}")
 
             async for response in call:
                 logger.info(f"Received response: {response}")
 
-                logger.info(f"gRPC call completed successfully for {req.photo_id}")
+                logger.info(f"gRPC call completed successfully for {req.photo_id} and model {req.model_name}")
                 return response
         except grpc.aio.AioRpcError as e:
-            logger.error(f"gRPC error: {e.code()}, {e.details()}")
+            logger.error(f"gRPC error for {req.photo_id} and model {req.model_name}: {e.code()}, {e.details()}")
         except Exception as e:
-            logger.error(f"Error occurred in gRPC request: {e}")
+            logger.error(f"Error occurred in gRPC request for {req.photo_id} and model {req.model_name}: {e}")
 
         # response = stub.AiModelOutputRequestHandler(req)
         # # logger.info("Client received from async generator with detail: " + response.photo_id)
