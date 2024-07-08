@@ -25,16 +25,21 @@ class LoggingClientInterceptor(UnaryStreamClientInterceptor):
 
         logger.info(f"Request: {request}")
         logger.info(f"Details: {client_call_details}")
+        metadata = {metadatum.key: metadatum.value for metadatum in client_call_details.metadata}
+        logger.info(f"Metadata: {metadata}")
 
-        call = await continuation(client_call_details, request)
-        logger.info(f"Call: {call.__dict__}")
+        try:
+            call = await continuation(client_call_details, request)
+            logger.info(f"Call: {call.__dict__}")
 
-        # logger.info("Response stream started")
-        # async for response in call:
-        #     logger.info(f"Response: {response}")
-        # logger.info("Response stream ended")
+            # logger.info("Response stream started")
+            # async for response in call:
+            #     logger.info(f"Response: {response}")
+            # logger.info("Response stream ended")
 
-        return call
+            return call
+        except Exception as e:
+            logger.error(f"Exception from gRPC client interceptor for request with id: {request.photo_id} and model_name: {request.model_name}: {e}")
 
     # The next 3 methods should not get used (as we are using a unary_stream channel)
     # async def intercept_unary_unary(self, continuation, client_call_details, request):
