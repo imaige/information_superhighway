@@ -141,6 +141,7 @@ configure_logger(logger, level=logging.INFO)
 
 async def process_image_comparison_model(model: str, request_image, photo_id: int, analysis_layer_port: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
+    results = []
     try:
         # TODO: this could use better error handling
         image_comparison_output = await kserve_request.image_comparison_request(
@@ -181,7 +182,8 @@ async def process_image_comparison_model(model: str, request_image, photo_id: in
 
             response = SuperhighwayStatusReply(message="OK")
             logger.info(f"Superhighway sending response: {response}")
-            yield response
+            # yield response
+            results.append(response)
     except Exception as e:
         logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
         code = code_pb2.INVALID_ARGUMENT
@@ -192,15 +194,22 @@ async def process_image_comparison_model(model: str, request_image, photo_id: in
             )
         )
         message = "Internal server error."
-        yield status_pb2.Status(
+        # yield status_pb2.Status(
+        #     code=code,
+        #     message=message,
+        #     details=[details]
+        # )
+        response = status_pb2.Status(
             code=code,
             message=message,
             details=[details]
         )
+        results.append(response)
 
 
 async def process_colors_model(model: str, request_image, photo_id: int, analysis_layer_port: str):        
     logger.info(f"starting {model} flow for photo {photo_id}")
+    results = []
     try:
         colors_output = await kserve_request.colors_request(
             getenv("COLORS_MODEL_URL"),
@@ -223,7 +232,8 @@ async def process_colors_model(model: str, request_image, photo_id: int, analysi
 
         response = SuperhighwayStatusReply(message="OK")
         logger.info(f"Superhighway sending response: {response}")
-        yield response
+        # yield response
+        results.append(response)
     except Exception as e:
         logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
         code = code_pb2.INVALID_ARGUMENT
@@ -234,15 +244,22 @@ async def process_colors_model(model: str, request_image, photo_id: int, analysi
             )
         )
         message = "Internal server error."
-        yield status_pb2.Status(
+        # yield status_pb2.Status(
+        #     code=code,
+        #     message=message,
+        #     details=[details]
+        # )
+        response = status_pb2.Status(
             code=code,
             message=message,
             details=[details]
         )
+        results.append(response)
         
     
 async def process_face_detect_model(model: str, request_image, photo_id: int, analysis_layer_port: str):        
     logger.info(f"starting {model} flow for photo {photo_id}")
+    results = []
     try:
         face_detect_output = await kserve_request.face_detect_request(
             getenv("FACE_DETECT_MODEL_URL"),
@@ -267,7 +284,8 @@ async def process_face_detect_model(model: str, request_image, photo_id: int, an
 
         response = SuperhighwayStatusReply(message="OK")
         logger.info(f"Superhighway sending response: {response}")
-        yield response
+        # yield response
+        results.append(response)
     except Exception as e:
         logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
         code = code_pb2.INVALID_ARGUMENT
@@ -278,15 +296,22 @@ async def process_face_detect_model(model: str, request_image, photo_id: int, an
             )
         )
         message = "Internal server error."
-        yield status_pb2.Status(
+        # yield status_pb2.Status(
+        #     code=code,
+        #     message=message,
+        #     details=[details]
+        # )
+        response = status_pb2.Status(
             code=code,
             message=message,
             details=[details]
         )
+        results.append(response)
 
 
 async def process_image_classification_model(model: str, request_image, photo_id: int, analysis_layer_port: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
+    results = []
     try:
         classification_output = await kserve_request.image_classification_request(
             getenv("IMAGE_CLASSIFICATION_MODEL_URL"),
@@ -306,7 +331,8 @@ async def process_image_classification_model(model: str, request_image, photo_id
 
         response = SuperhighwayStatusReply(message="OK")
         logger.info(f"Superhighway sending response: {response}")
-        yield response
+        # yield response
+        results.append(response)
     except Exception as e:
         logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
         code = code_pb2.INVALID_ARGUMENT
@@ -317,11 +343,17 @@ async def process_image_classification_model(model: str, request_image, photo_id
             )
         )
         message = "Internal server error."
-        yield status_pb2.Status(
+        # yield status_pb2.Status(
+        #     code=code,
+        #     message=message,
+        #     details=[details]
+        # )
+        response = status_pb2.Status(
             code=code,
             message=message,
             details=[details]
         )
+        results.append(response)
 
 
 class InformationSuperhighway(InformationSuperhighwayServiceServicer):
@@ -383,7 +415,9 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     details=[details]
                 )
             else:
-                yield result
+                # yield result
+                for item in result:
+                    yield item
         # for model in request.models:
         #     logger.info(f"starting {model} flow for photo {request.photo_id}")
         #     if model == "image_comparison_hash_model":
