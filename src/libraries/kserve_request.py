@@ -66,7 +66,7 @@ async def image_comparison_request(url: str, b64image: str, model_name: str, req
     t0 = time.time()
     for i in range(1):
         # make inference request via gRPC
-        logger.info(f"making infer_request request to image comparison model")
+        logger.info(f"making infer request request to image comparison model")
         res = client.infer(infer_request=request)
         '''
         response format:
@@ -183,7 +183,7 @@ async def image_classification_request(url: str, b64image: str, model_name: str,
     t0 = time.time()
     for i in range(1):
         # make inference request via gRPC
-        logger.info("making infer request to face detection model")
+        logger.info("making infer request to image classification model")
         res = client.infer(infer_request=request)
         # logger.info(f"received response from kserve face detect request: {res}")   # commented this out because raw output was polluting logs
         return res
