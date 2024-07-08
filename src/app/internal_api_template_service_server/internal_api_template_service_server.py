@@ -162,28 +162,37 @@ async def process_image_comparison_model(model: str, request_image, photo_id: in
             difference_hash = output.contents.bytes_contents[2]
             wavelet_hash_haar = output.contents.bytes_contents[3]
             color_hash = output.contents.bytes_contents[4]
+            result = ({
+                "average_hash": average_hash,
+                "perceptual_hash": perceptual_hash,
+                "difference_hash": difference_hash,
+                "wavelet_hash_haar": wavelet_hash_haar,
+                "color_hash": color_hash
+            })
 
-            analysis_layer_input = AiModelOutputRequest(
-                photo_id=photo_id,
-                model_name=model,
-                image_comparison_run_id=image_comparison_output.id,
-                image_comparison_name=output.name,
-                image_comparison_datatype=output.datatype,
-                image_comparison_shape=output.shape[0],
-                average_hash=average_hash,
-                perceptual_hash=perceptual_hash,
-                difference_hash=difference_hash,
-                wavelet_hash_haar=wavelet_hash_haar,
-                color_hash=color_hash
-            )
+            return result
 
-            analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
-            logger.info(f"response from analysis layer is: {analysis_layer_response}")
-
-            response = SuperhighwayStatusReply(message="OK")
-            logger.info(f"Superhighway sending response: {response}")
-            # yield response
-            results.append(response)
+            # analysis_layer_input = AiModelOutputRequest(
+            #     photo_id=photo_id,
+            #     model_name=model,
+            #     image_comparison_run_id=image_comparison_output.id,
+            #     image_comparison_name=output.name,
+            #     image_comparison_datatype=output.datatype,
+            #     image_comparison_shape=output.shape[0],
+            #     average_hash=average_hash,
+            #     perceptual_hash=perceptual_hash,
+            #     difference_hash=difference_hash,
+            #     wavelet_hash_haar=wavelet_hash_haar,
+            #     color_hash=color_hash
+            # )
+            #
+            # analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
+            # logger.info(f"response from analysis layer is: {analysis_layer_response}")
+            #
+            # response = SuperhighwayStatusReply(message="OK")
+            # logger.info(f"Superhighway sending response: {response}")
+            # # yield response
+            # results.append(response)
     except Exception as e:
         logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
         code = code_pb2.INVALID_ARGUMENT
@@ -221,19 +230,25 @@ async def process_colors_model(model: str, request_image, photo_id: int, analysi
             byte_string = colors_output.outputs[0].contents.bytes_contents[j].decode('utf-8')
             contents.append(byte_string)
 
-        analysis_layer_input = AiModelOutputRequest(
-            photo_id=photo_id,
-            model_name=model,
-            color_averages=json.dumps(contents)
-        )
+        result = {
+            "color_averages": json.dumps(contents)
+        }
 
-        analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
-        logger.info(f"response from analysis layer is: {analysis_layer_response}")
+        return result
 
-        response = SuperhighwayStatusReply(message="OK")
-        logger.info(f"Superhighway sending response: {response}")
-        # yield response
-        results.append(response)
+        # analysis_layer_input = AiModelOutputRequest(
+        #     photo_id=photo_id,
+        #     model_name=model,
+        #     color_averages=json.dumps(contents)
+        # )
+        #
+        # analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
+        # logger.info(f"response from analysis layer is: {analysis_layer_response}")
+        #
+        # response = SuperhighwayStatusReply(message="OK")
+        # logger.info(f"Superhighway sending response: {response}")
+        # # yield response
+        # results.append(response)
     except Exception as e:
         logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
         code = code_pb2.INVALID_ARGUMENT
@@ -272,20 +287,26 @@ async def process_face_detect_model(model: str, request_image, photo_id: int, an
         # TODO: once face model decoding is ready, split into the different faces
         contents.extend(face_detect_output.raw_output_contents)
 
-        analysis_layer_input = AiModelOutputRequest(
-            photo_id=photo_id,
-            model_name=model,
-            # bounding_boxes_from_faces_model=json.dumps(contents)
-            bounding_boxes_from_faces_model=shape
-        )
+        result = ({
+            "bounding_boxes_from_faces_model": shape
+        })
 
-        analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
-        logger.info(f"response from analysis layer is: {analysis_layer_response}")
+        return result
 
-        response = SuperhighwayStatusReply(message="OK")
-        logger.info(f"Superhighway sending response: {response}")
-        # yield response
-        results.append(response)
+        # analysis_layer_input = AiModelOutputRequest(
+        #     photo_id=photo_id,
+        #     model_name=model,
+        #     # bounding_boxes_from_faces_model=json.dumps(contents)
+        #     bounding_boxes_from_faces_model=shape
+        # )
+        #
+        # analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
+        # logger.info(f"response from analysis layer is: {analysis_layer_response}")
+        #
+        # response = SuperhighwayStatusReply(message="OK")
+        # logger.info(f"Superhighway sending response: {response}")
+        # # yield response
+        # results.append(response)
     except Exception as e:
         logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
         code = code_pb2.INVALID_ARGUMENT
@@ -320,19 +341,25 @@ async def process_image_classification_model(model: str, request_image, photo_id
         contents = []
         contents.extend(classification_output.raw_output_contents)
 
-        analysis_layer_input = AiModelOutputRequest(
-            photo_id=photo_id,
-            model_name=model,
-            labels_from_classifications_model=contents
-        )
+        result = ({
+            "labels_from_classifications_model": contents
+        })
 
-        analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
-        logger.info(f"response from analysis layer is: {analysis_layer_response}")
+        return result
 
-        response = SuperhighwayStatusReply(message="OK")
-        logger.info(f"Superhighway sending response: {response}")
-        # yield response
-        results.append(response)
+        # analysis_layer_input = AiModelOutputRequest(
+        #     photo_id=photo_id,
+        #     model_name=model,
+        #     labels_from_classifications_model=contents
+        # )
+        #
+        # analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
+        # logger.info(f"response from analysis layer is: {analysis_layer_response}")
+        #
+        # response = SuperhighwayStatusReply(message="OK")
+        # logger.info(f"Superhighway sending response: {response}")
+        # # yield response
+        # results.append(response)
     except Exception as e:
         logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
         code = code_pb2.INVALID_ARGUMENT
@@ -397,6 +424,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
+        combined_result = {}
         for result in results:
             if isinstance(result, Exception):
                 logger.error(f"Task resulted in an exception: {result}")
@@ -415,9 +443,30 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     details=[details]
                 )
             else:
-                # yield result
-                for item in result:
-                    yield item
+                combined_result.update(result)
+                # # yield result
+                # for item in result:
+                #     yield item
+
+            analysis_layer_input = AiModelOutputRequest(photo_id=request.photo_id, model_name="all", **combined_result)
+            try:
+                analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
+                logger.info(f"response from analysis layer is: {analysis_layer_response}")
+
+                response = SuperhighwayStatusReply(message="OK")
+                logger.info(f"Superhighway sending response: {response}")
+                yield response
+            except Exception as e:
+                logger.error(f"Error sending combined results to analysis layer: {e}")
+                yield status_pb2.Status(
+                    code=code_pb2.INTERNAL,
+                    message="Analysis layer request error.",
+                    details=[any_pb2.Any().Pack(
+                        error_details_pb2.DebugInfo(
+                            detail=f"Error sending results to analysis layer for photo {request.photo_id}: {str(e)}"
+                        )
+                    )]
+                )
         # for model in request.models:
         #     logger.info(f"starting {model} flow for photo {request.photo_id}")
         #     if model == "image_comparison_hash_model":
