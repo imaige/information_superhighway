@@ -42,15 +42,24 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
       
+    - name: Extract branch name
+      id: extract_branch
+      run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" | sed 's/\//-/g' >> $GITHUB_ENV
+
     - name: Build the Docker image & deploy to ECS
       id: build-and-deploy-image # may want to separate in future; however, GHA is occasionally finicky with sharing files across steps
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_PUSH_TAG: ${{ github.event.repository.name }} # the name of the github repo.  This does not include ':latest' (as is typical Docker container convention) because extra colons cause an error in the build/deploy process.
+        IMAGE_PUSH_TAG: ${{ github.event.repository.name }}-${{ env.BRANCH_NAME }} # Append the branch name to the image tag
       run: |
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
+        echo "image name is $ECR_REPOSITORY:$IMAGE_PUSH_TAG"
+        docker build -t $ECR_REPOSITORY:$IMAGE_PUSH_TAG .
+        docker push $ECR_REPOSITORY:$IMAGE_PUSH_TAG
+        
+        echo "image=$ECR_REPOSITORY:$IMAGE_PUSH_TAG:latest" >> $GITHUB_OUTPUT
         echo "image name is $ECR_REPOSITORY:$IMAGE_PUSH_TAG"
         docker build -t $ECR_REPOSITORY:$IMAGE_PUSH_TAG .
         docker push $ECR_REPOSITORY:$IMAGE_PUSH_TAG
