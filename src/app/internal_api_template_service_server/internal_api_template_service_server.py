@@ -404,8 +404,8 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
             request_id, request, future = self.request_queue.popleft()
             self.active_requests[request_id] = request
             try:
-                result = await self.process_request(request_id, request)
-                future.set_result(result)
+                results = await self.process_request(request_id, request)
+                future.set_result(results)
             except Exception as e:
                 logger.error(f"Error processing request {request_id}: {e}")
                 future.set_exception(e)
@@ -426,6 +426,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         }
 
         tasks = []
+        results = []
         for model in request.models:
             if model in model_functions:
                 task = asyncio.create_task(
@@ -433,59 +434,43 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 tasks.append(task)
             else:
                 logger.info(f"Provided model name of {model} is invalid.")
-                code = code_pb2.INVALID_ARGUMENT
-                details = any_pb2.Any()
-                # to access details for a particular error, use response[$index].details[0].value.decode('utf-8')
-                # as details is passed as a list and the value parameter is passed as a protobuf-serialized string
-                details.Pack(
-                    error_details_pb2.DebugInfo(
-                        detail=f"Invalid argument: model name of {model} is invalid."
-                    )
-                )
-                message = "Invalid argument error."
-                yield status_pb2.Status(
-                    code=code,
-                    message=message,
-                    details=[details]
-                )
+                results.append(status_pb2.Status(
+                    code=code_pb2.INVALID_ARGUMENT,
+                    message="Invalid argument error.",
+                    details=[any_pb2.Any().Pack(
+                        error_details_pb2.DebugInfo(
+                            detail=f"Invalid argument: model name of {model} is invalid."
+                        )
+                    )]
+                ))
 
-        results = await asyncio.gather(*tasks, return_exceptions=True)
+        task_results = await asyncio.gather(*tasks, return_exceptions=True)
 
         combined_result = {}
-        for result in results:
+        for result in task_results:
             if isinstance(result, Exception):
                 logger.error(f"Task resulted in an exception: {result}")
-                code = code_pb2.INVALID_ARGUMENT
-                details = any_pb2.Any()
-                details.Pack(
-                    error_details_pb2.DebugInfo(
-                        # TODO: eventually get the right model listed here
-                        detail=f"Error processing model for photo {request.photo_id}."
-                    )
-                )
-                message = "Internal server error."
-                yield status_pb2.Status(
-                    code=code,
-                    message=message,
-                    details=[details]
-                )
+                results.append(status_pb2.Status(
+                    code=code_pb2.INTERNAL,
+                    message="Internal server error.",
+                    details=[any_pb2.Any().Pack(
+                        error_details_pb2.DebugInfo(
+                            detail=f"Error processing model for photo {request.photo_id}."
+                        )
+                    )]
+                ))
             else:
                 combined_result.update(result)
-                # # yield result
-                # for item in result:
-                #     yield item
 
+        if combined_result:
             analysis_layer_input = AiModelOutputRequest(photo_id=request.photo_id, model_name="all", **combined_result)
             try:
                 analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
                 logger.info(f"response from analysis layer is: {analysis_layer_response}")
-
-                response = SuperhighwayStatusReply(message="OK")
-                logger.info(f"Superhighway sending response: {response}")
-                yield response
+                results.append(SuperhighwayStatusReply(message="OK"))
             except Exception as e:
                 logger.error(f"Error sending combined results to analysis layer: {e}")
-                yield status_pb2.Status(
+                results.append(status_pb2.Status(
                     code=code_pb2.INTERNAL,
                     message="Analysis layer request error.",
                     details=[any_pb2.Any().Pack(
@@ -493,7 +478,9 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                             detail=f"Error sending results to analysis layer for photo {request.photo_id}: {str(e)}"
                         )
                     )]
-                )
+                ))
+
+        return results
 
     # Endpoint definition #
     # Matches name in InformationSuperhighwayServiceServicer
@@ -513,8 +500,9 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         asyncio.create_task(self.process_queue())
 
         try:
-            result = await asyncio.wait_for(future, timeout=300)  # 5 minute timeout
-            yield result
+            results = await asyncio.wait_for(future, timeout=300)  # 5 minute timeout
+            for result in results:
+                yield result
         except asyncio.TimeoutError:
             logger.error(f"Request {request_id} timed out")
             yield status_pb2.Status(
