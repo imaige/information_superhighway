@@ -33,6 +33,9 @@ import asyncio
 from google.rpc import status_pb2, code_pb2, error_details_pb2
 from google.protobuf import any_pb2
 
+from collections import deque
+import uuid
+
 import base64
 from PIL import Image, ImageOps
 from io import BytesIO
@@ -388,12 +391,31 @@ async def process_image_classification_model(model: str, request_image, photo_id
 
 
 class InformationSuperhighway(InformationSuperhighwayServiceServicer):
-    # Endpoint definition #
-    # Matches name in InformationSuperhighwayServiceServicer
-    async def ImageAiAnalysisRequest(
-        self, request: ImageAnalysisRequest, context: grpc.aio.ServicerContext
-    ) -> Union[SuperhighwayStatusReply, status_pb2.Status]:
-        logger.info(f"Serving AI model request with photo id: {request.photo_id} and models: {request.models}")
+    def __init__(self):
+        self.semaphore = asyncio.Semaphore(5)
+        self.request_queue = deque()
+        self.active_requests = {}
+
+    async def process_queue(self):
+        if not self.request_queue:
+            return
+
+        async with self.semaphore:
+            request_id, request, future = self.request_queue.popleft()
+            self.active_requests[request_id] = request
+            try:
+                result = await self.process_request(request_id, request)
+                future.set_result(result)
+            except Exception as e:
+                logger.error(f"Error processing request {request_id}: {e}")
+                future.set_exception(e)
+            finally:
+                del self.active_requests[request_id]
+
+    async def process_request(self, request_id: str, request: ImageAnalysisRequest):
+        logger.info(
+            f"Processing request {request_id} for photo id: {request.photo_id} and models: {request.models}"
+        )
         request_image = request.b64image
         analysis_layer_port = f'{getenv("ANALYSIS_LAYER_URL")}:80'
         model_functions = {
@@ -406,7 +428,8 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         tasks = []
         for model in request.models:
             if model in model_functions:
-                task = asyncio.create_task(model_functions[model](model, request_image, request.photo_id, analysis_layer_port))
+                task = asyncio.create_task(
+                    model_functions[model](model, request_image, request.photo_id, analysis_layer_port))
                 tasks.append(task)
             else:
                 logger.info(f"Provided model name of {model} is invalid.")
@@ -471,6 +494,39 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                         )
                     )]
                 )
+
+    # Endpoint definition #
+    # Matches name in InformationSuperhighwayServiceServicer
+    async def ImageAiAnalysisRequest(
+        self, request: ImageAnalysisRequest, context: grpc.aio.ServicerContext
+    ) -> Union[SuperhighwayStatusReply, status_pb2.Status]:
+        request_id = str(uuid.uuid4())
+        logger.info(
+            f"Serving AI model request {request_id} for photo id: {request.photo_id} and models: {request.models}"
+        )
+
+        # Add request to queue
+        future = asyncio.get_running_loop().create_future()
+        self.request_queue.append((request_id, request, future))
+
+        # Start processing if semaphore is available
+        asyncio.create_task(self.process_queue())
+
+        try:
+            result = await asyncio.wait_for(future, timeout=300)  # 5 minute timeout
+            yield result
+        except asyncio.TimeoutError:
+            logger.error(f"Request {request_id} timed out")
+            yield status_pb2.Status(
+                code=code_pb2.DEADLINE_EXCEEDED,
+                message="Request processing timed out.",
+                details=[any_pb2.Any().Pack(
+                    error_details_pb2.DebugInfo(
+                        detail=f"Processing for photo {request.photo_id} exceeded time limit."
+                    )
+                )]
+            )
+
         # for model in request.models:
         #     logger.info(f"starting {model} flow for photo {request.photo_id}")
         #     if model == "image_comparison_hash_model":
