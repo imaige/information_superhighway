@@ -48,7 +48,6 @@ async def process_image_comparison_model(model: str, request_image, photo_id: in
             getenv("IMAGE_COMPARISON_MODEL_URL"),
             request_image, model)
 
-        # TODO: do we need a loop here? there was one in the file that became kserve_request, but potentially can be nixed
         output = image_comparison_output.outputs[0]
         shape = output.shape[0]
         contents = []
@@ -89,7 +88,7 @@ async def process_image_comparison_model(model: str, request_image, photo_id: in
         results.append(response)
 
 
-async def process_colors_model(model: str, request_image, photo_id: int, analysis_layer_port: str):        
+async def process_colors_model(model: str, request_image, photo_id: int, analysis_layer_port: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -126,9 +125,9 @@ async def process_colors_model(model: str, request_image, photo_id: int, analysi
             details=[details]
         )
         results.append(response)
-        
-    
-async def process_face_detect_model(model: str, request_image, photo_id: int, analysis_layer_port: str):        
+
+
+async def process_face_detect_model(model: str, request_image, photo_id: int, analysis_layer_port: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
