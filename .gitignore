@@ -13,3 +13,5 @@ test_images/
 # encryption/authentication
 tls_certs/*
 !tls_certs/.gitkeep
+
+**/__pycache__
