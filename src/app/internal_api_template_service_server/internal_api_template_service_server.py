@@ -247,7 +247,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     model_functions[model](model, request_image, request.photo_id, analysis_layer_port))
                 tasks.append(task)
             else:
-                logger.info(f"Provided model name of {model} is invalid.")
+                logger.info(f"Error - provided model name of {model} is invalid.")
                 results.append(status_pb2.Status(
                     code=code_pb2.INVALID_ARGUMENT,
                     message="Invalid argument error.",
