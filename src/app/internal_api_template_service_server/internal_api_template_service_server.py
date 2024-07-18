@@ -195,11 +195,6 @@ async def process_image_classification_model(model: str, request_image, photo_id
             )
         )
         message = "Internal server error."
-        # yield status_pb2.Status(
-        #     code=code,
-        #     message=message,
-        #     details=[details]
-        # )
         response = status_pb2.Status(
             code=code,
             message=message,
