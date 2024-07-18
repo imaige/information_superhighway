@@ -2,13 +2,18 @@ name: AWS ECR Push
 
 on:
   push:
-    branches: [ "main" ] # leaving this in for now.  for better CI/CD control, we should consider restricting pushes to main by requiring a PR?
+    branches: 
+      - "dev"
+      - "qa"
     paths:
       - '**/*'
       - '!.github/workflows/*'
       - '!README.md'
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - "dev"
+      - "qa"
+      - "main"
     paths:
       - '**/*'
       - '!.github/workflows/*'
