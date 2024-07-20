@@ -136,6 +136,8 @@ async def process_face_detect_model(model: str, request_image, photo_id: int, an
             request_image, model
         )
 
+        logger.info(f"output from faces model is: {face_detect_output}")
+
         shape = face_detect_output.outputs[0].shape[0]
 
         contents = []
@@ -195,11 +197,6 @@ async def process_image_classification_model(model: str, request_image, photo_id
             )
         )
         message = "Internal server error."
-        # yield status_pb2.Status(
-        #     code=code,
-        #     message=message,
-        #     details=[details]
-        # )
         response = status_pb2.Status(
             code=code,
             message=message,
@@ -252,7 +249,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     model_functions[model](model, request_image, request.photo_id, analysis_layer_port))
                 tasks.append(task)
             else:
-                logger.info(f"Provided model name of {model} is invalid.")
+                logger.info(f"Error - provided model name of {model} is invalid.")
                 results.append(status_pb2.Status(
                     code=code_pb2.INVALID_ARGUMENT,
                     message="Invalid argument error.",
