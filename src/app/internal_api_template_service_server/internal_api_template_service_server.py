@@ -136,6 +136,8 @@ async def process_face_detect_model(model: str, request_image, photo_id: int, an
             request_image, model
         )
 
+        logger.info(f"output from faces model is: {face_detect_output}")
+
         shape = face_detect_output.outputs[0].shape[0]
 
         contents = []
