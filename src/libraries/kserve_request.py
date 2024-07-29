@@ -106,8 +106,7 @@ async def colors_request(url: str, b64image: str, model_name: str, request_locat
                                    creds=creds,
                                    channel_args=(
                                        # grpc.ssl_target_name_override must be set to match CN used in cert gen
-                                       ('grpc.ssl_target_name_override',
-                                        'a953bbcdf877d4b71a9bef151c1deb96-1211783641.us-east-2.elb.amazonaws.com'),)
+                                       ('grpc.ssl_target_name_override', url),)
                                    )
     infer_input = InferInput(
         name="input-0", shape=[1], datatype="BYTES", data=[base64.b64decode(b64image)]
@@ -139,8 +138,7 @@ async def face_detect_request(url: str, b64image: str, model_name: str, request_
                                    creds=creds,
                                    channel_args=(
                                        # grpc.ssl_target_name_override must be set to match CN used in cert gen
-                                       ('grpc.ssl_target_name_override',
-                                        'a2fc2a960127c4ae39934fea4cd3d808-1294449898.us-east-2.elb.amazonaws.com'),)
+                                       ('grpc.ssl_target_name_override', url),)
                                    )
     infer_input = InferInput(
         name="input-0", shape=[1], datatype="BYTES", data=[base64.b64decode(b64image)]
@@ -172,8 +170,7 @@ async def image_classification_request(url: str, b64image: str, model_name: str,
                                    creds=creds,
                                    channel_args=(
                                        # grpc.ssl_target_name_override must be set to match CN used in cert gen
-                                       ('grpc.ssl_target_name_override',
-                                        'a61fccbed8bdd4d95b9b23edb00e3417-701221482.us-east-2.elb.amazonaws.com'),)
+                                       ('grpc.ssl_target_name_override', url),)
                                    )
     infer_input = InferInput(
         name="input-0", shape=[1], datatype="BYTES", data=[base64.b64decode(b64image)]
