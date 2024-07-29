@@ -10,3 +10,4 @@ pytest
 python-dotenv
 kubernetes
 numpy
+boto3==1.34.149

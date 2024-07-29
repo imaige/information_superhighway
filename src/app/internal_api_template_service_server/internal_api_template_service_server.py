@@ -9,6 +9,7 @@ from proto_models.analysis_layer_pb2 import (
 )
 import json
 from ...libraries import kserve_request
+from ...libraries import rekognition_face_id_request
 from ...libraries.grpc_server_factory import create_secure_server
 from ...libraries.grpc_analysis_layer_request import analysis_layer_request
 from ...libraries.enums import AiModel
@@ -131,25 +132,28 @@ async def process_face_detect_model(model: str, request_image, photo_id: int, an
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
-        face_detect_output = await kserve_request.face_detect_request(
-            getenv("FACE_DETECT_MODEL_URL"),
-            request_image, model
-        )
+        face_detect_output = rekognition_face_id_request.analyze_face(request_image)
+        print("face_detect_output is:")
+        print(face_detect_output)
+        # face_detect_output = await kserve_request.face_detect_request(
+        #     getenv("FACE_DETECT_MODEL_URL"),
+        #     request_image, model
+        # )
 
-        logger.info(f"output from faces model is: {face_detect_output}")
-
-        shape = face_detect_output.outputs[0].shape[0]
-
-        contents = []
-        # TODO: once face model decoding is ready, split into the different faces
-        contents.extend(face_detect_output.raw_output_contents)
-
-        result = ({
-            "bounding_boxes_from_faces_model": shape
-        })
-
-        logger.info(f"for id {photo_id}, returning output: {result}")
-        return result
+        # logger.info(f"output from faces model is: {face_detect_output}")
+        #
+        # shape = face_detect_output.outputs[0].shape[0]
+        #
+        # contents = []
+        # # TODO: once face model decoding is ready, split into the different faces
+        # contents.extend(face_detect_output.raw_output_contents)
+        #
+        # result = ({
+        #     "bounding_boxes_from_faces_model": shape
+        # })
+        #
+        # logger.info(f"for id {photo_id}, returning output: {result}")
+        # return result
 
     except Exception as e:
         logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
