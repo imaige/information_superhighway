@@ -42,4 +42,5 @@ def analyze_face(b64image: str):
         logger.info("Age Range:")
         logger.info(f"  Low: {faceDetail['AgeRange']['Low']}, High: {faceDetail['AgeRange']['High']}")
 
+    logger.info("returning response in analyze_face")
     return response

@@ -133,8 +133,8 @@ async def process_face_detect_model(model: str, request_image, photo_id: int, an
     results = []
     try:
         face_detect_output = rekognition_face_id_request.analyze_face(request_image)
-        print("face_detect_output is:")
-        print(face_detect_output)
+        logger.info("face_detect_output is:")
+        logger.info(face_detect_output)
         # face_detect_output = await kserve_request.face_detect_request(
         #     getenv("FACE_DETECT_MODEL_URL"),
         #     request_image, model
@@ -153,7 +153,8 @@ async def process_face_detect_model(model: str, request_image, photo_id: int, an
         # })
         #
         # logger.info(f"for id {photo_id}, returning output: {result}")
-        # return result
+        logger.info(f"for id {photo_id}, returning output: {face_detect_output}")
+        return face_detect_output
 
     except Exception as e:
         logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
