@@ -1,4 +1,4 @@
-from src.app.internal_api_template_service_server import internal_api_template_service_server
+from src.app.information_superhighway_service_server import information_superhighway_service_server
 import asyncio
 from src.libraries.logging_file_format import configure_logger
 import logging
