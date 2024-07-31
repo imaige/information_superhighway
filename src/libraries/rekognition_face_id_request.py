@@ -28,6 +28,7 @@ def analyze_face(b64image: str):
     if not response['FaceDetails']:
         return None
     else:
+        parsed_data_output = []
         for face_details in response['FaceDetails']:
             parsed_data = {
                 'bounding_box_width': face_details['BoundingBox']['Width'],
@@ -86,4 +87,5 @@ def analyze_face(b64image: str):
                 'eye_direction_pitch': face_details['EyeDirection']['Pitch'],
                 'eye_direction_confidence': face_details['EyeDirection']['Confidence']
             })
-        return response
+            parsed_data_output.append(parsed_data)
+        return parsed_data_output
