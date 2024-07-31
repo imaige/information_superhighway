@@ -1,5 +1,6 @@
 import boto3
 import base64
+import json
 
 from src.libraries.logging_file_format import configure_logger
 import logging
@@ -29,7 +30,18 @@ def analyze_face(b64image: str):
         return None
     else:
         parsed_data_output = []
+        bounding_boxes = []
+        number_of_faces = 0
         for face_details in response['FaceDetails']:
+            bounding_box = {
+                'bounding_box_width': face_details['BoundingBox']['Width'],
+                'bounding_box_height': face_details['BoundingBox']['Height'],
+                'bounding_box_left': face_details['BoundingBox']['Left'],
+                'bounding_box_top': face_details['BoundingBox']['Top'],
+            }
+            bounding_boxes.append(bounding_box)
+            number_of_faces += 1
+            '''
             parsed_data = {
                 'bounding_box_width': face_details['BoundingBox']['Width'],
                 'bounding_box_height': face_details['BoundingBox']['Height'],
@@ -71,8 +83,8 @@ def analyze_face(b64image: str):
             }
 
             for i, landmark in enumerate(face_details['Landmarks']):
-                parsed_data[f'landmark_{landmark}_x'] = landmark['X']
-                parsed_data[f'landmark_{landmark}_y'] = landmark['Y']
+                parsed_data[f'landmark_{landmark["Type"]}_x'] = landmark['X']
+                parsed_data[f'landmark_{landmark["Type"]}_y'] = landmark['Y']
 
             parsed_data.update({
                 'pose_roll': face_details['Pose']['Roll'],
@@ -88,4 +100,7 @@ def analyze_face(b64image: str):
                 'eye_direction_confidence': face_details['EyeDirection']['Confidence']
             })
             parsed_data_output.append(parsed_data)
+            '''
+        parsed_data_output.append({"number_of_faces": number_of_faces})
+        parsed_data_output.append({"bounding_boxes_from_faces_model": json.dumps(bounding_boxes)})
         return parsed_data_output

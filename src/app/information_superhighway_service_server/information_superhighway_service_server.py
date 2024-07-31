@@ -133,8 +133,6 @@ async def process_face_detect_model(model: str, request_image, photo_id: int, an
     results = []
     try:
         face_detect_output = rekognition_face_id_request.analyze_face(request_image)
-        logger.info("face_detect_output is:")
-        logger.info(face_detect_output)
         # face_detect_output = await kserve_request.face_detect_request(
         #     getenv("FACE_DETECT_MODEL_URL"),
         #     request_image, model
