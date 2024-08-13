@@ -29,7 +29,7 @@ def analyze_face(b64image: str):
     if not response['FaceDetails']:
         return None
     else:
-        parsed_data_output = []
+        # parsed_data_output = []
         bounding_boxes = []
         number_of_faces = 0
         for face_details in response['FaceDetails']:
@@ -101,8 +101,6 @@ def analyze_face(b64image: str):
             })
             parsed_data_output.append(parsed_data)
             '''
-        # parsed_data_output.append({"number_of_faces": number_of_faces})
-        # parsed_data_output.append({"bounding_boxes_from_faces_model": json.dumps(bounding_boxes)})
         output = {
             "number_of_faces": number_of_faces,
             "bounding_boxes_from_faces_model": json.dumps(bounding_boxes)

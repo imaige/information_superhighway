@@ -99,14 +99,16 @@ if __name__ == '__main__':
     recipe = {
         "name": "test-recipe",
         "description": "describe me",
+        "project_id": 1,
         "models": [
-            # "image_comparison_hash_model",
-            # "colors_basic_model",
+            "image_comparison_hash_model",
+            "colors_basic_model",
             # "image_classification_model",
-            "face_detect_model",
+            # "face_detect_model",
             # "image_classification_model"
         ]
     }
+
     token = ""
 
     token_body = {
@@ -144,17 +146,17 @@ if __name__ == '__main__':
         'Authorization': f'Bearer {token}',
     }
 
-    for i in range(0, 1):
-        request_with_body_and_photo(url, recipe, "post", heads, "test_images/small/test_image.jpg")
+    # for i in range(0, 1):
+    #     request_with_body_and_photo(url, recipe, "post", heads, "test_images/small/test_image.jpg")
 
-    # directory = 'test_images/small'
-    #
-    # for filename in listdir(directory):
-    #     ext = path.splitext(filename)[1]
-    #     if ext.lower() == '.jpg':
-    #         file_path = path.join(directory, filename)
-    #         logger.info(f"file path is: {file_path}")
-    #         request_with_body_and_photo(url, recipe, "post", heads, file_path)
+    directory = 'test_images/small_with_face'
+
+    for filename in listdir(directory):
+        ext = path.splitext(filename)[1]
+        if ext.lower() == '.jpg':
+            file_path = path.join(directory, filename)
+            logger.info(f"file path is: {file_path}")
+            request_with_body_and_photo(url, recipe, "post", heads, file_path)
 
     # get token
     # request_with_body(url, token_body, "post", heads)
