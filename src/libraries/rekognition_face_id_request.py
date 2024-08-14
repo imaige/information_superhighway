@@ -9,7 +9,7 @@ import logging
 logger = logging.getLogger(__name__)
 configure_logger(logger, level=logging.INFO)
 
-rekognition_client = boto3.client('rekognition')
+rekognition_client = boto3.client('rekognition', region_name="us-east-2")
 
 
 def analyze_face(b64image: str):
