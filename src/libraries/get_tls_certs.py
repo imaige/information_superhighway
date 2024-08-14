@@ -4,11 +4,12 @@ from kubernetes import client, config
 from typing import Dict, Optional
 import base64
 import logging
-from .logging_file_format import configure_logger
+from .logging_file_format import configure_logger, get_log_level
 
 
 logger = logging.getLogger(__name__)
-configure_logger(logger, level=logging.INFO)
+log_level = get_log_level()
+configure_logger(logger, level=log_level)
 
 
 def get_secret_data(namespace: str, secret_name: str) -> Dict[str, bytes]:

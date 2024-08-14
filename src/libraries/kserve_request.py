@@ -9,7 +9,7 @@ import grpc
 from proto_models.image_comparison_outputs_pb2 import ImageComparisonOutput, StatusResponse
 from proto_models.image_comparison_outputs_pb2_grpc import ImageComparisonOutputServiceStub
 from proto_models.analysis_layer_pb2 import AiModelOutputRequest
-from src.libraries.logging_file_format import configure_logger
+from src.libraries.logging_file_format import configure_logger, get_log_level
 from src.libraries.get_tls_certs import get_secret_data, get_secret_files
 
 import asyncio
@@ -17,7 +17,8 @@ import logging
 
 
 logger = logging.getLogger(__name__)
-configure_logger(logger, level=logging.INFO)
+log_level = get_log_level()
+configure_logger(logger, level=log_level)
 
 
 #TODO: add auth to gRPC server as well as to this below client

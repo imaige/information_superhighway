@@ -2,12 +2,13 @@ import grpc
 import asyncio
 from typing import List, Dict
 import logging
-from .logging_file_format import configure_logger
+from .logging_file_format import configure_logger, get_log_level
 from .get_tls_certs import get_secret_data
 # from .get_ssl_cert_details import get_san_from_cert, parse_certificate
 
 logger = logging.getLogger(__name__)
-configure_logger(logger, level=logging.INFO)
+log_level = get_log_level()
+configure_logger(logger, level=log_level)
 
 
 def create_secure_server(

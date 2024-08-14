@@ -8,10 +8,11 @@ from grpc.aio import (
 import asyncio
 import logging
 
-from .logging_file_format import configure_logger
+from .logging_file_format import configure_logger, get_log_level
 
 logger = logging.getLogger(__name__)
-configure_logger(logger, level=logging.INFO)
+log_level = get_log_level()
+configure_logger(logger, level=log_level)
 
 
 class LoggingClientInterceptor(UnaryStreamClientInterceptor):

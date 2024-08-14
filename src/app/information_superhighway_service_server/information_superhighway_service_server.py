@@ -13,7 +13,7 @@ from ...libraries import rekognition_face_id_request
 from ...libraries.grpc_server_factory import create_secure_server
 from ...libraries.grpc_analysis_layer_request import analysis_layer_request
 from ...libraries.enums import AiModel
-from ...libraries.logging_file_format import configure_logger
+from ...libraries.logging_file_format import configure_logger, get_log_level
 import logging
 
 import grpc
@@ -37,7 +37,8 @@ if APP_ENV == "LOCAL":
     load_dotenv(".env.local")
 
 logger = logging.getLogger(__name__)
-configure_logger(logger, level=logging.INFO)
+log_level = get_log_level()
+configure_logger(logger, level=log_level)
 
 
 async def process_image_comparison_model(model: str, request_image, photo_id: int, analysis_layer_port: str):
@@ -68,7 +69,7 @@ async def process_image_comparison_model(model: str, request_image, photo_id: in
             "color_hash": color_hash
         })
 
-        logger.info(f"for id {photo_id}, returning output: {result}")
+        logger.trace(f"for id {photo_id}, returning output: {result}")
         return result
 
     except Exception as e:
@@ -107,7 +108,7 @@ async def process_colors_model(model: str, request_image, photo_id: int, analysi
             "color_averages": json.dumps(contents)
         }
 
-        logger.info(f"for id {photo_id}, returning output: {result}")
+        logger.trace(f"for id {photo_id}, returning output: {result}")
         return result
 
     except Exception as e:
@@ -132,13 +133,13 @@ async def process_face_detect_model(model: str, request_image, photo_id: int, an
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
-        face_detect_output = rekognition_face_id_request.analyze_face(request_image)
+        output = rekognition_face_id_request.analyze_face(request_image)
         # face_detect_output = await kserve_request.face_detect_request(
         #     getenv("FACE_DETECT_MODEL_URL"),
         #     request_image, model
         # )
 
-        # logger.info(f"output from faces model is: {face_detect_output}")
+        # logger.trace(f"output from faces model is: {face_detect_output}")
         #
         # shape = face_detect_output.outputs[0].shape[0]
         #
@@ -150,9 +151,9 @@ async def process_face_detect_model(model: str, request_image, photo_id: int, an
         #     "bounding_boxes_from_faces_model": shape
         # })
         #
-        # logger.info(f"for id {photo_id}, returning output: {result}")
-        logger.info(f"for id {photo_id}, returning output: {face_detect_output}")
-        return face_detect_output
+        # logger.trace(f"for id {photo_id}, returning output: {result}")
+        logger.trace(f"for id {photo_id}, returning output: {output}")
+        return output
 
     except Exception as e:
         logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
@@ -187,7 +188,7 @@ async def process_image_classification_model(model: str, request_image, photo_id
             "labels_from_classifications_model": contents
         })
 
-        logger.info(f"for id {photo_id}, returning output: {result}")
+        logger.trace(f"for id {photo_id}, returning output: {result}")
         return result
 
     except Exception as e:
@@ -252,7 +253,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     model_functions[model](model, request_image, request.photo_id, analysis_layer_port))
                 tasks.append(task)
             else:
-                logger.info(f"Error - provided model name of {model} is invalid.")
+                logger.warning(f"Error - provided model name of {model} is invalid.")
                 results.append(status_pb2.Status(
                     code=code_pb2.INVALID_ARGUMENT,
                     message="Invalid argument error.",
@@ -354,9 +355,9 @@ async def serve() -> None:
     server = create_secure_server(port, service_classes, server_key, server_cert, ca_cert)
     # server = create_insecure_server(port, service_classes)
 
-    logger.info("Starting server on %s", port)
+    logger.notice("Starting server on %s", port)
     await server.start()
-    logger.info(f"Server started. Listening on port {port}...")
+    logger.notice(f"Server started. Listening on port {port}...")
     await server.wait_for_termination()
 
 
