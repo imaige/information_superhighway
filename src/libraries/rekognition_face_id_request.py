@@ -2,12 +2,13 @@ import boto3
 import base64
 import json
 
-from src.libraries.logging_file_format import configure_logger
+from src.libraries.logging_file_format import configure_logger, get_log_level
 import logging
 
 
 logger = logging.getLogger(__name__)
-configure_logger(logger, level=logging.INFO)
+log_level = get_log_level()
+configure_logger(logger, level=log_level)
 
 rekognition_client = boto3.client('rekognition', region_name="us-east-2")
 

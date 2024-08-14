@@ -12,7 +12,7 @@ from proto_models.analysis_layer_pb2 import (
 from proto_models.analysis_layer_pb2_grpc import (
     AnalysisLayerStub
 )
-from .logging_file_format import configure_logger
+from .logging_file_format import configure_logger, get_log_level
 from .get_tls_certs import get_secret_data
 from .grpc_client_request_interceptor import LoggingClientInterceptor
 
@@ -21,7 +21,8 @@ import logging
 
 
 logger = logging.getLogger(__name__)
-configure_logger(logger, level=logging.INFO)
+log_level = get_log_level()
+configure_logger(logger, level=log_level)
 
 
 async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_location: str = None) -> None:
