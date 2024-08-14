@@ -69,7 +69,7 @@ async def process_image_comparison_model(model: str, request_image, photo_id: in
             "color_hash": color_hash
         })
 
-        logger.trace(f"for id {photo_id}, returning output: {result}")
+        logger.debug(f"for id {photo_id}, returning output: {result}")
         return result
 
     except Exception as e:
@@ -108,7 +108,7 @@ async def process_colors_model(model: str, request_image, photo_id: int, analysi
             "color_averages": json.dumps(contents)
         }
 
-        logger.trace(f"for id {photo_id}, returning output: {result}")
+        logger.debug(f"for id {photo_id}, returning output: {result}")
         return result
 
     except Exception as e:
@@ -151,8 +151,8 @@ async def process_face_detect_model(model: str, request_image, photo_id: int, an
         #     "bounding_boxes_from_faces_model": shape
         # })
         #
-        # logger.trace(f"for id {photo_id}, returning output: {result}")
-        logger.trace(f"for id {photo_id}, returning output: {output}")
+        # logger.debug(f"for id {photo_id}, returning output: {result}")
+        logger.debug(f"for id {photo_id}, returning output: {output}")
         return output
 
     except Exception as e:
@@ -188,7 +188,7 @@ async def process_image_classification_model(model: str, request_image, photo_id
             "labels_from_classifications_model": contents
         })
 
-        logger.trace(f"for id {photo_id}, returning output: {result}")
+        logger.debug(f"for id {photo_id}, returning output: {result}")
         return result
 
     except Exception as e:
