@@ -4,7 +4,7 @@ import pytest
 
 from proto_models import internal_api_template_service_pb2
 from proto_models import internal_api_template_service_pb2_grpc
-from src.app.internal_api_template_service_server.internal_api_template_service_server import TemplateRequester
+from src.app.information_superhighway_service_server.information_superhighway_service_server import TemplateRequester
 from src.libraries.grpc_status_code_mapping import numeric_status_code_mapping
 
 

@@ -99,15 +99,17 @@ if __name__ == '__main__':
     recipe = {
         "name": "test-recipe",
         "description": "describe me",
+        "project_id": 1,
         "models": [
             "image_comparison_hash_model",
             "colors_basic_model",
-            "image_classification_model",
-            "face_detect_model",
+            # "image_classification_model",
+            # "face_detect_model",
             # "image_classification_model"
         ]
     }
-    token = getenv("K8S_EXTERNAL_API_BEARER_TOKEN")
+
+    token = ""
 
     token_body = {
         "name": "Test1 User1",
@@ -118,9 +120,7 @@ if __name__ == '__main__':
         "company_id": 1
     }
 
-    heads = {
-        'Authorization': f'Bearer {token}',
-    }
+
 
     # local photo ai request
     # url = "http://0.0.0.0:8000/api/v1/photos/model_request"
@@ -130,15 +130,26 @@ if __name__ == '__main__':
     # k8s vanilla photo create
     # url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/photos/"
     # k8s photo ai request
-    url = "https://api.mediaviz.ai/api/v1/photos/model_request"
+    # url = "https://api.mediaviz.ai/api/v1/photos/model_request"
+    url = "https://dev.api.mediaviz.ai/api/v1/photos/model_request"
+    # url = "http://a8816fac376904f7cb9c3700ffaab51f-1695309218.us-east-2.elb.amazonaws.com:80/api/v1/photos/model_request"
 
     # token
     # url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/token"
 
-    # for i in range(0, 2):
-    #     request_with_body_and_photo(url, recipe, "post", heads, "test_image.jpg")
+    if url[8:11] == "dev":
+        token = getenv("K8S_DEV_EXTERNAL_API_BEARER_TOKEN")
+    else:
+        token = getenv("K8S_QA_EXTERNAL_API_BEARER_TOKEN")
 
-    directory = 'test_images/small_selection'
+    heads = {
+        'Authorization': f'Bearer {token}',
+    }
+
+    # for i in range(0, 1):
+    #     request_with_body_and_photo(url, recipe, "post", heads, "test_images/small/test_image.jpg")
+
+    directory = 'test_images/small_with_face'
 
     for filename in listdir(directory):
         ext = path.splitext(filename)[1]
