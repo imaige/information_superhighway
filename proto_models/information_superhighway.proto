@@ -11,8 +11,9 @@ service InformationSuperhighwayService {
 // AI analysis request message
 message ImageAnalysisRequest {
     int64 photo_id = 1;
-    string b64image = 2;
-    repeated string models = 3;
+    string project_table_name = 2;
+    string b64image = 3;
+    repeated string models = 4;
 }
 
 // AI analysis response message

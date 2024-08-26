@@ -283,7 +283,11 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 combined_result.update(result)
 
         if combined_result:
-            analysis_layer_input = AiModelOutputRequest(photo_id=request.photo_id, model_name="all", **combined_result)
+            analysis_layer_input = AiModelOutputRequest(
+                photo_id=request.photo_id,
+                project_table_name=request.project_table_name,
+                **combined_result
+            )
             try:
                 analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
                 logger.info(f"response from analysis layer is: {analysis_layer_response}")
