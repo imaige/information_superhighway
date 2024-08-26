@@ -33,7 +33,7 @@ def analyze_face(b64image: str):
             logger.trace("No faces found.")
             output = {
                 "number_of_faces": 0,
-                "bounding_boxes_from_faces_model": []
+                "bounding_boxes_from_faces_model": {}
             }
         else:
             # parsed_data_output = []
