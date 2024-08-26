@@ -14,6 +14,7 @@ rekognition_client = boto3.client('rekognition', region_name="us-east-2")
 
 
 def analyze_face(b64image: str):
+    logger.trace("starting analyze_face")
     # logger.info("starting analyze_face")
     # decode the base64 string to bytes for rekognition
     image_bytes = base64.b64decode(b64image)

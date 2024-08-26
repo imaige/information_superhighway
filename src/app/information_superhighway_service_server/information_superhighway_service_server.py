@@ -133,6 +133,7 @@ async def process_face_detect_model(model: str, request_image, photo_id: int, an
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
+        logger.trace("in main service before calling rekognition_face_id_request.analyze_face")
         output = rekognition_face_id_request.analyze_face(request_image)
         # face_detect_output = await kserve_request.face_detect_request(
         #     getenv("FACE_DETECT_MODEL_URL"),
