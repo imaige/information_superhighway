@@ -100,11 +100,11 @@ if __name__ == '__main__':
     recipe = {
         "name": "test-recipe",
         "description": "describe me",
-        # "table_name": "5_5bb461c9-4f12-4fd9-81b3-0faf590c1da5_photos",
-        "project_id": 1,
+        "table_name": "5_5bb461c9-4f12-4fd9-81b3-0faf590c1da5_photos",
+        # "project_id": 1,
         "models": [
-            # "image_comparison_hash_model",
-            # "colors_basic_model",
+            "image_comparison_hash_model",
+            "colors_basic_model",
             # "image_classification_model",
             "face_detect_model",
             # "image_classification_model"
@@ -136,11 +136,11 @@ if __name__ == '__main__':
     # vanilla photo create
     # url = "https://dev.api.mediaviz.ai/api/v1/photos_new/"
     # photo + model
-    # url = "https://dev.api.mediaviz.ai/api/v1/photos/model_request"
+    url = "https://dev.api.mediaviz.ai/api/v1/photos/model_request"
 
     #  k8s QA
     # k8s photo ai request
-    url = "https://api.mediaviz.ai/api/v1/photos/model_request"
+    # url = "https://api.mediaviz.ai/api/v1/photos/model_request"
 
     # token
     # url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/token"
@@ -158,8 +158,8 @@ if __name__ == '__main__':
         # recipe = {
         #     "table_name": "5_5bb461c9-4f12-4fd9-81b3-0faf590c1da5_photos",
         # }
-        # request_with_body_and_photo(url, recipe, "post", heads, "test_images/small/test_image.jpg")
         request_with_body_and_photo(url, recipe, "post", heads, "test_images/small/test_image.jpg")
+        # request_with_body_and_photo(url, recipe, "post", heads, "test_images/small/test_image.jpg")
 
     directory = 'test_images/small_with_face'
 
