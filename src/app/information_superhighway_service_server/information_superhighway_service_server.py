@@ -281,6 +281,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     )]
                 ))
             else:
+                logger.trace(f"result: {result}")
                 combined_result.update(result)
 
         if combined_result:
