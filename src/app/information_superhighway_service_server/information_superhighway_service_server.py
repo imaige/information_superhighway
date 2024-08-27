@@ -286,6 +286,10 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 
         if combined_result:
             logger.trace(f"combined_result: {combined_result}")
+            if not isinstance(combined_result.get('number_of_faces'), int):
+                logger.error("number_of_faces is not an integer.")
+            else:
+                logger.trace(f"number_of_faces is an int, it is: {combined_result.get('number_of_faces')}")
             analysis_layer_input = AiModelOutputRequest(
                 photo_id=request.photo_id,
                 project_table_name=request.project_table_name,
