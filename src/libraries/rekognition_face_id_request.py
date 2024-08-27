@@ -29,16 +29,16 @@ def analyze_face(b64image: str):
         # logger.info(f"received response from rekognition face detect request: {response}")   # commented this out to avoid polluting logs
 
         #  handle case where response['FaceDetails'] details is empty (no faces)
+        number_of_faces = 0
         if not response['FaceDetails']:
             logger.trace("No faces found.")
             output = {
-                "number_of_faces": 0,
+                "number_of_faces": number_of_faces,
                 "bounding_boxes_from_faces_model": "[]"
             }
         else:
             # parsed_data_output = []
             bounding_boxes = []
-            number_of_faces = 0
             for face_details in response['FaceDetails']:
                 logger.trace("Processing a bounding box.")
                 bounding_box = {
@@ -114,6 +114,7 @@ def analyze_face(b64image: str):
                 "number_of_faces": number_of_faces,
                 "bounding_boxes_from_faces_model": json.dumps(bounding_boxes)
             }
+        logger.trace(f"output is: {output}")
         return output
     except Exception as e:
         logger.error(f"Caught error processing face recognition using AWS Rekognition: {e}")
