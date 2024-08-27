@@ -109,12 +109,11 @@ def analyze_face(b64image: str):
                 })
                 parsed_data_output.append(parsed_data)
                 '''
-            logger.trace(f"Total face count: {number_of_faces}")
             output = {
                 "number_of_faces": number_of_faces,
                 "bounding_boxes_from_faces_model": json.dumps(bounding_boxes)
             }
-        logger.trace(f"output is: {output}")
+        logger.debug(f"output is: {output}")
         return output
     except Exception as e:
         logger.error(f"Caught error processing face recognition using AWS Rekognition: {e}")

@@ -133,26 +133,7 @@ async def process_face_detect_model(model: str, request_image, photo_id: int, an
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
-        logger.trace("in main service before calling rekognition_face_id_request.analyze_face")
         output = rekognition_face_id_request.analyze_face(request_image)
-        # face_detect_output = await kserve_request.face_detect_request(
-        #     getenv("FACE_DETECT_MODEL_URL"),
-        #     request_image, model
-        # )
-
-        # logger.trace(f"output from faces model is: {face_detect_output}")
-        #
-        # shape = face_detect_output.outputs[0].shape[0]
-        #
-        # contents = []
-        # # TODO: once face model decoding is ready, split into the different faces
-        # contents.extend(face_detect_output.raw_output_contents)
-        #
-        # result = ({
-        #     "bounding_boxes_from_faces_model": shape
-        # })
-        #
-        # logger.debug(f"for id {photo_id}, returning output: {result}")
         logger.debug(f"for id {photo_id}, returning output: {output}")
         return output
 
@@ -281,15 +262,9 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     )]
                 ))
             else:
-                logger.trace(f"result: {result}")
                 combined_result.update(result)
 
         if combined_result:
-            logger.trace(f"combined_result: {combined_result}")
-            if not isinstance(combined_result.get('number_of_faces'), int):
-                logger.error("number_of_faces is not an integer.")
-            else:
-                logger.trace(f"number_of_faces is an int, it is: {combined_result.get('number_of_faces')}")
             analysis_layer_input = AiModelOutputRequest(
                 photo_id=request.photo_id,
                 project_table_name=request.project_table_name,
