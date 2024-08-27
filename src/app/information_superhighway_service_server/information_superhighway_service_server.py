@@ -285,6 +285,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 combined_result.update(result)
 
         if combined_result:
+            logger.trace(f"combined_result: {combined_result}")
             analysis_layer_input = AiModelOutputRequest(
                 photo_id=request.photo_id,
                 project_table_name=request.project_table_name,
