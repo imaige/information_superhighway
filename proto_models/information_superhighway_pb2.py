@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1einformation_superhighway.proto\x12\x18information_superhighway\"f\n\x14ImageAnalysisRequest\x12\x10\n\x08photo_id\x18\x01 \x01(\x03\x12\x1a\n\x12project_table_name\x18\x02 \x01(\t\x12\x10\n\x08\x62\x36\x34image\x18\x03 \x01(\t\x12\x0e\n\x06models\x18\x04 \x03(\t\"(\n\x15ImageAnalysisResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"*\n\x17SuperhighwayStatusReply\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x07\n\x05\x45mpty2\xa1\x01\n\x1eInformationSuperhighwayService\x12\x7f\n\x16ImageAiAnalysisRequest\x12..information_superhighway.ImageAnalysisRequest\x1a\x31.information_superhighway.SuperhighwayStatusReply\"\x00\x30\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1einformation_superhighway.proto\x12\x18information_superhighway\"f\n\x14ImageAnalysisRequest\x12\x10\n\x08photo_id\x18\x01 \x01(\t\x12\x1a\n\x12project_table_name\x18\x02 \x01(\t\x12\x10\n\x08\x62\x36\x34image\x18\x03 \x01(\t\x12\x0e\n\x06models\x18\x04 \x03(\t\"(\n\x15ImageAnalysisResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"*\n\x17SuperhighwayStatusReply\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x07\n\x05\x45mpty2\xa1\x01\n\x1eInformationSuperhighwayService\x12\x7f\n\x16ImageAiAnalysisRequest\x12..information_superhighway.ImageAnalysisRequest\x1a\x31.information_superhighway.SuperhighwayStatusReply\"\x00\x30\x01\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)

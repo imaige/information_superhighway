@@ -11,11 +11,11 @@ class ImageAnalysisRequest(_message.Message):
     PROJECT_TABLE_NAME_FIELD_NUMBER: _ClassVar[int]
     B64IMAGE_FIELD_NUMBER: _ClassVar[int]
     MODELS_FIELD_NUMBER: _ClassVar[int]
-    photo_id: int
+    photo_id: str
     project_table_name: str
     b64image: str
     models: _containers.RepeatedScalarFieldContainer[str]
-    def __init__(self, photo_id: _Optional[int] = ..., project_table_name: _Optional[str] = ..., b64image: _Optional[str] = ..., models: _Optional[_Iterable[str]] = ...) -> None: ...
+    def __init__(self, photo_id: _Optional[str] = ..., project_table_name: _Optional[str] = ..., b64image: _Optional[str] = ..., models: _Optional[_Iterable[str]] = ...) -> None: ...
 
 class ImageAnalysisResponse(_message.Message):
     __slots__ = ("message",)

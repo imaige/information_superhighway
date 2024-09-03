@@ -41,7 +41,7 @@ log_level = get_log_level()
 configure_logger(logger, level=log_level)
 
 
-async def process_image_comparison_model(model: str, request_image, photo_id: int, analysis_layer_port: str):
+async def process_image_comparison_model(model: str, request_image, photo_id: str, analysis_layer_port: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -90,7 +90,7 @@ async def process_image_comparison_model(model: str, request_image, photo_id: in
         results.append(response)
 
 
-async def process_colors_model(model: str, request_image, photo_id: int, analysis_layer_port: str):
+async def process_colors_model(model: str, request_image, photo_id: str, analysis_layer_port: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -129,7 +129,7 @@ async def process_colors_model(model: str, request_image, photo_id: int, analysi
         results.append(response)
 
 
-async def process_face_detect_model(model: str, request_image, photo_id: int, analysis_layer_port: str):
+async def process_face_detect_model(model: str, request_image, photo_id: str, analysis_layer_port: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -155,7 +155,7 @@ async def process_face_detect_model(model: str, request_image, photo_id: int, an
         results.append(response)
 
 
-async def process_image_classification_model(model: str, request_image, photo_id: int, analysis_layer_port: str):
+async def process_image_classification_model(model: str, request_image, photo_id: str, analysis_layer_port: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -216,7 +216,8 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 
     async def process_request(self, request_id: str, request: ImageAnalysisRequest):
         logger.info(
-            f"Processing request {request_id} for photo id: {request.photo_id} and models: {request.models}"
+            f"Processing request {request_id} for photo id: {request.photo_id} in table {request.project_table_name} "
+            f"and models: {request.models}"
         )
         request_image = request.b64image
         analysis_layer_port = f'{getenv("ANALYSIS_LAYER_URL")}:80'

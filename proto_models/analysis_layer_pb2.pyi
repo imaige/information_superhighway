@@ -22,7 +22,7 @@ class AiModelOutputRequest(_message.Message):
     BOUNDING_BOXES_FROM_FACES_MODEL_FIELD_NUMBER: _ClassVar[int]
     NUMBER_OF_FACES_FIELD_NUMBER: _ClassVar[int]
     LABELS_FROM_CLASSIFICATIONS_MODEL_FIELD_NUMBER: _ClassVar[int]
-    photo_id: int
+    photo_id: str
     project_table_name: str
     image_comparison_run_id: str
     image_comparison_name: str
@@ -37,7 +37,7 @@ class AiModelOutputRequest(_message.Message):
     bounding_boxes_from_faces_model: str
     number_of_faces: int
     labels_from_classifications_model: _containers.RepeatedScalarFieldContainer[bytes]
-    def __init__(self, photo_id: _Optional[int] = ..., project_table_name: _Optional[str] = ..., image_comparison_run_id: _Optional[str] = ..., image_comparison_name: _Optional[str] = ..., image_comparison_datatype: _Optional[str] = ..., image_comparison_shape: _Optional[int] = ..., average_hash: _Optional[bytes] = ..., perceptual_hash: _Optional[bytes] = ..., difference_hash: _Optional[bytes] = ..., wavelet_hash_haar: _Optional[bytes] = ..., color_hash: _Optional[bytes] = ..., color_averages: _Optional[str] = ..., bounding_boxes_from_faces_model: _Optional[str] = ..., number_of_faces: _Optional[int] = ..., labels_from_classifications_model: _Optional[_Iterable[bytes]] = ...) -> None: ...
+    def __init__(self, photo_id: _Optional[str] = ..., project_table_name: _Optional[str] = ..., image_comparison_run_id: _Optional[str] = ..., image_comparison_name: _Optional[str] = ..., image_comparison_datatype: _Optional[str] = ..., image_comparison_shape: _Optional[int] = ..., average_hash: _Optional[bytes] = ..., perceptual_hash: _Optional[bytes] = ..., difference_hash: _Optional[bytes] = ..., wavelet_hash_haar: _Optional[bytes] = ..., color_hash: _Optional[bytes] = ..., color_averages: _Optional[str] = ..., bounding_boxes_from_faces_model: _Optional[str] = ..., number_of_faces: _Optional[int] = ..., labels_from_classifications_model: _Optional[_Iterable[bytes]] = ...) -> None: ...
 
 class StatusReply(_message.Message):
     __slots__ = ("photo_id", "model_name")
