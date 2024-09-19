@@ -10,8 +10,8 @@ service AnalysisLayer {
 
 // AI analysis request message
 message AiModelOutputRequest {
-    int64 photo_id = 1;
-    string model_name = 2;
+    string photo_id = 1;
+    string project_table_name = 2;
     // image comparison outputs
     string image_comparison_run_id = 3;
     string image_comparison_name = 4;

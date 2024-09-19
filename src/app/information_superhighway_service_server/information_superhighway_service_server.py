@@ -41,7 +41,7 @@ log_level = get_log_level()
 configure_logger(logger, level=log_level)
 
 
-async def process_image_comparison_model(model: str, request_image, photo_id: int, analysis_layer_port: str):
+async def process_image_comparison_model(model: str, request_image, photo_id: str, analysis_layer_port: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -90,7 +90,7 @@ async def process_image_comparison_model(model: str, request_image, photo_id: in
         results.append(response)
 
 
-async def process_colors_model(model: str, request_image, photo_id: int, analysis_layer_port: str):
+async def process_colors_model(model: str, request_image, photo_id: str, analysis_layer_port: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -129,29 +129,11 @@ async def process_colors_model(model: str, request_image, photo_id: int, analysi
         results.append(response)
 
 
-async def process_face_detect_model(model: str, request_image, photo_id: int, analysis_layer_port: str):
+async def process_face_detect_model(model: str, request_image, photo_id: str, analysis_layer_port: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
         output = rekognition_face_id_request.analyze_face(request_image)
-        # face_detect_output = await kserve_request.face_detect_request(
-        #     getenv("FACE_DETECT_MODEL_URL"),
-        #     request_image, model
-        # )
-
-        # logger.trace(f"output from faces model is: {face_detect_output}")
-        #
-        # shape = face_detect_output.outputs[0].shape[0]
-        #
-        # contents = []
-        # # TODO: once face model decoding is ready, split into the different faces
-        # contents.extend(face_detect_output.raw_output_contents)
-        #
-        # result = ({
-        #     "bounding_boxes_from_faces_model": shape
-        # })
-        #
-        # logger.debug(f"for id {photo_id}, returning output: {result}")
         logger.debug(f"for id {photo_id}, returning output: {output}")
         return output
 
@@ -173,7 +155,7 @@ async def process_face_detect_model(model: str, request_image, photo_id: int, an
         results.append(response)
 
 
-async def process_image_classification_model(model: str, request_image, photo_id: int, analysis_layer_port: str):
+async def process_image_classification_model(model: str, request_image, photo_id: str, analysis_layer_port: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -234,7 +216,8 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 
     async def process_request(self, request_id: str, request: ImageAnalysisRequest):
         logger.info(
-            f"Processing request {request_id} for photo id: {request.photo_id} and models: {request.models}"
+            f"Processing request {request_id} for photo id: {request.photo_id} in table {request.project_table_name} "
+            f"and models: {request.models}"
         )
         request_image = request.b64image
         analysis_layer_port = f'{getenv("ANALYSIS_LAYER_URL")}:80'
@@ -283,7 +266,11 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 combined_result.update(result)
 
         if combined_result:
-            analysis_layer_input = AiModelOutputRequest(photo_id=request.photo_id, model_name="all", **combined_result)
+            analysis_layer_input = AiModelOutputRequest(
+                photo_id=request.photo_id,
+                project_table_name=request.project_table_name,
+                **combined_result
+            )
             try:
                 analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
                 logger.info(f"response from analysis layer is: {analysis_layer_response}")

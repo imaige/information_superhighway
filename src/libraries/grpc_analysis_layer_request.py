@@ -53,21 +53,21 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
         #             req
         #     ):
         #         logger.info(f"Superhighway received Analysis Layer's StatusReply with detail: {response}")
-            logger.info(f"Initiating gRPC call for {req.photo_id}")
-            logger.info(f"Channel state before initiating call: {channel.get_state()}")
+            logger.info(f"Initiating gRPC analysis layer call for {req.photo_id} in table {req.project_table_name}")
+            logger.trace(f"Channel state before initiating call: {channel.get_state()}")
             call = stub.AiModelOutputRequestHandler(req, timeout=30)
 
-            logger.info(f"gRPC call initiated for {req.photo_id} and model {req.model_name}")
+            logger.trace(f"gRPC call initiated for {req.photo_id} in table {req.project_table_name}")
 
             async for response in call:
                 logger.info(f"Received response: {response}")
 
-                logger.info(f"gRPC call completed successfully for {req.photo_id} and model {req.model_name}")
+                logger.trace(f"gRPC call completed successfully for {req.photo_id}")
                 return response
         except grpc.aio.AioRpcError as e:
-            logger.error(f"gRPC error for {req.photo_id} and model {req.model_name}: {e.code()}, {e.details()}")
+            logger.error(f"gRPC error for {req.photo_id}: {e.code()}, {e.details()}")
         except Exception as e:
-            logger.error(f"Error occurred in gRPC request for {req.photo_id} and model {req.model_name}: {e}")
+            logger.error(f"Error occurred in gRPC request for {req.photo_id}: {e}")
 
         # response = stub.AiModelOutputRequestHandler(req)
         # # logger.info("Client received from async generator with detail: " + response.photo_id)

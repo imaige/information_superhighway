@@ -100,7 +100,8 @@ if __name__ == '__main__':
     recipe = {
         "name": "test-recipe",
         "description": "describe me",
-        "project_id": 1,
+        "table_name": "5_5bb461c9-4f12-4fd9-81b3-0faf590c1da5_photos",
+        # "project_id": 1,
         "models": [
             "image_comparison_hash_model",
             "colors_basic_model",
@@ -130,10 +131,16 @@ if __name__ == '__main__':
 
     # k8s vanilla photo create
     # url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/photos/"
+
+    # k8s dev
+    # vanilla photo create
+    # url = "https://dev.api.mediaviz.ai/api/v1/photos_new/"
+    # photo + model
+    url = "https://dev.api.mediaviz.ai/api/v1/photos/model_request"
+
+    #  k8s QA
     # k8s photo ai request
     # url = "https://api.mediaviz.ai/api/v1/photos/model_request"
-    url = "https://dev.api.mediaviz.ai/api/v1/photos/model_request"
-    # url = "http://a8816fac376904f7cb9c3700ffaab51f-1695309218.us-east-2.elb.amazonaws.com:80/api/v1/photos/model_request"
 
     # token
     # url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/token"
@@ -147,17 +154,21 @@ if __name__ == '__main__':
         'Authorization': f'Bearer {token}',
     }
 
-    # for i in range(0, 1):
-    #     request_with_body_and_photo(url, recipe, "post", heads, "test_images/small/test_image.jpg")
+    for i in range(0, 1):
+        # recipe = {
+        #     "table_name": "5_5bb461c9-4f12-4fd9-81b3-0faf590c1da5_photos",
+        # }
+        request_with_body_and_photo(url, recipe, "post", heads, "test_images/small/test_image.jpg")
+        # request_with_body_and_photo(url, recipe, "post", heads, "test_images/small/test_image.jpg")
 
     directory = 'test_images/small_with_face'
 
-    for filename in listdir(directory):
-        ext = path.splitext(filename)[1]
-        if ext.lower() == '.jpg':
-            file_path = path.join(directory, filename)
-            logger.info(f"file path is: {file_path}")
-            request_with_body_and_photo(url, recipe, "post", heads, file_path)
+    # for filename in listdir(directory):
+    #     ext = path.splitext(filename)[1]
+    #     if ext.lower() == '.jpg':
+    #         file_path = path.join(directory, filename)
+    #         logger.info(f"file path is: {file_path}")
+    #         request_with_body_and_photo(url, recipe, "post", heads, file_path)
 
     # get token
     # request_with_body(url, token_body, "post", heads)
