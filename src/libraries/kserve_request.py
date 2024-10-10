@@ -45,7 +45,7 @@ async def image_comparison_request(url: str, b64image: str, model_name: str, req
     )
 
     client = InferenceServerClient(#url=url+':80',
-                                   url=url+':80',
+                                   url=url+':50051',
                                    ssl=False
                                    # ssl=True,
                                    # root_certificates=ca_cert,
@@ -70,7 +70,7 @@ async def image_comparison_request(url: str, b64image: str, model_name: str, req
     for i in range(1):
         # make inference request via gRPC
         logger.debug(f"making infer request request to image comparison model")
-        logger.trace(f"image comparison infer request port: {url}:80")
+        logger.trace(f"image comparison infer request port: {url}:50051")
         res = client.infer(infer_request=request)
         '''
         response format:
