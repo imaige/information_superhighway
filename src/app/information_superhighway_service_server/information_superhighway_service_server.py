@@ -233,7 +233,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         for model in request.models:
             if model in model_functions:
                 task = asyncio.create_task(
-                    model_functions[model](model, request_image, request.photo_id, analysis_layer_port))
+                    model_functions[model](model, request_image, request.photo_id))
                 tasks.append(task)
             else:
                 logger.warning(f"Error - provided model name of {model} is invalid.")
