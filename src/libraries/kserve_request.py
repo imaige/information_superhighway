@@ -46,14 +46,15 @@ async def image_comparison_request(url: str, b64image: str, model_name: str, req
 
     client = InferenceServerClient(#url=url+':80',
                                    url=url+':8081',
-                                   ssl=True,
+                                   ssl=False
+                                   # ssl=True,
                                    # root_certificates=ca_cert,
                                    # private_key=client_key,
                                    # certificate_chain=client_cert,
-                                   creds=creds,
-                                   channel_args=(
+                                   # creds=creds,
+                                   # channel_args=(
                                    # grpc.ssl_target_name_override must be set to match CN used in cert gen
-                                   ('grpc.ssl_target_name_override', url),)
+                                   # ('grpc.ssl_target_name_override', url),)
                                    )
     # json_file = open("./input.json") #Example image provided in kserving documentation
     # json_file = open("./input_9jpg.json") #Test image of dog, 9x8
@@ -105,11 +106,12 @@ async def colors_request(url: str, b64image: str, model_name: str, request_locat
 
     client = InferenceServerClient(#url=url+':80',
                                    url=url+':8081',
-                                   ssl=True,
-                                   creds=creds,
-                                   channel_args=(
-                                       # grpc.ssl_target_name_override must be set to match CN used in cert gen
-                                       ('grpc.ssl_target_name_override', url),)
+                                   ssl=False
+                                   # ssl=True,
+                                   # creds=creds,
+                                   # channel_args=(
+                                   #     # grpc.ssl_target_name_override must be set to match CN used in cert gen
+                                   #     ('grpc.ssl_target_name_override', url),)
                                    )
     infer_input = InferInput(
         name="input-0", shape=[1], datatype="BYTES", data=[base64.b64decode(b64image)]
