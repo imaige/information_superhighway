@@ -69,7 +69,8 @@ async def image_comparison_request(url: str, b64image: str, model_name: str, req
     t0 = time.time()
     for i in range(1):
         # make inference request via gRPC
-        logger.debug("making infer request request to image comparison model")
+        logger.debug(f"making infer request request to image comparison model")
+        logger.trace(f"image comparison infer request port: {url}:8081")
         res = client.infer(infer_request=request)
         '''
         response format:
@@ -121,7 +122,8 @@ async def colors_request(url: str, b64image: str, model_name: str, request_locat
     t0 = time.time()
     for i in range(1):
         # make inference request via gRPC
-        logger.debug("making infer request to colors model")
+        logger.debug(f"making infer request to colors model")
+        logger.trace(f"colors infer request port: {url}:8081")
         res = client.infer(infer_request=request)
         logger.trace(f"received response from kserve colors request: {res}")
         return res
