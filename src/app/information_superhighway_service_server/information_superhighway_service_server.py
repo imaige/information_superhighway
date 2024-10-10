@@ -5,12 +5,12 @@ from proto_models.information_superhighway_pb2_grpc import (
     InformationSuperhighwayServiceServicer, add_InformationSuperhighwayServiceServicer_to_server
 )
 from proto_models.analysis_layer_pb2 import (
-    AiModelOutputRequest,
+    AiModelOutputRequest, StatusReply
 )
 import json
 from ...libraries import kserve_request
 from ...libraries import rekognition_face_id_request
-from ...libraries.grpc_server_factory import create_secure_server
+from ...libraries.grpc_server_factory import create_secure_server, create_standard_server
 from ...libraries.grpc_analysis_layer_request import analysis_layer_request
 from ...libraries.enums import AiModel
 from ...libraries.logging_file_format import configure_logger, get_log_level
@@ -41,7 +41,7 @@ log_level = get_log_level()
 configure_logger(logger, level=log_level)
 
 
-async def process_image_comparison_model(model: str, request_image, photo_id: str, analysis_layer_port: str):
+async def process_image_comparison_model(model: str, request_image, photo_id: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -90,7 +90,7 @@ async def process_image_comparison_model(model: str, request_image, photo_id: st
         results.append(response)
 
 
-async def process_colors_model(model: str, request_image, photo_id: str, analysis_layer_port: str):
+async def process_colors_model(model: str, request_image, photo_id: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -129,11 +129,11 @@ async def process_colors_model(model: str, request_image, photo_id: str, analysi
         results.append(response)
 
 
-async def process_face_detect_model(model: str, request_image, photo_id: str, analysis_layer_port: str):
+async def process_face_detect_model(model: str, request_image, photo_id: str, project_table_name: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
-        output = rekognition_face_id_request.analyze_face(request_image)
+        output = rekognition_face_id_request.analyze_face(request_image, photo_id, project_table_name)
         logger.debug(f"for id {photo_id}, returning output: {output}")
         return output
 
@@ -155,7 +155,7 @@ async def process_face_detect_model(model: str, request_image, photo_id: str, an
         results.append(response)
 
 
-async def process_image_classification_model(model: str, request_image, photo_id: str, analysis_layer_port: str):
+async def process_image_classification_model(model: str, request_image, photo_id: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -339,8 +339,8 @@ async def serve() -> None:
         },
     ]
 
-    server = create_secure_server(port, service_classes, server_key, server_cert, ca_cert)
-    # server = create_insecure_server(port, service_classes)
+    # server = create_secure_server(port, service_classes, server_key, server_cert, ca_cert)
+    server = create_standard_server(port, service_classes)
 
     logger.notice("Starting server on %s", port)
     await server.start()
