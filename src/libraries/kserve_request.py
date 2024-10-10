@@ -45,7 +45,7 @@ async def image_comparison_request(url: str, b64image: str, model_name: str, req
     )
 
     client = InferenceServerClient(#url=url+':80',
-                                   url=url+':8080',
+                                   url=url+':80',
                                    ssl=False
                                    # ssl=True,
                                    # root_certificates=ca_cert,
@@ -70,7 +70,7 @@ async def image_comparison_request(url: str, b64image: str, model_name: str, req
     for i in range(1):
         # make inference request via gRPC
         logger.debug(f"making infer request request to image comparison model")
-        logger.trace(f"image comparison infer request port: {url}:8081")
+        logger.trace(f"image comparison infer request port: {url}:80")
         res = client.infer(infer_request=request)
         '''
         response format:
@@ -106,7 +106,7 @@ async def colors_request(url: str, b64image: str, model_name: str, request_locat
     )
 
     client = InferenceServerClient(#url=url+':80',
-                                   url=url+':8080',
+                                   url=url+':80',
                                    ssl=False
                                    # ssl=True,
                                    # creds=creds,
@@ -123,7 +123,7 @@ async def colors_request(url: str, b64image: str, model_name: str, request_locat
     for i in range(1):
         # make inference request via gRPC
         logger.debug(f"making infer request to colors model")
-        logger.trace(f"colors infer request port: {url}:8081")
+        logger.trace(f"colors infer request port: {url}:80")
         res = client.infer(infer_request=request)
         logger.trace(f"received response from kserve colors request: {res}")
         return res
