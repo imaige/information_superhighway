@@ -45,7 +45,7 @@ async def image_comparison_request(url: str, b64image: str, model_name: str, req
     )
 
     client = InferenceServerClient(#url=url+':80',
-                                   url=url+':80',
+                                   url=url+':8080',
                                    ssl=False
                                    # ssl=True,
                                    # root_certificates=ca_cert,
@@ -106,7 +106,7 @@ async def colors_request(url: str, b64image: str, model_name: str, request_locat
     )
 
     client = InferenceServerClient(#url=url+':80',
-                                   url=url+':80',
+                                   url=url+':8080',
                                    ssl=False
                                    # ssl=True,
                                    # creds=creds,
