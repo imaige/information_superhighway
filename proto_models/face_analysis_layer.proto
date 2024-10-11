@@ -61,7 +61,8 @@ message FaceRekognitionModelOutputRequest {
     float emotion_surprised_confidence = 27;
     float emotion_confused_confidence = 28;
 
-    repeated google.protobuf.Struct landmarks = 29;
+//    repeated google.protobuf.Struct landmarks = 29;
+    repeated Landmark landmarks = 29;
 
     // Landmarks (Type, X, Y)
 //    float landmark_eye_left_x = 29;
@@ -146,6 +147,12 @@ message FaceRekognitionModelOutputRequest {
     float eye_direction_pitch = 98;
     float eye_direction_confidence = 99;
 
+}
+
+message Landmark {
+    string Type = 1;
+    float X = 2;
+    float Y = 3;
 }
 
 message FaceStatusReply {
