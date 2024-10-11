@@ -41,7 +41,7 @@ log_level = get_log_level()
 configure_logger(logger, level=log_level)
 
 
-async def process_image_comparison_model(model: str, request_image, photo_id: str):
+async def process_image_comparison_model(model: str, request_image, photo_id: str, project_table_name: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -90,7 +90,7 @@ async def process_image_comparison_model(model: str, request_image, photo_id: st
         results.append(response)
 
 
-async def process_colors_model(model: str, request_image, photo_id: str):
+async def process_colors_model(model: str, request_image, photo_id: str, project_table_name: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -155,7 +155,7 @@ async def process_face_detect_model(model: str, request_image, photo_id: str, pr
         results.append(response)
 
 
-async def process_image_classification_model(model: str, request_image, photo_id: str):
+async def process_image_classification_model(model: str, request_image, photo_id: str, project_table_name: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -233,7 +233,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         for model in request.models:
             if model in model_functions:
                 task = asyncio.create_task(
-                    model_functions[model](model, request_image, request.photo_id))
+                    model_functions[model](model, request_image, request.photo_id, request.project_table_name))
                 tasks.append(task)
             else:
                 logger.warning(f"Error - provided model name of {model} is invalid.")
