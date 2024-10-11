@@ -23,6 +23,7 @@ def face_detail_process(project_table_name: str, photo_id: str, face_details):
     face_request = FaceRekognitionModelOutputRequest(
         project_table_name=project_table_name,
         photo_id=photo_id,
+        landmarks=face_details['Landmarks'],
         age_range_low=face_details['AgeRange']['Low'],
         age_range_high=face_details['AgeRange']['High'],
         smile_value=face_details['Smile']['Value'],
@@ -78,10 +79,10 @@ def face_detail_process(project_table_name: str, photo_id: str, face_details):
         eye_direction_confidence=face_details['EyeDirection']['Confidence']
     )
 
-    for landmark in face_details['Landmarks']:
-        logger.trace(f"landmark is: {landmark}")
-        setattr(face_request, f'landmark_{landmark["Type"].lower()}_x', landmark['X'])
-        setattr(face_request, f'landmark_{landmark["Type"].lower()}_y', landmark['Y'])
+    # for landmark in face_details['Landmarks']:
+    #     logger.trace(f"landmark is: {landmark}")
+    #     setattr(face_request, f'landmark_{landmark["Type"].lower()}_x', landmark['X'])
+    #     setattr(face_request, f'landmark_{landmark["Type"].lower()}_y', landmark['Y'])
 
     # send non-IO-bound message with parsed_data
     try:
