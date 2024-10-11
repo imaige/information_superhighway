@@ -19,6 +19,7 @@ rekognition_client = boto3.client('rekognition', region_name="us-east-2")
 
 
 def face_detail_process(project_table_name: str, photo_id: str, face_details):
+    logger.trace(f"at start of process - face_details is: {face_details}")
     face_request = FaceRekognitionModelOutputRequest(
         project_table_name=project_table_name,
         photo_id=photo_id,
@@ -78,6 +79,7 @@ def face_detail_process(project_table_name: str, photo_id: str, face_details):
     )
 
     for landmark in face_details['Landmarks']:
+        logger.trace(f"landmark is: {landmark}")
         setattr(face_request, f'landmark_{landmark["Type"].lower()}_x', landmark['X'])
         setattr(face_request, f'landmark_{landmark["Type"].lower()}_y', landmark['Y'])
 
