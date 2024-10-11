@@ -98,10 +98,10 @@ def face_analysis_layer_request(req: FaceRekognitionModelOutputRequest, port: st
     )
 
     # interceptors = [LoggingClientInterceptor()]
-    interceptor = LoggingClientInterceptor()
+    # interceptor = LoggingClientInterceptor()
     # with grpc.secure_channel(port, channel_credentials) as channel:
     with grpc.insecure_channel(port) as channel:
-        channel = grpc.intercept_channel(channel, interceptor)
+        channel = grpc.intercept_channel(channel)  #, interceptor)
         stub = FaceAnalysisLayerStub(channel)
 
         logger.trace(f"Client making FaceRekognitionModelOutputRequest with data: {req}")
