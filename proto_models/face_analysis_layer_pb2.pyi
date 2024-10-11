@@ -1,7 +1,8 @@
+from google.protobuf import struct_pb2 as _struct_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Iterable as _Iterable, Optional as _Optional
+from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
@@ -75,7 +76,7 @@ class FaceRekognitionModelOutputRequest(_message.Message):
     emotion_sad_confidence: float
     emotion_surprised_confidence: float
     emotion_confused_confidence: float
-    landmarks: _containers.RepeatedScalarFieldContainer[bytes]
+    landmarks: _containers.RepeatedCompositeFieldContainer[_struct_pb2.Struct]
     pose_roll: float
     pose_yaw: float
     pose_pitch: float
@@ -87,7 +88,7 @@ class FaceRekognitionModelOutputRequest(_message.Message):
     eye_direction_yaw: float
     eye_direction_pitch: float
     eye_direction_confidence: float
-    def __init__(self, photo_id: _Optional[str] = ..., project_table_name: _Optional[str] = ..., age_range_low: _Optional[int] = ..., age_range_high: _Optional[int] = ..., smile_value: bool = ..., smile_confidence: _Optional[float] = ..., eyeglasses_value: bool = ..., eyeglasses_confidence: _Optional[float] = ..., sunglasses_value: bool = ..., sunglasses_confidence: _Optional[float] = ..., gender_value: _Optional[str] = ..., gender_confidence: _Optional[float] = ..., beard_value: bool = ..., beard_confidence: _Optional[float] = ..., mustache_value: bool = ..., mustache_confidence: _Optional[float] = ..., eyes_open_value: bool = ..., eyes_open_confidence: _Optional[float] = ..., mouth_open_value: bool = ..., mouth_open_confidence: _Optional[float] = ..., emotion_happy_confidence: _Optional[float] = ..., emotion_angry_confidence: _Optional[float] = ..., emotion_disgusted_confidence: _Optional[float] = ..., emotion_fear_confidence: _Optional[float] = ..., emotion_calm_confidence: _Optional[float] = ..., emotion_sad_confidence: _Optional[float] = ..., emotion_surprised_confidence: _Optional[float] = ..., emotion_confused_confidence: _Optional[float] = ..., landmarks: _Optional[_Iterable[bytes]] = ..., pose_roll: _Optional[float] = ..., pose_yaw: _Optional[float] = ..., pose_pitch: _Optional[float] = ..., quality_brightness: _Optional[float] = ..., quality_sharpness: _Optional[float] = ..., confidence: _Optional[float] = ..., face_occluded_value: bool = ..., face_occluded_confidence: _Optional[float] = ..., eye_direction_yaw: _Optional[float] = ..., eye_direction_pitch: _Optional[float] = ..., eye_direction_confidence: _Optional[float] = ...) -> None: ...
+    def __init__(self, photo_id: _Optional[str] = ..., project_table_name: _Optional[str] = ..., age_range_low: _Optional[int] = ..., age_range_high: _Optional[int] = ..., smile_value: bool = ..., smile_confidence: _Optional[float] = ..., eyeglasses_value: bool = ..., eyeglasses_confidence: _Optional[float] = ..., sunglasses_value: bool = ..., sunglasses_confidence: _Optional[float] = ..., gender_value: _Optional[str] = ..., gender_confidence: _Optional[float] = ..., beard_value: bool = ..., beard_confidence: _Optional[float] = ..., mustache_value: bool = ..., mustache_confidence: _Optional[float] = ..., eyes_open_value: bool = ..., eyes_open_confidence: _Optional[float] = ..., mouth_open_value: bool = ..., mouth_open_confidence: _Optional[float] = ..., emotion_happy_confidence: _Optional[float] = ..., emotion_angry_confidence: _Optional[float] = ..., emotion_disgusted_confidence: _Optional[float] = ..., emotion_fear_confidence: _Optional[float] = ..., emotion_calm_confidence: _Optional[float] = ..., emotion_sad_confidence: _Optional[float] = ..., emotion_surprised_confidence: _Optional[float] = ..., emotion_confused_confidence: _Optional[float] = ..., landmarks: _Optional[_Iterable[_Union[_struct_pb2.Struct, _Mapping]]] = ..., pose_roll: _Optional[float] = ..., pose_yaw: _Optional[float] = ..., pose_pitch: _Optional[float] = ..., quality_brightness: _Optional[float] = ..., quality_sharpness: _Optional[float] = ..., confidence: _Optional[float] = ..., face_occluded_value: bool = ..., face_occluded_confidence: _Optional[float] = ..., eye_direction_yaw: _Optional[float] = ..., eye_direction_pitch: _Optional[float] = ..., eye_direction_confidence: _Optional[float] = ...) -> None: ...
 
 class FaceStatusReply(_message.Message):
     __slots__ = ("message",)

@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package information_superhighway;
 
+import "google/protobuf/struct.proto";
+
 // Service definition
 service FaceAnalysisLayer {
     // AI output request
@@ -59,7 +61,7 @@ message FaceRekognitionModelOutputRequest {
     float emotion_surprised_confidence = 27;
     float emotion_confused_confidence = 28;
 
-    repeated bytes landmarks = 29;
+    repeated google.protobuf.Struct landmarks = 29;
 
     // Landmarks (Type, X, Y)
 //    float landmark_eye_left_x = 29;
