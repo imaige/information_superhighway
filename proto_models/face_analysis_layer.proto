@@ -1,0 +1,149 @@
+syntax = "proto3";
+
+package information_superhighway;
+
+// Service definition
+service FaceAnalysisLayer {
+    // AI output request
+    rpc FaceRekognitionModelOutputRequestHandler (FaceRekognitionModelOutputRequest) returns (stream FaceStatusReply);
+}
+
+
+message FaceRekognitionModelOutputRequest {
+    string photo_id = 1;
+    string project_table_name = 2;
+
+    // Age Range
+    int32 age_range_low = 3;
+    int32 age_range_high = 4;
+
+    // Smile
+    bool smile_value = 5;
+    float smile_confidence = 6;
+
+    // Eyeglasses
+    bool eyeglasses_value = 7;
+    float eyeglasses_confidence = 8;
+
+    // Sunglasses
+    bool sunglasses_value = 9;
+    float sunglasses_confidence = 10;
+
+    // Gender
+    string gender_value = 11;
+    float gender_confidence = 12;
+
+    // Beard
+    bool beard_value = 13;
+    float beard_confidence = 14;
+
+    // Mustache
+    bool mustache_value = 15;
+    float mustache_confidence = 16;
+
+    // Eyes Open
+    bool eyes_open_value = 17;
+    float eyes_open_confidence = 18;
+
+    // Mouth Open
+    bool mouth_open_value = 19;
+    float mouth_open_confidence = 20;
+
+    // Emotions (HAPPY, ANGRY, DISGUSTED, FEAR, CALM, SAD, SURPRISED, CONFUSED)
+    float emotion_happy_confidence = 21;
+    float emotion_angry_confidence = 22;
+    float emotion_disgusted_confidence = 23;
+    float emotion_fear_confidence = 24;
+    float emotion_calm_confidence = 25;
+    float emotion_sad_confidence = 26;
+    float emotion_surprised_confidence = 27;
+    float emotion_confused_confidence = 28;
+
+    // Landmarks (Type, X, Y)
+    float landmark_eye_left_x = 29;
+    float landmark_eye_left_y = 30;
+    float landmark_eye_right_x = 31;
+    float landmark_eye_right_y = 32;
+    float landmark_mouth_left_x = 33;
+    float landmark_mouth_left_y = 34;
+    float landmark_mouth_right_x = 35;
+    float landmark_mouth_right_y = 36;
+    float landmark_nose_x = 37;
+    float landmark_nose_y = 38;
+    float landmark_left_eyebrow_left_x = 39;
+    float landmark_left_eyebrow_left_y = 40;
+    float landmark_left_eyebrow_right_x = 41;
+    float landmark_left_eyebrow_right_y = 42;
+    float landmark_left_eyebrow_up_x = 43;
+    float landmark_left_eyebrow_up_y = 44;
+    float landmark_right_eyebrow_left_x = 45;
+    float landmark_right_eyebrow_left_y = 46;
+    float landmark_right_eyebrow_right_x = 47;
+    float landmark_right_eyebrow_right_y = 48;
+    float landmark_right_eyebrow_up_x = 49;
+    float landmark_right_eyebrow_up_y = 50;
+    float landmark_left_eye_left_x = 51;
+    float landmark_left_eye_left_y = 52;
+    float landmark_left_eye_right_x = 53;
+    float landmark_left_eye_right_y = 54;
+    float landmark_left_eye_up_x = 55;
+    float landmark_left_eye_up_y = 56;
+    float landmark_left_eye_down_x = 57;
+    float landmark_left_eye_down_y = 58;
+    float landmark_right_eye_left_x = 59;
+    float landmark_right_eye_left_y = 60;
+    float landmark_right_eye_right_x = 61;
+    float landmark_right_eye_right_y = 62;
+    float landmark_right_eye_up_x = 63;
+    float landmark_right_eye_up_y = 64;
+    float landmark_right_eye_down_x = 65;
+    float landmark_right_eye_down_y = 66;
+    float landmark_nose_left_x = 67;
+    float landmark_nose_left_y = 68;
+    float landmark_nose_right_x = 69;
+    float landmark_nose_right_y = 70;
+    float landmark_mouth_up_x = 71;
+    float landmark_mouth_up_y = 72;
+    float landmark_mouth_down_x = 73;
+    float landmark_mouth_down_y = 74;
+    float landmark_left_pupil_x = 75;
+    float landmark_left_pupil_y = 76;
+    float landmark_right_pupil_x = 77;
+    float landmark_right_pupil_y = 78;
+    float landmark_upper_jawline_left_x = 79;
+    float landmark_upper_jawline_left_y = 80;
+    float landmark_mid_jawline_left_x = 81;
+    float landmark_mid_jawline_left_y = 82;
+    float landmark_chin_bottom_x = 83;
+    float landmark_chin_bottom_y = 84;
+    float landmark_mid_jawline_right_x = 85;
+    float landmark_mid_jawline_right_y = 86;
+    float landmark_upper_jawline_right_x = 87;
+    float landmark_upper_jawline_right_y = 88;
+
+    // Pose
+    float pose_roll = 89;
+    float pose_yaw = 90;
+    float pose_pitch = 91;
+
+    // Quality
+    float quality_brightness = 92;
+    float quality_sharpness = 93;
+
+    // General Confidence
+    float confidence = 94;
+
+    // Face Occluded
+    bool face_occluded_value = 95;
+    float face_occluded_confidence = 96;
+
+    // Eye Direction
+    float eye_direction_yaw = 97;
+    float eye_direction_pitch = 98;
+    float eye_direction_confidence = 99;
+
+}
+
+message FaceStatusReply {
+    string message = 1;
+}
