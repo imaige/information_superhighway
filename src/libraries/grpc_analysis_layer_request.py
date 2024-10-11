@@ -101,13 +101,13 @@ def face_analysis_layer_request(req: FaceRekognitionModelOutputRequest, port: st
     # interceptor = LoggingClientInterceptor()
     # with grpc.secure_channel(port, channel_credentials) as channel:
     with grpc.insecure_channel(port) as channel:
-        channel = grpc.intercept_channel(channel)  #, interceptor)
+        # channel = grpc.intercept_channel(channel)  #, interceptor)
         stub = FaceAnalysisLayerStub(channel)
 
         logger.trace(f"Client making FaceRekognitionModelOutputRequest with data: {req}")
         try:
             logger.info(f"Initiating gRPC face layer call for {req.photo_id} in table {req.project_table_name}")
-            logger.trace(f"Channel state before initiating call: {channel.get_state()}")
+            # logger.trace(f"Channel state before initiating call: {channel.get_state()}")
             call = stub.FaceRekognitionModelOutputRequestHandler(req, timeout=30)
 
             logger.trace(f"gRPC call initiated for {req.photo_id} in table {req.project_table_name}")
