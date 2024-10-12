@@ -86,7 +86,7 @@ def face_detail_process(project_table_name: str, photo_id: str, face_details):
 
     # send non-IO-bound message with parsed_data
     try:
-        face_analysis_layer_port = f'{getenv("FACE_ANALYSIS_LAYER_URL")}:80'
+        face_analysis_layer_port = f'{getenv("FACE_ANALYSIS_LAYER_URL")}:50051'
         logger.trace(f"about to make face analysis layer request to port {face_analysis_layer_port}")
         face_analysis_layer_request(face_request, face_analysis_layer_port)
     except Exception as e:
