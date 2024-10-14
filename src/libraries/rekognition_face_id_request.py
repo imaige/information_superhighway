@@ -6,6 +6,7 @@ from proto_models.face_analysis_layer_pb2 import (
 )
 from os import getenv
 import multiprocessing
+from multiprocessing.dummy import Pool
 from src.libraries.grpc_analysis_layer_request import face_analysis_layer_request
 from src.libraries.logging_file_format import configure_logger, get_log_level
 import logging
@@ -18,8 +19,12 @@ configure_logger(logger, level=log_level)
 rekognition_client = boto3.client('rekognition', region_name="us-east-2")
 
 
+pool = Pool(10)
+
+
 def face_detail_process(project_table_name: str, photo_id: str, face_details):
     logger.trace(f"at start of process - face_details is: {face_details}")
+    futures = []
     face_request = FaceRekognitionModelOutputRequest(
         project_table_name=project_table_name,
         photo_id=photo_id,
@@ -88,7 +93,7 @@ def face_detail_process(project_table_name: str, photo_id: str, face_details):
     try:
         face_analysis_layer_port = f'{getenv("FACE_ANALYSIS_LAYER_URL").strip()}:50051'
         logger.trace(f"about to make face analysis layer request to port {face_analysis_layer_port}")
-        face_analysis_layer_request(face_request, face_analysis_layer_port)
+        futures.append(pool.apply_async(face_analysis_layer_request, [face_request, face_analysis_layer_port]))
     except Exception as e:
         logger.error(f"Error occurred in gRPC face detail request: {e}")
 
