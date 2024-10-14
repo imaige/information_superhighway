@@ -59,16 +59,16 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
         #             req
         #     ):
         #         logger.info(f"Superhighway received Analysis Layer's StatusReply with detail: {response}")
-            logger.info(f"Initiating gRPC analysis layer call for {req.photo_id} in table {req.project_table_name}")
+            logger.debug(f"Initiating gRPC analysis layer call for {req.photo_id} in table {req.project_table_name} to port {port}")
             logger.trace(f"Channel state before initiating call: {channel.get_state()}")
             call = stub.AiModelOutputRequestHandler(req, timeout=30)
 
-            logger.trace(f"gRPC analysis layer call initiated for {req.photo_id} in table {req.project_table_name}")
+            logger.debug(f"gRPC analysis layer call initiated for {req.photo_id} in table {req.project_table_name}")
 
             async for response in call:
                 logger.info(f"Received analysis layer response: {response}")
 
-                logger.trace(f"gRPC analysis layer call completed successfully for {req.photo_id}")
+                logger.debug(f"gRPC analysis layer call completed successfully for {req.photo_id}")
                 return response
         except grpc.aio.AioRpcError as e:
             logger.error(f"gRPC error for {req.photo_id}: {e.code()}, {e.details()}")
@@ -106,16 +106,16 @@ def face_analysis_layer_request(req: FaceRekognitionModelOutputRequest, port: st
 
         logger.trace(f"Client making FaceRekognitionModelOutputRequest with data: {req}")
         try:
-            logger.info(f"Initiating gRPC face layer call for {req.photo_id} in table {req.project_table_name}")
+            logger.debug(f"Initiating gRPC face layer call for {req.photo_id} in table {req.project_table_name}")
             # logger.trace(f"Channel state before initiating call: {channel.get_state()}")
             call = stub.FaceRekognitionModelOutputRequestHandler(req, timeout=30)
 
-            logger.trace(f"gRPC face layer call initiated for {req.photo_id} in table {req.project_table_name} to port {port}")
+            logger.debug(f"gRPC face layer call initiated for {req.photo_id} in table {req.project_table_name} to port {port}")
 
             for response in call:
                 logger.info(f"Received face layer response: {response.message}")
 
-                logger.trace(f"gRPC face layer call completed successfully for {req.photo_id}")
+                logger.debug(f"gRPC face layer call completed successfully for {req.photo_id}")
                 return response
         except grpc.RpcError as e:
             logger.error(f"gRPC error for {req.photo_id}: {e.code()}, {e.details()}")
