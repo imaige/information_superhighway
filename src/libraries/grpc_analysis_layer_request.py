@@ -20,7 +20,10 @@ from proto_models.face_analysis_layer_pb2_grpc import (
 )
 from .logging_file_format import configure_logger, get_log_level
 from .get_tls_certs import get_secret_data
+
 from .grpc_client_request_interceptor import LoggingClientInterceptor
+import socket
+from contextlib import closing
 
 import asyncio
 import logging
@@ -94,6 +97,7 @@ async def face_analysis_layer_request(req: FaceRekognitionModelOutputRequest, po
                 return
             await asyncio.sleep(1)
 
+    host, port = port.split(':')
     options = [
         ('grpc.keepalive_time_ms', 10000),
         ('grpc.keepalive_timeout_ms', 5000),
@@ -121,7 +125,11 @@ async def face_analysis_layer_request(req: FaceRekognitionModelOutputRequest, po
     # interceptor = LoggingClientInterceptor()
     # with grpc.secure_channel(port, channel_credentials) as channel:
     async with grpc.aio.insecure_channel(port) as channel:
-        await debug_connection(channel)
+        connection_success = await enhanced_debug_connection(channel, host, port)
+
+        if not connection_success:
+            logger.error("Failed to establish connection. Aborting request.")
+            return
         # channel = grpc.intercept_channel(channel)  #, interceptor)
         stub = FaceAnalysisLayerStub(channel)
 
@@ -137,3 +145,37 @@ async def face_analysis_layer_request(req: FaceRekognitionModelOutputRequest, po
             logger.error(f"Timeout error for {req.photo_id}")
         except Exception as e:
             logger.error(f"Error occurred in gRPC request for {req.photo_id}: {e}")
+
+
+# helpers
+async def enhanced_debug_connection(channel, host, port, timeout=60):
+    start_time = asyncio.get_event_loop().time()
+    while True:
+        state = channel.get_state(try_to_connect=True)
+        logger.debug(f"Channel state: {state}")
+
+        if state == grpc.ChannelConnectivity.READY:
+            logger.info("Connection established successfully")
+            return True
+        elif state in [grpc.ChannelConnectivity.TRANSIENT_FAILURE, grpc.ChannelConnectivity.SHUTDOWN]:
+            logger.error(f"Failed to connect. Channel state: {state}")
+            return False
+
+        # Check if we've exceeded the timeout
+        if asyncio.get_event_loop().time() - start_time > timeout:
+            logger.error(f"Connection attempt timed out after {timeout} seconds")
+            return False
+
+        # Perform additional network checks
+        try:
+            with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
+                sock.settimeout(5)
+                result = sock.connect_ex((host, int(port)))
+                if result == 0:
+                    logger.debug(f"Port {port} is open on host {host}")
+                else:
+                    logger.warning(f"Port {port} is not accessible on host {host}")
+        except Exception as e:
+            logger.error(f"Error during network check: {e}")
+
+        await asyncio.sleep(5)
