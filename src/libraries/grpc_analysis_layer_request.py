@@ -100,7 +100,7 @@ async def face_analysis_layer_request(req: FaceRekognitionModelOutputRequest, po
     # interceptors = [LoggingClientInterceptor()]
     # interceptor = LoggingClientInterceptor()
     # with grpc.secure_channel(port, channel_credentials) as channel:
-    with grpc.insecure_channel(port) as channel:
+    async with grpc.aio.insecure_channel(port) as channel:
         # channel = grpc.intercept_channel(channel)  #, interceptor)
         stub = FaceAnalysisLayerStub(channel)
 
@@ -108,15 +108,8 @@ async def face_analysis_layer_request(req: FaceRekognitionModelOutputRequest, po
         try:
             logger.debug(f"Initiating gRPC face layer call for {req.photo_id} in table {req.project_table_name}")
             # logger.trace(f"Channel state before initiating call: {channel.get_state()}")
-            call = stub.FaceRekognitionModelOutputRequestHandler(req, timeout=30)
-
-            logger.debug(f"gRPC face layer call initiated for {req.photo_id} in table {req.project_table_name} to port {port}")
-
-            for response in call:
-                logger.info(f"Received face layer response: {response.message}")
-
-                logger.debug(f"gRPC face layer call completed successfully for {req.photo_id}")
-                return response
+            async for response in stub.FaceRekognitionModelOutputRequestHandler(req, timeout=30):
+                logger.info(f"received response: {response}")
         except grpc.RpcError as e:
             logger.error(f"gRPC error for {req.photo_id}: {e.code()}, {e.details()}")
         except Exception as e:
