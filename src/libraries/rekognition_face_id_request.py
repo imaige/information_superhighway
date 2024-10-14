@@ -93,7 +93,8 @@ def face_detail_process(project_table_name: str, photo_id: str, face_details):
     try:
         face_analysis_layer_port = f'{getenv("FACE_ANALYSIS_LAYER_URL").strip()}:50051'
         logger.trace(f"about to make face analysis layer request to port {face_analysis_layer_port}")
-        futures.append(pool.apply_async(face_analysis_layer_request, [face_request, face_analysis_layer_port]))
+        # futures.append(pool.apply_async(face_analysis_layer_request, [face_request, face_analysis_layer_port]))
+        face_analysis_layer_request(face_request, face_analysis_layer_port)
     except Exception as e:
         logger.error(f"Error occurred in gRPC face detail request: {e}")
 
