@@ -220,7 +220,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
             f"and models: {request.models}"
         )
         request_image = request.b64image
-        analysis_layer_port = f'{getenv("ANALYSIS_LAYER_URL")}:80'
+        analysis_layer_port = f'{getenv("ANALYSIS_LAYER_URL")}:50051'
         model_functions = {
             "image_comparison_hash_model": process_image_comparison_model,
             "colors_basic_model": process_colors_model,
