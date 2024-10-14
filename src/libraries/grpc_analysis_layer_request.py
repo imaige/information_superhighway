@@ -81,7 +81,7 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
         # logger.info(response)
 
 
-def face_analysis_layer_request(req: FaceRekognitionModelOutputRequest, port: str, request_location: str = None) -> None:
+async def face_analysis_layer_request(req: FaceRekognitionModelOutputRequest, port: str, request_location: str = None) -> None:
     # flow for running locally
     # client_key = open(f'./tls_certs/{request_location}/client-key.pem', 'rb').read()
     # client_cert = open(f'./tls_certs/{request_location}/client-cert.pem', 'rb').read()
