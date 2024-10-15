@@ -99,15 +99,15 @@ def face_analysis_layer_request(req: FaceRekognitionModelOutputRequest, port: st
     #             return
     #         await asyncio.sleep(1)
 
-    host, port = port.split(':')
-    options = [
-        ('grpc.keepalive_time_ms', 10000),
-        ('grpc.keepalive_timeout_ms', 5000),
-        ('grpc.keepalive_permit_without_calls', True),
-        ('grpc.http2.max_pings_without_data', 0),
-        ('grpc.http2.min_time_between_pings_ms', 10000),
-        ('grpc.http2.min_ping_interval_without_data_ms', 5000),
-    ]
+    # host, port = port.split(':')
+    # options = [
+    #     ('grpc.keepalive_time_ms', 10000),
+    #     ('grpc.keepalive_timeout_ms', 5000),
+    #     ('grpc.keepalive_permit_without_calls', True),
+    #     ('grpc.http2.max_pings_without_data', 0),
+    #     ('grpc.http2.min_time_between_pings_ms', 10000),
+    #     ('grpc.http2.min_ping_interval_without_data_ms', 5000),
+    # ]
 
     # flow for running locally
     # client_key = open(f'./tls_certs/{request_location}/client-key.pem', 'rb').read()
