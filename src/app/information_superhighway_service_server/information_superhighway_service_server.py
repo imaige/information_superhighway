@@ -133,7 +133,7 @@ async def process_face_detect_model(model: str, request_image, photo_id: str, pr
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
-        output = await rekognition_face_id_request.analyze_face(request_image, photo_id, project_table_name)
+        output = rekognition_face_id_request.analyze_face(request_image, photo_id, project_table_name)
         logger.debug(f"for id {photo_id}, returning output: {output}")
         return output
 

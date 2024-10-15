@@ -98,15 +98,15 @@ def face_detail_process(project_table_name: str, photo_id: str, face_details):
         face_analysis_layer_port = f'{getenv("FACE_ANALYSIS_LAYER_URL").strip()}.default.svc.cluster.local:50051'
         logger.trace(f"about to start face analysis layer request to port {face_analysis_layer_port}")
         # futures.append(pool.apply_async(face_analysis_layer_request, [face_request, face_analysis_layer_port]))
-        asyncio.run(face_analysis_layer_request(face_request, face_analysis_layer_port))
+        face_analysis_layer_request(face_request, face_analysis_layer_port)
     except Exception as e:
         logger.error(f"Error occurred in gRPC face detail request: {e}")
 
 
-async def analyze_face(b64image: str, photo_id: str, project_table_name: str):
+def analyze_face(b64image: str, photo_id: str, project_table_name: str):
     # test
-    logger.trace("starting test face_analysis_layer_request within async")
-    await face_analysis_layer_test_request()
+    # logger.trace("starting test face_analysis_layer_request within async")
+    # await face_analysis_layer_test_request()
     # /test
     logger.trace("starting analyze_face")
     # logger.info("starting analyze_face")
