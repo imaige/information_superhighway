@@ -92,7 +92,7 @@ def face_detail_process(project_table_name: str, photo_id: str, face_details):
 
     # send non-IO-bound message with parsed_data
     try:
-        face_analysis_layer_port = f'{getenv("FACE_ANALYSIS_LAYER_URL").strip()}:50051'
+        face_analysis_layer_port = f'{getenv("FACE_ANALYSIS_LAYER_URL").strip()}.default.svc.cluster.local:50051'
         logger.trace(f"about to start face analysis layer request to port {face_analysis_layer_port}")
         # futures.append(pool.apply_async(face_analysis_layer_request, [face_request, face_analysis_layer_port]))
         asyncio.run(face_analysis_layer_request(face_request, face_analysis_layer_port))
