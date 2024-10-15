@@ -146,10 +146,13 @@ def analyze_face(b64image: str, photo_id: str, project_table_name: str):
 
 
                 # start processing of additional face inputs
-                process = multiprocessing.Process(target=face_detail_process, args=(project_table_name, photo_id, face_details, ), daemon=True)
-                logger.trace(f"starting face analysis layer process for photo {photo_id}")
-                process.start()
+                # process = multiprocessing.Process(target=face_detail_process, args=(project_table_name, photo_id, face_details, ), daemon=True)
+                # logger.trace(f"starting face analysis layer process for photo {photo_id}")
+                # process.start()
                 # do not call process.join() - run this process as a daemon without awaiting output
+
+                # send face_request
+                face_detail_process(project_table_name, photo_id, face_details)
 
                 # face_request = FaceRekognitionModelOutputRequest(
                 #     age_range_low=face_details['AgeRange']['Low'],
