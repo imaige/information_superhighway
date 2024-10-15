@@ -28,10 +28,6 @@ pool = Pool(10)
 
 def face_detail_process(project_table_name: str, photo_id: str, face_details):
     logger.trace(f"at start of process - face_details is: {face_details}")
-    # test
-    logger.trace("starting test face_analysis_layer_request within async")
-    asyncio.run(face_analysis_layer_test_request())
-    # /test
     futures = []
     face_request = FaceRekognitionModelOutputRequest(
         project_table_name=project_table_name,
@@ -108,6 +104,10 @@ def face_detail_process(project_table_name: str, photo_id: str, face_details):
 
 
 def analyze_face(b64image: str, photo_id: str, project_table_name: str):
+    # test
+    logger.trace("starting test face_analysis_layer_request within async")
+    asyncio.run(face_analysis_layer_test_request())
+    # /test
     logger.trace("starting analyze_face")
     # logger.info("starting analyze_face")
     # decode the base64 string to bytes for rekognition

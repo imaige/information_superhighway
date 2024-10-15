@@ -36,7 +36,7 @@ configure_logger(logger, level=log_level)
 
 
 async def face_analysis_layer_test_request() -> None:
-    logger.trace("starting face_analysis_layer_request")
+    logger.trace("starting face_analysis_layer_test_request")
     port = f'face-analysis-layer-service-service:50051'
     face_details = {
         'BoundingBox': {'Width': 0.17027755081653595, 'Height': 0.11831283569335938, 'Left': 0.4174186587333679,
