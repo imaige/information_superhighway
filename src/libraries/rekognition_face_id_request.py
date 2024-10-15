@@ -10,6 +10,9 @@ from multiprocessing.dummy import Pool
 import asyncio
 from src.libraries.grpc_analysis_layer_request import face_analysis_layer_request
 from src.libraries.logging_file_format import configure_logger, get_log_level
+# test
+from src.libraries.grpc_external_request import face_analysis_layer_test_request
+# /test
 import logging
 
 
@@ -25,6 +28,10 @@ pool = Pool(10)
 
 def face_detail_process(project_table_name: str, photo_id: str, face_details):
     logger.trace(f"at start of process - face_details is: {face_details}")
+    # test
+    logger.trace("starting test face_analysis_layer_request within async")
+    asyncio.run(face_analysis_layer_test_request())
+    # /test
     futures = []
     face_request = FaceRekognitionModelOutputRequest(
         project_table_name=project_table_name,

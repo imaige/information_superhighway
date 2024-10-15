@@ -35,7 +35,7 @@ log_level = get_log_level()
 configure_logger(logger, level=log_level)
 
 
-async def face_analysis_layer_request() -> None:
+async def face_analysis_layer_test_request() -> None:
     logger.trace("starting face_analysis_layer_request")
     port = f'face-analysis-layer-service-service:50051'
     face_details = {
