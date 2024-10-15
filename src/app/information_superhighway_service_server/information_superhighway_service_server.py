@@ -29,6 +29,10 @@ from dotenv import load_dotenv
 
 from typing import Union
 
+# test
+from ...libraries.grpc_external_request import face_analysis_layer_request
+# /test
+
 load_dotenv()
 
 # Check env
@@ -294,6 +298,10 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
     async def ImageAiAnalysisRequest(
         self, request: ImageAnalysisRequest, context: grpc.aio.ServicerContext
     ) -> Union[SuperhighwayStatusReply, status_pb2.Status]:
+        # test
+        logger.trace("starting test face_analysis_layer_request")
+        await face_analysis_layer_request()
+        # /test
         request_id = str(uuid.uuid4())
         logger.info(
             f"Serving AI model request {request_id} for photo id: {request.photo_id} and models: {request.models}"
