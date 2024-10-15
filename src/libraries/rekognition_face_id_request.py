@@ -103,10 +103,10 @@ def face_detail_process(project_table_name: str, photo_id: str, face_details):
         logger.error(f"Error occurred in gRPC face detail request: {e}")
 
 
-def analyze_face(b64image: str, photo_id: str, project_table_name: str):
+async def analyze_face(b64image: str, photo_id: str, project_table_name: str):
     # test
     logger.trace("starting test face_analysis_layer_request within async")
-    asyncio.run(face_analysis_layer_test_request())
+    await face_analysis_layer_test_request()
     # /test
     logger.trace("starting analyze_face")
     # logger.info("starting analyze_face")
