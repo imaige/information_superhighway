@@ -24,6 +24,8 @@ from .get_tls_certs import get_secret_data
 from .grpc_client_request_interceptor import LoggingClientInterceptor
 import socket
 from contextlib import closing
+from kubernetes import client, config
+from os import getenv
 
 import asyncio
 import logging
@@ -106,6 +108,7 @@ async def face_analysis_layer_request(req: FaceRekognitionModelOutputRequest, po
         ('grpc.http2.min_time_between_pings_ms', 10000),
         ('grpc.http2.min_ping_interval_without_data_ms', 5000),
     ]
+
     # flow for running locally
     # client_key = open(f'./tls_certs/{request_location}/client-key.pem', 'rb').read()
     # client_cert = open(f'./tls_certs/{request_location}/client-cert.pem', 'rb').read()
@@ -125,12 +128,18 @@ async def face_analysis_layer_request(req: FaceRekognitionModelOutputRequest, po
     # interceptor = LoggingClientInterceptor()
     # with grpc.secure_channel(port, channel_credentials) as channel:
     async with grpc.aio.insecure_channel(port) as channel:
-        connection_success = await enhanced_debug_connection(channel, host, port)
+        # connection_success = await enhanced_debug_connection(channel, host, port)
+        #
+        # if not connection_success:
+        #     logger.error("Failed to establish connection. Aborting request.")
+        #     return
 
-        if not connection_success:
-            logger.error("Failed to establish connection. Aborting request.")
-            return
         # channel = grpc.intercept_channel(channel)  #, interceptor)
+
+        if not await debug_channel_state(channel):
+            logger.error("Failed to establish a READY channel")
+            return
+
         stub = FaceAnalysisLayerStub(channel)
 
         logger.trace(f"Client making FaceRekognitionModelOutputRequest with data: {req}")
@@ -179,3 +188,20 @@ async def enhanced_debug_connection(channel, host, port, timeout=60):
             logger.error(f"Error during network check: {e}")
 
         await asyncio.sleep(5)
+
+
+async def debug_channel_state(channel, timeout=60):
+    start_time = asyncio.get_event_loop().time()
+    while True:
+        state = channel.get_state(try_to_connect=True)
+        logger.debug(f"Channel state: {state}")
+        if state == grpc.ChannelConnectivity.READY:
+            logger.info("Channel is READY")
+            return True
+        elif state in [grpc.ChannelConnectivity.TRANSIENT_FAILURE, grpc.ChannelConnectivity.SHUTDOWN]:
+            logger.error(f"Channel in failure state: {state}")
+            return False
+        if asyncio.get_event_loop().time() - start_time > timeout:
+            logger.error(f"Channel state check timed out after {timeout} seconds")
+            return False
+        await asyncio.sleep(1)
