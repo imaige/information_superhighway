@@ -5,14 +5,12 @@ from proto_models.face_analysis_layer_pb2 import (
     FaceRekognitionModelOutputRequest, FaceStatusReply
 )
 from os import getenv
-import multiprocessing
-from multiprocessing.dummy import Pool
-import asyncio
+from concurrent.futures import ThreadPoolExecutor
+# import multiprocessing
+# from multiprocessing.dummy import Pool
+
 from src.libraries.grpc_analysis_layer_request import face_analysis_layer_request
 from src.libraries.logging_file_format import configure_logger, get_log_level
-# test
-from src.libraries.grpc_external_request import face_analysis_layer_test_request
-# /test
 import logging
 
 
@@ -23,12 +21,16 @@ configure_logger(logger, level=log_level)
 rekognition_client = boto3.client('rekognition', region_name="us-east-2")
 
 
-pool = Pool(10)
+# pool = Pool(10)
+def send_request_in_background(project_table_name: str, photo_id: str, face_details):
+    executor = ThreadPoolExecutor(max_workers=1)
+    executor.submit(face_detail_process, project_table_name, photo_id, face_details)
+    executor.shutdown(wait=False)  # Don’t block on shutdown.
 
 
 def face_detail_process(project_table_name: str, photo_id: str, face_details):
     logger.trace(f"at start of process - face_details is: {face_details}")
-    futures = []
+    # futures = []
     face_request = FaceRekognitionModelOutputRequest(
         project_table_name=project_table_name,
         photo_id=photo_id,
@@ -88,12 +90,8 @@ def face_detail_process(project_table_name: str, photo_id: str, face_details):
         eye_direction_confidence=face_details['EyeDirection']['Confidence']
     )
 
-    # for landmark in face_details['Landmarks']:
-    #     logger.trace(f"landmark is: {landmark}")
-    #     setattr(face_request, f'landmark_{landmark["Type"].lower()}_x', landmark['X'])
-    #     setattr(face_request, f'landmark_{landmark["Type"].lower()}_y', landmark['Y'])
-
     # send non-IO-bound message with parsed_data
+    # actually IO-bound for now - concurrent thread executor (send_request_in_background) handling IO bound issue
     try:
         face_analysis_layer_port = f'{getenv("FACE_ANALYSIS_LAYER_URL").strip()}.default.svc.cluster.local:50051'
         logger.trace(f"about to start face analysis layer request to port {face_analysis_layer_port}")
@@ -104,12 +102,7 @@ def face_detail_process(project_table_name: str, photo_id: str, face_details):
 
 
 def analyze_face(b64image: str, photo_id: str, project_table_name: str):
-    # test
-    # logger.trace("starting test face_analysis_layer_request within async")
-    # await face_analysis_layer_test_request()
-    # /test
     logger.trace("starting analyze_face")
-    # logger.info("starting analyze_face")
     # decode the base64 string to bytes for rekognition
     image_bytes = base64.b64decode(b64image)
 
@@ -120,7 +113,7 @@ def analyze_face(b64image: str, photo_id: str, project_table_name: str):
             Attributes=['ALL']
         )
 
-        # logger.info(f"received response from rekognition face detect request: {response}")   # commented this out to avoid polluting logs
+        # logger.trace(f"received response from rekognition face detect request: {response}")   # commented this out to avoid polluting logs
 
         #  handle case where response['FaceDetails'] details is empty (no faces)
         number_of_faces = 0
@@ -152,7 +145,8 @@ def analyze_face(b64image: str, photo_id: str, project_table_name: str):
                 # do not call process.join() - run this process as a daemon without awaiting output
 
                 # send face_request
-                face_detail_process(project_table_name, photo_id, face_details)
+                # face_detail_process(project_table_name, photo_id, face_details)
+                send_request_in_background(project_table_name, photo_id, face_details)
 
                 # face_request = FaceRekognitionModelOutputRequest(
                 #     age_range_low=face_details['AgeRange']['Low'],
