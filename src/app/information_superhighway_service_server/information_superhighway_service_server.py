@@ -194,7 +194,7 @@ async def process_image_classification_model(model: str, request_image, photo_id
 # Service Class Definition #
 class InformationSuperhighway(InformationSuperhighwayServiceServicer):
     def __init__(self):
-        self.semaphore = asyncio.Semaphore(5)
+        self.semaphore = asyncio.Semaphore(10)
         self.request_queue = deque()
         self.active_requests = {}
 
