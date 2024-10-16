@@ -191,6 +191,43 @@ async def process_image_classification_model(model: str, request_image, photo_id
         results.append(response)
 
 
+async def process_blur_model(model: str, request_image, photo_id: str, project_table_name: str):
+    logger.info(f"starting {model} flow for photo {photo_id}")
+    results = []
+    try:
+        blur_output = await kserve_request.blur_request(
+            getenv("IMAGE_CLASSIFICATION_MODEL_URL"),
+            request_image, model)
+
+        logger.trace(f"blur_output is: {blur_output}")
+        contents = []
+        contents.extend(blur_output)
+
+        # result = ({
+        #     "labels_from_classifications_model": contents
+        # })
+        #
+        # logger.debug(f"for id {photo_id}, returning output: {result}")
+        # return result
+
+    except Exception as e:
+        logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
+        code = code_pb2.INVALID_ARGUMENT
+        details = any_pb2.Any()
+        details.Pack(
+            error_details_pb2.DebugInfo(
+                detail=f"Error processing {model} for photo {photo_id}."
+            )
+        )
+        message = "Internal server error."
+        response = status_pb2.Status(
+            code=code,
+            message=message,
+            details=[details]
+        )
+        results.append(response)
+
+
 # Service Class Definition #
 class InformationSuperhighway(InformationSuperhighwayServiceServicer):
     def __init__(self):
@@ -225,7 +262,8 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
             "image_comparison_hash_model": process_image_comparison_model,
             "colors_basic_model": process_colors_model,
             "image_classification_model": process_image_classification_model,
-            "face_detect_model": process_face_detect_model
+            "face_detect_model": process_face_detect_model,
+            "blur_model": process_blur_model
         }
 
         tasks = []

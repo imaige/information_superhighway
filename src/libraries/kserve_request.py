@@ -35,14 +35,14 @@ async def image_comparison_request(url: str, b64image: str, model_name: str, req
     # ca_cert = f'./tls_certs/{request_location}/ca-cert.pem'
 
     # flow for request to server running on k8s
-    tls_certs = get_secret_data("default", "k8s-image-compare-service-tls-certs")
-    client_key = tls_certs.get("client-key")
-    client_cert = tls_certs.get("client-cert")
-    ca_cert = tls_certs.get("ca-cert")
-
-    creds = grpc.ssl_channel_credentials(
-        root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
-    )
+    # tls_certs = get_secret_data("default", "k8s-image-compare-service-tls-certs")
+    # client_key = tls_certs.get("client-key")
+    # client_cert = tls_certs.get("client-cert")
+    # ca_cert = tls_certs.get("ca-cert")
+    #
+    # creds = grpc.ssl_channel_credentials(
+    #     root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
+    # )
 
     client = InferenceServerClient(#url=url+':80',
                                    url=url+':50051',
@@ -96,14 +96,14 @@ async def image_comparison_request(url: str, b64image: str, model_name: str, req
 
 async def colors_request(url: str, b64image: str, model_name: str, request_location: str = None):
     # flow for request to server running on k8s
-    tls_certs = get_secret_data("default", "k8s-colors-model-tls-certs")
-    client_key = tls_certs.get("client-key")
-    client_cert = tls_certs.get("client-cert")
-    ca_cert = tls_certs.get("ca-cert")
-
-    creds = grpc.ssl_channel_credentials(
-        root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
-    )
+    # tls_certs = get_secret_data("default", "k8s-colors-model-tls-certs")
+    # client_key = tls_certs.get("client-key")
+    # client_cert = tls_certs.get("client-cert")
+    # ca_cert = tls_certs.get("ca-cert")
+    #
+    # creds = grpc.ssl_channel_credentials(
+    #     root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
+    # )
 
     client = InferenceServerClient(#url=url+':80',
                                    url=url+':50051',
@@ -129,6 +129,8 @@ async def colors_request(url: str, b64image: str, model_name: str, request_locat
         return res
 
 
+# currently not in use as we are using AWS Rekognition - rekognition_face_id_request.py
+'''
 async def face_detect_request(url: str, b64image: str, model_name: str, request_location: str = None):
     # flow for request to server running on k8s
     tls_certs = get_secret_data("default", "k8s-face-detection-model-tls-certs")
@@ -159,6 +161,7 @@ async def face_detect_request(url: str, b64image: str, model_name: str, request_
         res = client.infer(infer_request=request)
         # logger.trace(f"received response from kserve face detect request: {res}")   # commented this out because raw output was polluting logs
         return res
+'''
 
 
 async def image_classification_request(url: str, b64image: str, model_name: str, request_location: str = None):
@@ -190,4 +193,39 @@ async def image_classification_request(url: str, b64image: str, model_name: str,
         logger.debug("making infer request to image classification model")
         res = client.infer(infer_request=request)
         logger.trace(f"received response from kserve face detect request: {res}")   # commented this out because raw output was polluting logs
+        return res
+
+
+async def blur_request(url: str, b64image: str, model_name: str, request_location: str = None):
+    # flow for request to server running on k8s
+    # tls_certs = get_secret_data("default", "k8s-colors-model-tls-certs")
+    # client_key = tls_certs.get("client-key")
+    # client_cert = tls_certs.get("client-cert")
+    # ca_cert = tls_certs.get("ca-cert")
+
+    # creds = grpc.ssl_channel_credentials(
+    #     root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
+    # )
+
+    client = InferenceServerClient(#url=url+':80',
+                                   url=url+':50051',
+                                   ssl=False
+                                   # ssl=True,
+                                   # creds=creds,
+                                   # channel_args=(
+                                   #     # grpc.ssl_target_name_override must be set to match CN used in cert gen
+                                   #     ('grpc.ssl_target_name_override', url),)
+                                   )
+    infer_input = InferInput(
+        name="input-0", shape=[1], datatype="BYTES", data=[base64.b64decode(b64image)]
+    )
+    request = InferRequest(infer_inputs=[infer_input], model_name=model_name)
+
+    t0 = time.time()
+    for i in range(1):
+        # make inference request via gRPC
+        logger.debug(f"making infer request to colors model")
+        logger.trace(f"colors infer request port: {url}:50051")
+        res = client.infer(infer_request=request)
+        logger.trace(f"received response from kserve colors request: {res}")
         return res
