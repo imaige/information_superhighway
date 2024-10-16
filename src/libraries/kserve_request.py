@@ -224,8 +224,8 @@ async def blur_request(url: str, b64image: str, model_name: str, request_locatio
     t0 = time.time()
     for i in range(1):
         # make inference request via gRPC
-        logger.debug(f"making infer request to colors model")
-        logger.trace(f"colors infer request port: {url}:50051")
+        logger.debug(f"making infer request to blur model")
+        logger.trace(f"blur infer request port: {url}:50051")
         res = client.infer(infer_request=request)
         logger.trace(f"received response from kserve colors request: {res}")
         return res

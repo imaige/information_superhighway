@@ -196,7 +196,7 @@ async def process_blur_model(model: str, request_image, photo_id: str, project_t
     results = []
     try:
         blur_output = await kserve_request.blur_request(
-            getenv("IMAGE_CLASSIFICATION_MODEL_URL"),
+            getenv("BLUR_MODEL_URL"),
             request_image, model)
 
         logger.trace(f"blur_output is: {blur_output}")
