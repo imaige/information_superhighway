@@ -29,7 +29,7 @@ message AiModelOutputRequest {
     int32 number_of_faces = 14;
     // image classification model outputs
     repeated bytes labels_from_classifications_model = 15;
-
+    float blur_value = 16;
 }
 
 // A basic status response message

@@ -87,58 +87,12 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
 
 
 def face_analysis_layer_request(req: FaceRekognitionModelOutputRequest, port: str, request_location: str = None) -> None:
-    # async def debug_connection(channel):
-    #     while True:
-    #         state = channel.get_state(try_to_connect=True)
-    #         logger.debug(f"Channel state: {state}")
-    #         if state == grpc.ChannelConnectivity.READY:
-    #             logger.info("channel state is ready")
-    #             return
-    #         elif state in [grpc.ChannelConnectivity.TRANSIENT_FAILURE, grpc.ChannelConnectivity.SHUTDOWN]:
-    #             logger.error(f"Failed to connect. Channel state: {state}")
-    #             return
-    #         await asyncio.sleep(1)
-
-    # host, port = port.split(':')
-    # options = [
-    #     ('grpc.keepalive_time_ms', 10000),
-    #     ('grpc.keepalive_timeout_ms', 5000),
-    #     ('grpc.keepalive_permit_without_calls', True),
-    #     ('grpc.http2.max_pings_without_data', 0),
-    #     ('grpc.http2.min_time_between_pings_ms', 10000),
-    #     ('grpc.http2.min_ping_interval_without_data_ms', 5000),
-    # ]
-
-    # flow for running locally
-    # client_key = open(f'./tls_certs/{request_location}/client-key.pem', 'rb').read()
-    # client_cert = open(f'./tls_certs/{request_location}/client-cert.pem', 'rb').read()
-    # ca_cert = open(f'./tls_certs/{request_location}/ca-cert.pem', 'rb').read()
-
-    # flow for running on k8s
-    # tls_certs = get_secret_data("default", "face-analysis-layer-tls-certs")
-    # client_key = tls_certs.get("client-key")
-    # client_cert = tls_certs.get("client-cert")
-    # ca_cert = tls_certs.get("ca-cert")
-
-    # channel_credentials = grpc.ssl_channel_credentials(
-    #     root_certificates=ca_cert, private_key=client_key, certificate_chain=client_cert
-    # )
 
     # interceptors = [LoggingClientInterceptor()]
     # interceptor = LoggingClientInterceptor()
     # with grpc.secure_channel(port, channel_credentials) as channel:
     with grpc.insecure_channel(port) as channel:
-        # connection_success = await enhanced_debug_connection(channel, host, port)
-        #
-        # if not connection_success:
-        #     logger.error("Failed to establish connection. Aborting request.")
-        #     return
-
         # channel = grpc.intercept_channel(channel)  #, interceptor)
-
-        # if not await debug_channel_state(channel):
-        #     logger.error("Failed to establish a READY channel")
-        #     return
 
         stub = FaceAnalysisLayerStub(channel)
 

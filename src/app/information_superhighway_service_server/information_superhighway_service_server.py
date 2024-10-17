@@ -69,7 +69,7 @@ async def process_image_comparison_model(model: str, request_image, photo_id: st
             "color_hash": color_hash
         })
 
-        logger.debug(f"for id {photo_id}, returning output: {result}")
+        logger.debug(f"for id {photo_id}, returning image comparison output: {result}")
         return result
 
     except Exception as e:
@@ -108,7 +108,7 @@ async def process_colors_model(model: str, request_image, photo_id: str, project
             "color_averages": json.dumps(contents)
         }
 
-        logger.debug(f"for id {photo_id}, returning output: {result}")
+        logger.debug(f"for id {photo_id}, returning colors output: {result}")
         return result
 
     except Exception as e:
@@ -134,7 +134,7 @@ async def process_face_detect_model(model: str, request_image, photo_id: str, pr
     results = []
     try:
         output = rekognition_face_id_request.analyze_face(request_image, photo_id, project_table_name)
-        logger.debug(f"for id {photo_id}, returning output: {output}")
+        logger.debug(f"for id {photo_id}, returning face detect output: {output}")
         return output
 
     except Exception as e:
@@ -170,7 +170,7 @@ async def process_image_classification_model(model: str, request_image, photo_id
             "labels_from_classifications_model": contents
         })
 
-        logger.debug(f"for id {photo_id}, returning output: {result}")
+        logger.debug(f"for id {photo_id}, returning image classification output: {result}")
         return result
 
     except Exception as e:
@@ -200,15 +200,14 @@ async def process_blur_model(model: str, request_image, photo_id: str, project_t
             request_image, model)
 
         logger.trace(f"blur_output is: {blur_output}")
-        contents = []
-        contents.extend(blur_output)
+        logger.trace(f"blur_value is: {blur_output.outputs.contents.fp32_contents}")
 
-        # result = ({
-        #     "labels_from_classifications_model": contents
-        # })
-        #
-        # logger.debug(f"for id {photo_id}, returning output: {result}")
-        # return result
+        result = ({
+            "blur_value": blur_output.outputs.contents.fp32_contents
+        })
+
+        logger.debug(f"for id {photo_id}, returning blur output: {result}")
+        return result
 
     except Exception as e:
         logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
