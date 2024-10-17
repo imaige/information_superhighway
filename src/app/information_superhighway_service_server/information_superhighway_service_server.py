@@ -200,7 +200,7 @@ async def process_blur_model(model: str, request_image, photo_id: str, project_t
             request_image, model)
 
         logger.trace(f"blur_output is: {blur_output}")
-        logger.trace(f"blur_value is: {blur_output.outputs.contents.fp32_contents}")
+        logger.trace(f"blur_value is: {blur_output.outputs[0].contents.fp32_contents}")
 
         result = ({
             "blur_value": blur_output.outputs.contents.fp32_contents
