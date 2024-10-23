@@ -226,6 +226,41 @@ async def process_blur_model(model: str, request_image, photo_id: str, project_t
         results.append(response)
 
 
+async def process_feature_extraction_model(model: str, request_image, photo_id: str, project_table_name: str):
+    logger.info(f"starting {model} flow for photo {photo_id}")
+    results = []
+    try:
+        feature_extraction_output = await kserve_request.feature_extraction_request(
+            getenv("FEATURE_EXTRACTION_MODEL_URL"),
+            request_image, model)
+
+        logger.trace(f"similarity_output is: {feature_extraction_output.outputs[0].contents.fp32_contents[0]}")
+
+        result = ({
+            "similarity_output": feature_extraction_output.outputs[0].contents.fp32_contents[0]
+        })
+
+        logger.debug(f"for id {photo_id}, returning feature_extraction output: {result}")
+        return result
+
+    except Exception as e:
+        logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
+        code = code_pb2.INVALID_ARGUMENT
+        details = any_pb2.Any()
+        details.Pack(
+            error_details_pb2.DebugInfo(
+                detail=f"Error processing {model} for photo {photo_id}."
+            )
+        )
+        message = "Internal server error."
+        response = status_pb2.Status(
+            code=code,
+            message=message,
+            details=[details]
+        )
+        results.append(response)
+
+
 # Service Class Definition #
 class InformationSuperhighway(InformationSuperhighwayServiceServicer):
     def __init__(self):
@@ -261,7 +296,8 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
             "colors_basic_model": process_colors_model,
             "image_classification_model": process_image_classification_model,
             "face_detect_model": process_face_detect_model,
-            "blur_model": process_blur_model
+            "blur_model": process_blur_model,
+            "feature_extraction_model": process_feature_extraction_model
         }
 
         tasks = []
