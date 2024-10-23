@@ -234,10 +234,10 @@ async def process_feature_extraction_model(model: str, request_image, photo_id: 
             getenv("FEATURE_EXTRACTION_MODEL_URL"),
             request_image, model)
 
-        logger.trace(f"similarity_output is: {feature_extraction_output.outputs[0].contents.fp32_contents[0]}")
+        logger.trace(f"similarity_output is: {feature_extraction_output.outputs[0].contents.fp32_contents}")
 
         result = ({
-            "similarity_output": feature_extraction_output.outputs[0].contents.fp32_contents[0]
+            "similarity_output": feature_extraction_output.outputs[0].contents.fp32_contents
         })
 
         logger.debug(f"for id {photo_id}, returning feature_extraction output: {result}")
