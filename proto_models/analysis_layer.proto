@@ -30,12 +30,7 @@ message AiModelOutputRequest {
     // image classification model outputs
     repeated bytes labels_from_classifications_model = 15;
     float blur_value = 16;
-    repeated FaceExtractOutput similarity_output = 17;
-}
-
-message FaceExtractOutput {
-    string pixel = 1;
-    float value = 2;
+    repeated float similarity_output = 17;
 }
 
 // A basic status response message
