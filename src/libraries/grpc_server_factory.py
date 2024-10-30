@@ -47,7 +47,7 @@ def create_secure_server(
     return server
 
 
-def create_insecure_server(
+def create_standard_server(
         port: str, service_classes: List[Dict]
 ) -> grpc.aio.server:
 

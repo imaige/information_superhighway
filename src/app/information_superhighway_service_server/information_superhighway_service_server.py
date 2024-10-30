@@ -5,12 +5,12 @@ from proto_models.information_superhighway_pb2_grpc import (
     InformationSuperhighwayServiceServicer, add_InformationSuperhighwayServiceServicer_to_server
 )
 from proto_models.analysis_layer_pb2 import (
-    AiModelOutputRequest,
+    AiModelOutputRequest, StatusReply
 )
 import json
 from ...libraries import kserve_request
 from ...libraries import rekognition_face_id_request
-from ...libraries.grpc_server_factory import create_secure_server
+from ...libraries.grpc_server_factory import create_secure_server, create_standard_server
 from ...libraries.grpc_analysis_layer_request import analysis_layer_request
 from ...libraries.enums import AiModel
 from ...libraries.logging_file_format import configure_logger, get_log_level
@@ -41,7 +41,7 @@ log_level = get_log_level()
 configure_logger(logger, level=log_level)
 
 
-async def process_image_comparison_model(model: str, request_image, photo_id: str, analysis_layer_port: str):
+async def process_image_comparison_model(model: str, request_image, photo_id: str, project_table_name: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -69,7 +69,7 @@ async def process_image_comparison_model(model: str, request_image, photo_id: st
             "color_hash": color_hash
         })
 
-        logger.debug(f"for id {photo_id}, returning output: {result}")
+        logger.debug(f"for id {photo_id}, returning image comparison output: {result}")
         return result
 
     except Exception as e:
@@ -90,7 +90,7 @@ async def process_image_comparison_model(model: str, request_image, photo_id: st
         results.append(response)
 
 
-async def process_colors_model(model: str, request_image, photo_id: str, analysis_layer_port: str):
+async def process_colors_model(model: str, request_image, photo_id: str, project_table_name: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -108,7 +108,7 @@ async def process_colors_model(model: str, request_image, photo_id: str, analysi
             "color_averages": json.dumps(contents)
         }
 
-        logger.debug(f"for id {photo_id}, returning output: {result}")
+        logger.debug(f"for id {photo_id}, returning colors output: {result}")
         return result
 
     except Exception as e:
@@ -129,12 +129,12 @@ async def process_colors_model(model: str, request_image, photo_id: str, analysi
         results.append(response)
 
 
-async def process_face_detect_model(model: str, request_image, photo_id: str, analysis_layer_port: str):
+async def process_face_detect_model(model: str, request_image, photo_id: str, project_table_name: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
-        output = rekognition_face_id_request.analyze_face(request_image)
-        logger.debug(f"for id {photo_id}, returning output: {output}")
+        output = rekognition_face_id_request.analyze_face(request_image, photo_id, project_table_name)
+        logger.debug(f"for id {photo_id}, returning face detect output: {output}")
         return output
 
     except Exception as e:
@@ -155,7 +155,7 @@ async def process_face_detect_model(model: str, request_image, photo_id: str, an
         results.append(response)
 
 
-async def process_image_classification_model(model: str, request_image, photo_id: str, analysis_layer_port: str):
+async def process_image_classification_model(model: str, request_image, photo_id: str, project_table_name: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -170,7 +170,77 @@ async def process_image_classification_model(model: str, request_image, photo_id
             "labels_from_classifications_model": contents
         })
 
-        logger.debug(f"for id {photo_id}, returning output: {result}")
+        logger.debug(f"for id {photo_id}, returning image classification output: {result}")
+        return result
+
+    except Exception as e:
+        logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
+        code = code_pb2.INVALID_ARGUMENT
+        details = any_pb2.Any()
+        details.Pack(
+            error_details_pb2.DebugInfo(
+                detail=f"Error processing {model} for photo {photo_id}."
+            )
+        )
+        message = "Internal server error."
+        response = status_pb2.Status(
+            code=code,
+            message=message,
+            details=[details]
+        )
+        results.append(response)
+
+
+async def process_blur_model(model: str, request_image, photo_id: str, project_table_name: str):
+    logger.info(f"starting {model} flow for photo {photo_id}")
+    results = []
+    try:
+        blur_output = await kserve_request.blur_request(
+            getenv("BLUR_MODEL_URL"),
+            request_image, model)
+
+        logger.trace(f"blur_value is: {blur_output.outputs[0].contents.fp32_contents[0]}")
+
+        result = ({
+            "blur_value": blur_output.outputs[0].contents.fp32_contents[0]
+        })
+
+        logger.debug(f"for id {photo_id}, returning blur output: {result}")
+        return result
+
+    except Exception as e:
+        logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
+        code = code_pb2.INVALID_ARGUMENT
+        details = any_pb2.Any()
+        details.Pack(
+            error_details_pb2.DebugInfo(
+                detail=f"Error processing {model} for photo {photo_id}."
+            )
+        )
+        message = "Internal server error."
+        response = status_pb2.Status(
+            code=code,
+            message=message,
+            details=[details]
+        )
+        results.append(response)
+
+
+async def process_feature_extraction_model(model: str, request_image, photo_id: str, project_table_name: str):
+    logger.info(f"starting {model} flow for photo {photo_id}")
+    results = []
+    try:
+        feature_extraction_output = await kserve_request.feature_extraction_request(
+            getenv("FEATURE_EXTRACTION_MODEL_URL"),
+            request_image, model)
+
+        logger.trace(f"similarity_output is: {feature_extraction_output.outputs[0].contents.fp32_contents}")
+
+        result = ({
+            "similarity_output": feature_extraction_output.outputs[0].contents.fp32_contents
+        })
+
+        logger.debug(f"for id {photo_id}, returning feature_extraction output: {result}")
         return result
 
     except Exception as e:
@@ -220,12 +290,14 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
             f"and models: {request.models}"
         )
         request_image = request.b64image
-        analysis_layer_port = f'{getenv("ANALYSIS_LAYER_URL")}:80'
+        analysis_layer_port = f'{getenv("ANALYSIS_LAYER_URL")}:50051'
         model_functions = {
             "image_comparison_hash_model": process_image_comparison_model,
             "colors_basic_model": process_colors_model,
             "image_classification_model": process_image_classification_model,
-            "face_detect_model": process_face_detect_model
+            "face_detect_model": process_face_detect_model,
+            "blur_model": process_blur_model,
+            "feature_extraction_model": process_feature_extraction_model
         }
 
         tasks = []
@@ -233,7 +305,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         for model in request.models:
             if model in model_functions:
                 task = asyncio.create_task(
-                    model_functions[model](model, request_image, request.photo_id, analysis_layer_port))
+                    model_functions[model](model, request_image, request.photo_id, request.project_table_name))
                 tasks.append(task)
             else:
                 logger.warning(f"Error - provided model name of {model} is invalid.")
@@ -339,8 +411,8 @@ async def serve() -> None:
         },
     ]
 
-    server = create_secure_server(port, service_classes, server_key, server_cert, ca_cert)
-    # server = create_insecure_server(port, service_classes)
+    # server = create_secure_server(port, service_classes, server_key, server_cert, ca_cert)
+    server = create_standard_server(port, service_classes)
 
     logger.notice("Starting server on %s", port)
     await server.start()
