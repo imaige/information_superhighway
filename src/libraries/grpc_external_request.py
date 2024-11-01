@@ -15,16 +15,16 @@ import grpc
 # from proto_models.analysis_layer_pb2_grpc import (
 #     AnalysisLayerStub
 # )
-from .face_analysis_layer_pb2 import (
+from face_analysis_layer_pb2 import (
     FaceRekognitionModelOutputRequest
 )
-from .face_analysis_layer_pb2_grpc import (
+from face_analysis_layer_pb2_grpc import (
     FaceAnalysisLayerStub
 )
 import asyncio
 from os import getenv
 import uuid
-from .logging_file_format import configure_logger, get_log_level
+from logging_file_format import configure_logger, get_log_level
 # from get_tls_certs import get_secret_data
 
 import logging
@@ -37,7 +37,7 @@ configure_logger(logger, level=log_level)
 
 async def face_analysis_layer_test_request() -> None:
     logger.trace("starting face_analysis_layer_test_request")
-    port = f'face-analysis-layer-service-service:50051'
+    port = f'localhost:50051'
     face_details = {
         'BoundingBox': {'Width': 0.17027755081653595, 'Height': 0.11831283569335938, 'Left': 0.4174186587333679,
                         'Top': 0.2626023292541504}, 'AgeRange': {'Low': 19, 'High': 25},
@@ -91,7 +91,7 @@ async def face_analysis_layer_test_request() -> None:
         'FaceOccluded': {'Value': True, 'Confidence': 99.95866394042969},
         'EyeDirection': {'Yaw': -8.403111457824707, 'Pitch': -35.83302307128906, 'Confidence': 99.62862396240234}}
     project_table_name = "1_a85eeccf-1de7-47fd-a668-7e78270d4457_photos"
-    photo_id = "47aeae7e-89f8-48e0-9d33-5d8e02edd02a"
+    photo_id = "134f1148-ee92-4ec2-bee7-8ea02eedb0ab"
     logger.info("creating face_request")
     req = FaceRekognitionModelOutputRequest(
         project_table_name=project_table_name,
@@ -193,3 +193,7 @@ async def face_analysis_layer_test_request() -> None:
             logger.error(f"gRPC error for {req.photo_id}: {e.code()}, {e.details()}")
         except Exception as e:
             logger.error(f"Error occurred in gRPC request for {req.photo_id}: {e}")
+
+if __name__ == '__main__':
+    logger.info("starting program")
+    asyncio.run(face_analysis_layer_test_request())

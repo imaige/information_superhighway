@@ -100,15 +100,19 @@ if __name__ == '__main__':
     recipe = {
         "name": "test-recipe",
         "description": "describe me",
-        "table_name": "5_5bb461c9-4f12-4fd9-81b3-0faf590c1da5_photos",
+        # "table_name": "1_8ba010f4-6b0d-4407-be4a-5083efce26df_photos",  # qa
+        # "table_name": "1_a85eeccf-1de7-47fd-a668-7e78270d4457_photos",  # dev
+        "table_name": "z_1_9a8db925-52fc-404c-839d-b9c8830d6256_photos",
         # "project_id": 1,
         "models": [
-            "image_comparison_hash_model",
+            # "image_comparison_hash_model",
             "colors_basic_model",
             # "image_classification_model",
-            "face_detect_model",
-            # "image_classification_model"
-        ]
+            # "face_detect_model",
+            # "blur_model",
+            # "feature_extraction_model"
+        ],
+        "title": "test-file"
     }
 
     token = ""
@@ -127,25 +131,29 @@ if __name__ == '__main__':
     # local photo ai request
     # url = "http://0.0.0.0:8000/api/v1/photos/model_request"
     # local vanilla photo create
-    # url = "http://0.0.0.0:8000/api/v1/photos/"
+    url = "http://0.0.0.0:8000/api/v1/photos/"
 
     # k8s vanilla photo create
     # url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/photos/"
 
     # k8s dev
     # vanilla photo create
-    # url = "https://dev.api.mediaviz.ai/api/v1/photos_new/"
+    # url = "https://dev.api.mediaviz.ai/api/v1/photos/"
     # photo + model
-    url = "https://dev.api.mediaviz.ai/api/v1/photos/model_request"
+    # url = "https://dev.api.mediaviz.ai/api/v1/photos/model_request"
 
-    #  k8s QA
+    # k8s dev new
+    # k8s photo ai request
+    # url = "http://a2dfc76eee74e458ba52f9438dae0f4c-176970126.us-east-2.elb.amazonaws.com:443/api/v1/photos/model_request"
+
+    # k8s QA
     # k8s photo ai request
     # url = "https://api.mediaviz.ai/api/v1/photos/model_request"
 
     # token
     # url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/token"
 
-    if url[8:11] == "dev":
+    if url[8:11] == "dev" or url[0:5] == "http:":
         token = getenv("K8S_DEV_EXTERNAL_API_BEARER_TOKEN")
     else:
         token = getenv("K8S_QA_EXTERNAL_API_BEARER_TOKEN")
@@ -154,21 +162,23 @@ if __name__ == '__main__':
         'Authorization': f'Bearer {token}',
     }
 
-    for i in range(0, 1):
+    # for i in range(0, 1):
         # recipe = {
         #     "table_name": "5_5bb461c9-4f12-4fd9-81b3-0faf590c1da5_photos",
         # }
-        request_with_body_and_photo(url, recipe, "post", heads, "test_images/small/test_image.jpg")
+        # request_with_body_and_photo(url, recipe, "post", heads, "test_images/small/test_image.jpg")
         # request_with_body_and_photo(url, recipe, "post", heads, "test_images/small/test_image.jpg")
 
-    directory = 'test_images/small_with_face'
+    # directory = 'test_images/small_with_face'
+    directory = 'test_images/small_selection'
+    # directory = 'test_images/small'
 
-    # for filename in listdir(directory):
-    #     ext = path.splitext(filename)[1]
-    #     if ext.lower() == '.jpg':
-    #         file_path = path.join(directory, filename)
-    #         logger.info(f"file path is: {file_path}")
-    #         request_with_body_and_photo(url, recipe, "post", heads, file_path)
+    for filename in listdir(directory):
+        ext = path.splitext(filename)[1]
+        if ext.lower() == '.jpg':
+            file_path = path.join(directory, filename)
+            logger.info(f"file path is: {file_path}")
+            request_with_body_and_photo(url, recipe, "post", heads, file_path)
 
     # get token
     # request_with_body(url, token_body, "post", heads)

@@ -41,7 +41,7 @@ log_level = get_log_level()
 configure_logger(logger, level=log_level)
 
 
-async def process_image_comparison_model(model: str, request_image, photo_id: str, project_table_name: str):
+async def process_image_comparison_model(model: str, request_image, photo_id: int, project_table_name: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -90,7 +90,7 @@ async def process_image_comparison_model(model: str, request_image, photo_id: st
         results.append(response)
 
 
-async def process_colors_model(model: str, request_image, photo_id: str, project_table_name: str):
+async def process_colors_model(model: str, request_image, photo_id: int, project_table_name: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -129,7 +129,7 @@ async def process_colors_model(model: str, request_image, photo_id: str, project
         results.append(response)
 
 
-async def process_face_detect_model(model: str, request_image, photo_id: str, project_table_name: str):
+async def process_face_detect_model(model: str, request_image, photo_id: int, project_table_name: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -155,7 +155,7 @@ async def process_face_detect_model(model: str, request_image, photo_id: str, pr
         results.append(response)
 
 
-async def process_image_classification_model(model: str, request_image, photo_id: str, project_table_name: str):
+async def process_image_classification_model(model: str, request_image, photo_id: int, project_table_name: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -191,7 +191,7 @@ async def process_image_classification_model(model: str, request_image, photo_id
         results.append(response)
 
 
-async def process_blur_model(model: str, request_image, photo_id: str, project_table_name: str):
+async def process_blur_model(model: str, request_image, photo_id: int, project_table_name: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
@@ -226,7 +226,7 @@ async def process_blur_model(model: str, request_image, photo_id: str, project_t
         results.append(response)
 
 
-async def process_feature_extraction_model(model: str, request_image, photo_id: str, project_table_name: str):
+async def process_feature_extraction_model(model: str, request_image, photo_id: int, project_table_name: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
