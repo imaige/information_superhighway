@@ -31,6 +31,9 @@ message AiModelOutputRequest {
     repeated bytes labels_from_classifications_model = 15;
     float blur_value = 16;
     repeated float similarity_output = 17;
+    float reference_1_average_distance = 18;
+    float reference_2_average_distance = 19;
+    float reference_3_average_distance = 20;
 }
 
 // A basic status response message

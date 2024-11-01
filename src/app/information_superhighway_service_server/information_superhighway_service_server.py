@@ -51,22 +51,30 @@ async def process_image_comparison_model(model: str, request_image, photo_id: in
             request_image, model)
 
         output = image_comparison_output.outputs[0]
+        logger.trace(f"output is: {output}")
         shape = output.shape[0]
         contents = []
         for j in range(0, shape):
             byte_string = output.contents.bytes_contents[j]
             contents.extend([byte_string])
+        logger.trace(f"contents is: {contents}")
         average_hash = output.contents.bytes_contents[0]
         perceptual_hash = output.contents.bytes_contents[1]
         difference_hash = output.contents.bytes_contents[2]
         wavelet_hash_haar = output.contents.bytes_contents[3]
         color_hash = output.contents.bytes_contents[4]
+        reference_1_average_distance = output.contents.bytes_contents[5]
+        reference_2_average_distance = output.contents.bytes_contents[6]
+        reference_3_average_distance = output.contents.bytes_contents[7]
         result = ({
             "average_hash": average_hash,
             "perceptual_hash": perceptual_hash,
             "difference_hash": difference_hash,
             "wavelet_hash_haar": wavelet_hash_haar,
-            "color_hash": color_hash
+            "color_hash": color_hash,
+            "reference_1_average_distance": reference_1_average_distance,
+            "reference_2_average_distance": reference_2_average_distance,
+            "reference_3_average_distance": reference_3_average_distance
         })
 
         logger.debug(f"for id {photo_id}, returning image comparison output: {result}")
