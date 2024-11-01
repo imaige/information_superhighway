@@ -63,9 +63,9 @@ async def process_image_comparison_model(model: str, request_image, photo_id: in
         difference_hash = output.contents.bytes_contents[2]
         wavelet_hash_haar = output.contents.bytes_contents[3]
         color_hash = output.contents.bytes_contents[4]
-        reference_1_average_distance = output.contents.bytes_contents[5]
-        reference_2_average_distance = output.contents.bytes_contents[6]
-        reference_3_average_distance = output.contents.bytes_contents[7]
+        reference_1_average_distance = float(output.contents.bytes_contents[5])
+        reference_2_average_distance = float(output.contents.bytes_contents[6])
+        reference_3_average_distance = float(output.contents.bytes_contents[7])
         result = ({
             "average_hash": average_hash,
             "perceptual_hash": perceptual_hash,
