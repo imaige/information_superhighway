@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from . import face_analysis_layer_pb2 as face__analysis__layer__pb2
+import face_analysis_layer_pb2 as face__analysis__layer__pb2
 # import face_analysis_layer_pb2 as face__analysis__layer__pb2
 
 

@@ -6,7 +6,7 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Optional as _Op
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class AiModelOutputRequest(_message.Message):
-    __slots__ = ("photo_id", "project_table_name", "image_comparison_run_id", "image_comparison_name", "image_comparison_datatype", "image_comparison_shape", "average_hash", "perceptual_hash", "difference_hash", "wavelet_hash_haar", "color_hash", "color_averages", "bounding_boxes_from_faces_model", "number_of_faces", "labels_from_classifications_model", "blur_value", "similarity_output")
+    __slots__ = ("photo_id", "project_table_name", "image_comparison_run_id", "image_comparison_name", "image_comparison_datatype", "image_comparison_shape", "average_hash", "perceptual_hash", "difference_hash", "wavelet_hash_haar", "color_hash", "color_averages", "bounding_boxes_from_faces_model", "number_of_faces", "labels_from_classifications_model", "blur_value", "similarity_output", "reference_1_average_distance", "reference_2_average_distance", "reference_3_average_distance")
     PHOTO_ID_FIELD_NUMBER: _ClassVar[int]
     PROJECT_TABLE_NAME_FIELD_NUMBER: _ClassVar[int]
     IMAGE_COMPARISON_RUN_ID_FIELD_NUMBER: _ClassVar[int]
@@ -24,7 +24,10 @@ class AiModelOutputRequest(_message.Message):
     LABELS_FROM_CLASSIFICATIONS_MODEL_FIELD_NUMBER: _ClassVar[int]
     BLUR_VALUE_FIELD_NUMBER: _ClassVar[int]
     SIMILARITY_OUTPUT_FIELD_NUMBER: _ClassVar[int]
-    photo_id: str
+    REFERENCE_1_AVERAGE_DISTANCE_FIELD_NUMBER: _ClassVar[int]
+    REFERENCE_2_AVERAGE_DISTANCE_FIELD_NUMBER: _ClassVar[int]
+    REFERENCE_3_AVERAGE_DISTANCE_FIELD_NUMBER: _ClassVar[int]
+    photo_id: int
     project_table_name: str
     image_comparison_run_id: str
     image_comparison_name: str
@@ -41,7 +44,10 @@ class AiModelOutputRequest(_message.Message):
     labels_from_classifications_model: _containers.RepeatedScalarFieldContainer[bytes]
     blur_value: float
     similarity_output: _containers.RepeatedScalarFieldContainer[float]
-    def __init__(self, photo_id: _Optional[str] = ..., project_table_name: _Optional[str] = ..., image_comparison_run_id: _Optional[str] = ..., image_comparison_name: _Optional[str] = ..., image_comparison_datatype: _Optional[str] = ..., image_comparison_shape: _Optional[int] = ..., average_hash: _Optional[bytes] = ..., perceptual_hash: _Optional[bytes] = ..., difference_hash: _Optional[bytes] = ..., wavelet_hash_haar: _Optional[bytes] = ..., color_hash: _Optional[bytes] = ..., color_averages: _Optional[str] = ..., bounding_boxes_from_faces_model: _Optional[str] = ..., number_of_faces: _Optional[int] = ..., labels_from_classifications_model: _Optional[_Iterable[bytes]] = ..., blur_value: _Optional[float] = ..., similarity_output: _Optional[_Iterable[float]] = ...) -> None: ...
+    reference_1_average_distance: float
+    reference_2_average_distance: float
+    reference_3_average_distance: float
+    def __init__(self, photo_id: _Optional[int] = ..., project_table_name: _Optional[str] = ..., image_comparison_run_id: _Optional[str] = ..., image_comparison_name: _Optional[str] = ..., image_comparison_datatype: _Optional[str] = ..., image_comparison_shape: _Optional[int] = ..., average_hash: _Optional[bytes] = ..., perceptual_hash: _Optional[bytes] = ..., difference_hash: _Optional[bytes] = ..., wavelet_hash_haar: _Optional[bytes] = ..., color_hash: _Optional[bytes] = ..., color_averages: _Optional[str] = ..., bounding_boxes_from_faces_model: _Optional[str] = ..., number_of_faces: _Optional[int] = ..., labels_from_classifications_model: _Optional[_Iterable[bytes]] = ..., blur_value: _Optional[float] = ..., similarity_output: _Optional[_Iterable[float]] = ..., reference_1_average_distance: _Optional[float] = ..., reference_2_average_distance: _Optional[float] = ..., reference_3_average_distance: _Optional[float] = ...) -> None: ...
 
 class StatusReply(_message.Message):
     __slots__ = ("photo_id", "model_name")

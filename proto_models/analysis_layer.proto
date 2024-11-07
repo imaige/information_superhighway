@@ -10,7 +10,7 @@ service AnalysisLayer {
 
 // AI analysis request message
 message AiModelOutputRequest {
-    string photo_id = 1;
+    int32 photo_id = 1;
     string project_table_name = 2;
     // image comparison outputs
     string image_comparison_run_id = 3;
@@ -31,6 +31,9 @@ message AiModelOutputRequest {
     repeated bytes labels_from_classifications_model = 15;
     float blur_value = 16;
     repeated float similarity_output = 17;
+    float reference_1_average_distance = 18;
+    float reference_2_average_distance = 19;
+    float reference_3_average_distance = 20;
 }
 
 // A basic status response message
