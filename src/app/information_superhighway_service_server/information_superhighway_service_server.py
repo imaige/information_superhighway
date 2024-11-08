@@ -414,8 +414,10 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         similarity_input = SimilarityRequest(
             project_table_name=request.table_name
         )
+        logger.trace("similarity_input request created")
         try:
             similarity_model_port = f'{getenv("SIMILARITY_MODEL_URL")}:50051'
+            logger.trace("about to call similarity_model_request")
             similarity_response = await similarity_model_request(similarity_input, similarity_model_port)
             logger.trace(f"response from similarity model is: {similarity_response}")
         except Exception as e:
