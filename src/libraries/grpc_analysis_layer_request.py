@@ -117,7 +117,7 @@ def face_analysis_layer_request(req: FaceRekognitionModelOutputRequest, port: st
 
 
 async def similarity_model_request(req: SimilarityRequest, port: str, request_location: str = None) -> None:
-    logger.trace("started similarity_model_request")
+    logger.trace(f"started similarity_model_request to port {port}")
     # interceptors = [LoggingClientInterceptor()]
     # interceptor = LoggingClientInterceptor()
     # with grpc.secure_channel(port, channel_credentials) as channel:
