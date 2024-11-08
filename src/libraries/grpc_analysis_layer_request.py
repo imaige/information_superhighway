@@ -121,7 +121,7 @@ async def similarity_model_request(req: SimilarityRequest, port: str, request_lo
     # interceptors = [LoggingClientInterceptor()]
     # interceptor = LoggingClientInterceptor()
     # with grpc.secure_channel(port, channel_credentials) as channel:
-    with grpc.aio.insecure_channel(port) as channel:
+    async with grpc.aio.insecure_channel(port) as channel:
         # channel = grpc.intercept_channel(channel)  #, interceptor)
 
         stub = SimilarityModelServiceStub(channel)
