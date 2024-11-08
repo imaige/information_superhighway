@@ -18,6 +18,12 @@ from proto_models.face_analysis_layer_pb2 import (
 from proto_models.face_analysis_layer_pb2_grpc import (
     FaceAnalysisLayerStub
 )
+from proto_models.similarity_model_pb2 import (
+    SimilarityRequest, SimilarityReply
+)
+from proto_models.similarity_model_pb2_grpc import (
+    SimilarityModelServiceStub
+)
 from .logging_file_format import configure_logger, get_log_level
 from .get_tls_certs import get_secret_data
 
@@ -108,6 +114,30 @@ def face_analysis_layer_request(req: FaceRekognitionModelOutputRequest, port: st
             logger.error(f"Timeout error for {req.photo_id}")
         except Exception as e:
             logger.error(f"Error occurred in gRPC request for {req.photo_id}: {e}")
+
+
+async def similarity_model_request(req: SimilarityRequest, port: str, request_location: str = None) -> None:
+
+    # interceptors = [LoggingClientInterceptor()]
+    # interceptor = LoggingClientInterceptor()
+    # with grpc.secure_channel(port, channel_credentials) as channel:
+    with grpc.aio.insecure_channel(port) as channel:
+        # channel = grpc.intercept_channel(channel)  #, interceptor)
+
+        stub = SimilarityModelServiceStub(channel)
+
+        logger.trace(f"Client making SimilarityRequest with data: {req}")
+        try:
+            logger.debug(f"Initiating gRPC similarity call for table {req.project_table_name} to port {port}")
+            # logger.trace(f"Channel state before initiating call: {channel.get_state()}")
+            async for response in stub.SimilarityAnalysisRequestHandler(req, timeout=30):
+                logger.info(f"received response: {response}")
+        except grpc.RpcError as e:
+            logger.error(f"gRPC error for {req.project_table_name}: {e.code()}, {e.details()}")
+        except asyncio.TimeoutError:
+            logger.error(f"Timeout error for {req.project_table_name}")
+        except Exception as e:
+            logger.error(f"Error occurred in gRPC request for {req.project_table_name}: {e}")
 
 
 # helpers

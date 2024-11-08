@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package similarity_model;
+
+// Service definition
+service SimilarityModelService {
+    // AI analysis request
+    rpc SimilarityAnalysisRequestHandler (SimilarityRequest) returns (stream SimilarityReply) {}
+}
+
+// Similarity analysis request message
+message SimilarityRequest {
+    string project_table_name = 1;
+}
+
+// Similarity analysis response message
+message SimilarityReply {
+    string message = 1;
+}

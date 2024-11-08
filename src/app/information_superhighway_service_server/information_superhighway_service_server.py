@@ -1,5 +1,5 @@
 from proto_models.information_superhighway_pb2 import (
-    ImageAnalysisRequest, SuperhighwayStatusReply
+    ImageAnalysisRequest, SuperhighwayStatusReply, SimilarityAnalysisRequest
 )
 from proto_models.information_superhighway_pb2_grpc import (
     InformationSuperhighwayServiceServicer, add_InformationSuperhighwayServiceServicer_to_server
@@ -7,11 +7,14 @@ from proto_models.information_superhighway_pb2_grpc import (
 from proto_models.analysis_layer_pb2 import (
     AiModelOutputRequest, StatusReply
 )
+from proto_models.similarity_model_pb2 import (
+    SimilarityRequest, SimilarityReply
+)
 import json
 from ...libraries import kserve_request
 from ...libraries import rekognition_face_id_request
 from ...libraries.grpc_server_factory import create_secure_server, create_standard_server
-from ...libraries.grpc_analysis_layer_request import analysis_layer_request
+from ...libraries.grpc_analysis_layer_request import analysis_layer_request, similarity_model_request
 from ...libraries.enums import AiModel
 from ...libraries.logging_file_format import configure_logger, get_log_level
 import logging
@@ -353,7 +356,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
             )
             try:
                 analysis_layer_response = await analysis_layer_request(analysis_layer_input, analysis_layer_port)
-                logger.info(f"response from analysis layer is: {analysis_layer_response}")
+                logger.trace(f"response from analysis layer is: {analysis_layer_response}")
                 results.append(SuperhighwayStatusReply(message="OK"))
             except Exception as e:
                 logger.error(f"Error sending combined results to analysis layer: {e}")
@@ -398,6 +401,31 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 details=[any_pb2.Any().Pack(
                     error_details_pb2.DebugInfo(
                         detail=f"Processing for photo {request.photo_id} exceeded time limit."
+                    )
+                )]
+            )
+
+    async def SimilarityAiAnalysisRequest(
+            self, request: SimilarityAnalysisRequest, context: grpc.aio.ServicerContext
+    ):
+        logger.info(
+            f"Serving Similarity model request for project: {request.table_name}"
+        )
+        similarity_input = SimilarityRequest(
+            project_table_name=request.table_name
+        )
+        try:
+            similarity_model_port = f'{getenv("SIMILARITY_MODEL_URL")}:50051'
+            similarity_response = await similarity_model_request(similarity_input, similarity_model_port)
+            logger.trace(f"response from similarity model is: {similarity_response}")
+        except Exception as e:
+            logger.error(f"Error sending combined results to similarity model: {e}")
+            yield status_pb2.Status(
+                code=code_pb2.INTERNAL,
+                message="Similarity request error.",
+                details=[any_pb2.Any().Pack(
+                    error_details_pb2.DebugInfo(
+                        detail=f"Error sending results to similarity model for project {request.table_name}: {str(e)}"
                     )
                 )]
             )

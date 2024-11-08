@@ -20,6 +20,11 @@ class InformationSuperhighwayServiceStub(object):
                 request_serializer=information__superhighway__pb2.ImageAnalysisRequest.SerializeToString,
                 response_deserializer=information__superhighway__pb2.SuperhighwayStatusReply.FromString,
                 )
+        self.SimilarityAiAnalysisRequest = channel.unary_stream(
+                '/information_superhighway.InformationSuperhighwayService/SimilarityAiAnalysisRequest',
+                request_serializer=information__superhighway__pb2.SimilarityAnalysisRequest.SerializeToString,
+                response_deserializer=information__superhighway__pb2.SuperhighwayStatusReply.FromString,
+                )
 
 
 class InformationSuperhighwayServiceServicer(object):
@@ -33,12 +38,24 @@ class InformationSuperhighwayServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SimilarityAiAnalysisRequest(self, request, context):
+        """Similarity analysis request
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_InformationSuperhighwayServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'ImageAiAnalysisRequest': grpc.unary_stream_rpc_method_handler(
                     servicer.ImageAiAnalysisRequest,
                     request_deserializer=information__superhighway__pb2.ImageAnalysisRequest.FromString,
+                    response_serializer=information__superhighway__pb2.SuperhighwayStatusReply.SerializeToString,
+            ),
+            'SimilarityAiAnalysisRequest': grpc.unary_stream_rpc_method_handler(
+                    servicer.SimilarityAiAnalysisRequest,
+                    request_deserializer=information__superhighway__pb2.SimilarityAnalysisRequest.FromString,
                     response_serializer=information__superhighway__pb2.SuperhighwayStatusReply.SerializeToString,
             ),
     }
@@ -65,6 +82,23 @@ class InformationSuperhighwayService(object):
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/information_superhighway.InformationSuperhighwayService/ImageAiAnalysisRequest',
             information__superhighway__pb2.ImageAnalysisRequest.SerializeToString,
+            information__superhighway__pb2.SuperhighwayStatusReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SimilarityAiAnalysisRequest(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/information_superhighway.InformationSuperhighwayService/SimilarityAiAnalysisRequest',
+            information__superhighway__pb2.SimilarityAnalysisRequest.SerializeToString,
             information__superhighway__pb2.SuperhighwayStatusReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
