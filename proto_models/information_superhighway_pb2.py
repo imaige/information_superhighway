@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1einformation_superhighway.proto\x12\x18information_superhighway\"f\n\x14ImageAnalysisRequest\x12\x10\n\x08photo_id\x18\x01 \x01(\x05\x12\x1a\n\x12project_table_name\x18\x02 \x01(\t\x12\x10\n\x08\x62\x36\x34image\x18\x03 \x01(\t\x12\x0e\n\x06models\x18\x04 \x03(\t\"(\n\x15ImageAnalysisResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"*\n\x17SuperhighwayStatusReply\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x07\n\x05\x45mpty2\xa1\x01\n\x1eInformationSuperhighwayService\x12\x7f\n\x16ImageAiAnalysisRequest\x12..information_superhighway.ImageAnalysisRequest\x1a\x31.information_superhighway.SuperhighwayStatusReply\"\x00\x30\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1einformation_superhighway.proto\x12\x18information_superhighway\"f\n\x14ImageAnalysisRequest\x12\x10\n\x08photo_id\x18\x01 \x01(\x05\x12\x1a\n\x12project_table_name\x18\x02 \x01(\t\x12\x10\n\x08\x62\x36\x34image\x18\x03 \x01(\t\x12\x0e\n\x06models\x18\x04 \x03(\t\"/\n\x19SimilarityAnalysisRequest\x12\x12\n\ntable_name\x18\x01 \x01(\t\"(\n\x15ImageAnalysisResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"*\n\x17SuperhighwayStatusReply\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x07\n\x05\x45mpty2\xad\x02\n\x1eInformationSuperhighwayService\x12\x7f\n\x16ImageAiAnalysisRequest\x12..information_superhighway.ImageAnalysisRequest\x1a\x31.information_superhighway.SuperhighwayStatusReply\"\x00\x30\x01\x12\x89\x01\n\x1bSimilarityAiAnalysisRequest\x12\x33.information_superhighway.SimilarityAnalysisRequest\x1a\x31.information_superhighway.SuperhighwayStatusReply\"\x00\x30\x01\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -23,12 +23,14 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
   _globals['_IMAGEANALYSISREQUEST']._serialized_start=60
   _globals['_IMAGEANALYSISREQUEST']._serialized_end=162
-  _globals['_IMAGEANALYSISRESPONSE']._serialized_start=164
-  _globals['_IMAGEANALYSISRESPONSE']._serialized_end=204
-  _globals['_SUPERHIGHWAYSTATUSREPLY']._serialized_start=206
-  _globals['_SUPERHIGHWAYSTATUSREPLY']._serialized_end=248
-  _globals['_EMPTY']._serialized_start=250
-  _globals['_EMPTY']._serialized_end=257
-  _globals['_INFORMATIONSUPERHIGHWAYSERVICE']._serialized_start=260
-  _globals['_INFORMATIONSUPERHIGHWAYSERVICE']._serialized_end=421
+  _globals['_SIMILARITYANALYSISREQUEST']._serialized_start=164
+  _globals['_SIMILARITYANALYSISREQUEST']._serialized_end=211
+  _globals['_IMAGEANALYSISRESPONSE']._serialized_start=213
+  _globals['_IMAGEANALYSISRESPONSE']._serialized_end=253
+  _globals['_SUPERHIGHWAYSTATUSREPLY']._serialized_start=255
+  _globals['_SUPERHIGHWAYSTATUSREPLY']._serialized_end=297
+  _globals['_EMPTY']._serialized_start=299
+  _globals['_EMPTY']._serialized_end=306
+  _globals['_INFORMATIONSUPERHIGHWAYSERVICE']._serialized_start=309
+  _globals['_INFORMATIONSUPERHIGHWAYSERVICE']._serialized_end=610
 # @@protoc_insertion_point(module_scope)

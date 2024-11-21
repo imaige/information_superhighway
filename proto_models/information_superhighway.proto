@@ -6,6 +6,8 @@ package information_superhighway;
 service InformationSuperhighwayService {
     // AI analysis request
     rpc ImageAiAnalysisRequest (ImageAnalysisRequest) returns (stream SuperhighwayStatusReply) {}
+    // Similarity analysis request
+    rpc SimilarityAiAnalysisRequest (SimilarityAnalysisRequest) returns (stream SuperhighwayStatusReply) {}
 }
 
 // AI analysis request message
@@ -14,6 +16,11 @@ message ImageAnalysisRequest {
     string project_table_name = 2;
     string b64image = 3;
     repeated string models = 4;
+}
+
+// Similarity request message
+message SimilarityAnalysisRequest {
+    string table_name = 1;
 }
 
 // AI analysis response message

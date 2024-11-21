@@ -100,17 +100,16 @@ if __name__ == '__main__':
     recipe = {
         "name": "test-recipe",
         "description": "describe me",
-        # "table_name": "1_8ba010f4-6b0d-4407-be4a-5083efce26df_photos",  # qa
-        # "table_name": "1_a85eeccf-1de7-47fd-a668-7e78270d4457_photos",  # dev
-        "table_name": "z_1_9a8db925-52fc-404c-839d-b9c8830d6256_photos",
+        "table_name": "z_2_688cf6a4-7a24-4bd5-84fc-e9789861b558_photos",  # qa
+        # "table_name": "z_1_9a8db925-52fc-404c-839d-b9c8830d6256_photos",  # dev
         # "project_id": 1,
         "models": [
             "image_comparison_hash_model",
-            "colors_basic_model",
-            "image_classification_model",
-            "face_detect_model",
-            "blur_model",
-            "feature_extraction_model"
+            # "colors_basic_model",
+            # "image_classification_model",
+            # "face_detect_model",
+            # "blur_model",
+            # "feature_extraction_model"
         ],
         "title": "test-file"
     }
@@ -140,15 +139,15 @@ if __name__ == '__main__':
     # vanilla photo create
     # url = "https://dev.api.mediaviz.ai/api/v1/photos/"
     # photo + model
-    url = "https://dev.api.mediaviz.ai/api/v1/photos/model_request"
+    # url = "https://dev.api.mediaviz.ai/api/v1/photos/model_request"
 
-    # k8s dev new
+    # k8s dev raw url
     # k8s photo ai request
     # url = "http://a2dfc76eee74e458ba52f9438dae0f4c-176970126.us-east-2.elb.amazonaws.com:443/api/v1/photos/model_request"
 
     # k8s QA
     # k8s photo ai request
-    # url = "https://api.mediaviz.ai/api/v1/photos/model_request"
+    url = "https://api.mediaviz.ai/api/v1/photos/model_request"
 
     # token
     # url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/token"
@@ -169,9 +168,9 @@ if __name__ == '__main__':
         # request_with_body_and_photo(url, recipe, "post", heads, "test_images/small/test_image.jpg")
         # request_with_body_and_photo(url, recipe, "post", heads, "test_images/small/test_image.jpg")
 
-    directory = 'test_images/small_with_face'
+    # directory = 'test_images/small_with_face'
     # directory = 'test_images/small_selection'
-    # directory = 'test_images/small'
+    directory = 'test_images/small'
 
     for filename in listdir(directory):
         ext = path.splitext(filename)[1]

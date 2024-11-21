@@ -17,6 +17,12 @@ class ImageAnalysisRequest(_message.Message):
     models: _containers.RepeatedScalarFieldContainer[str]
     def __init__(self, photo_id: _Optional[int] = ..., project_table_name: _Optional[str] = ..., b64image: _Optional[str] = ..., models: _Optional[_Iterable[str]] = ...) -> None: ...
 
+class SimilarityAnalysisRequest(_message.Message):
+    __slots__ = ("table_name",)
+    TABLE_NAME_FIELD_NUMBER: _ClassVar[int]
+    table_name: str
+    def __init__(self, table_name: _Optional[str] = ...) -> None: ...
+
 class ImageAnalysisResponse(_message.Message):
     __slots__ = ("message",)
     MESSAGE_FIELD_NUMBER: _ClassVar[int]
