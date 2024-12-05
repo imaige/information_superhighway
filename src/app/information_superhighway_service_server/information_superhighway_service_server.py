@@ -101,6 +101,63 @@ async def process_image_comparison_model(model: str, request_image, photo_id: in
         results.append(response)
 
 
+async def process_image_comparison_test_model(model: str, request_image, photo_id: int, project_table_name: str):
+    logger.info(f"starting {model} flow for photo {photo_id}")
+    results = []
+    try:
+        # TODO: this could use better error handling
+        image_comparison_output = await kserve_request.image_comparison_request(
+            "image-comparison-test-model-service",
+            request_image, model)
+
+        output = image_comparison_output.outputs[0]
+        logger.trace(f"output is: {output}")
+        shape = output.shape[0]
+        contents = []
+        for j in range(0, shape):
+            byte_string = output.contents.bytes_contents[j]
+            contents.extend([byte_string])
+        logger.trace(f"contents is: {contents}")
+        average_hash = output.contents.bytes_contents[0]
+        perceptual_hash = output.contents.bytes_contents[1]
+        difference_hash = output.contents.bytes_contents[2]
+        wavelet_hash_haar = output.contents.bytes_contents[3]
+        color_hash = output.contents.bytes_contents[4]
+        reference_1_average_distance = float(output.contents.bytes_contents[5])
+        reference_2_average_distance = float(output.contents.bytes_contents[6])
+        reference_3_average_distance = float(output.contents.bytes_contents[7])
+        result = ({
+            "average_hash": average_hash,
+            "perceptual_hash": perceptual_hash,
+            "difference_hash": difference_hash,
+            "wavelet_hash_haar": wavelet_hash_haar,
+            "color_hash": color_hash,
+            "reference_1_average_distance": reference_1_average_distance,
+            "reference_2_average_distance": reference_2_average_distance,
+            "reference_3_average_distance": reference_3_average_distance
+        })
+
+        logger.debug(f"for id {photo_id}, returning image comparison output: {result}")
+        return result
+
+    except Exception as e:
+        logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
+        code = code_pb2.INVALID_ARGUMENT
+        details = any_pb2.Any()
+        details.Pack(
+            error_details_pb2.DebugInfo(
+                detail=f"Error processing {model} for photo {photo_id}."
+            )
+        )
+        message = "Internal server error."
+        response = status_pb2.Status(
+            code=code,
+            message=message,
+            details=[details]
+        )
+        results.append(response)
+
+
 async def process_colors_model(model: str, request_image, photo_id: int, project_table_name: str):
     logger.info(f"starting {model} flow for photo {photo_id}")
     results = []
@@ -308,7 +365,8 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
             "image_classification_model": process_image_classification_model,
             "face_detect_model": process_face_detect_model,
             "blur_model": process_blur_model,
-            "feature_extraction_model": process_feature_extraction_model
+            "feature_extraction_model": process_feature_extraction_model,
+            "image_comparison_test_model": process_image_comparison_test_model
         }
 
         tasks = []
