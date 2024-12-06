@@ -13,6 +13,7 @@ from proto_models.similarity_model_pb2 import (
 import json
 from ...libraries import kserve_request
 from ...libraries import rekognition_face_id_request
+from ...libraries.send_request_in_background_image_classification_output import send_image_classification_analysis_request_in_background
 from ...libraries.grpc_server_factory import create_secure_server, create_standard_server
 from ...libraries.grpc_analysis_layer_request import analysis_layer_request, similarity_model_request
 from ...libraries.enums import AiModel
@@ -230,6 +231,10 @@ async def process_image_classification_model(model: str, request_image, photo_id
         classification_output = await kserve_request.image_classification_request(
             getenv("IMAGE_CLASSIFICATION_MODEL_URL"),
             request_image, model)
+
+        send_image_classification_analysis_request_in_background(
+            project_table_name, photo_id, classification_output.raw_output_contents
+        )
 
         contents = []
         contents.extend(classification_output.raw_output_contents)

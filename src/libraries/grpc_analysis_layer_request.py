@@ -18,6 +18,12 @@ from proto_models.face_analysis_layer_pb2 import (
 from proto_models.face_analysis_layer_pb2_grpc import (
     FaceAnalysisLayerStub
 )
+from proto_models.image_classification_analysis_layer_pb2 import (
+    ImageClassificationModelOutputRequest
+)
+from proto_models.image_classification_analysis_layer_pb2_grpc import (
+    ImageClassificationAnalysisLayerStub
+)
 from proto_models.similarity_model_pb2 import (
     SimilarityRequest, SimilarityReply
 )
@@ -107,6 +113,30 @@ def face_analysis_layer_request(req: FaceRekognitionModelOutputRequest, port: st
             logger.debug(f"Initiating gRPC face layer call for {req.photo_id} in table {req.project_table_name} to port {port}")
             # logger.trace(f"Channel state before initiating call: {channel.get_state()}")
             for response in stub.FaceRekognitionModelOutputRequestHandler(req, timeout=30):
+                logger.info(f"received response: {response}")
+        except grpc.RpcError as e:
+            logger.error(f"gRPC error for {req.photo_id}: {e.code()}, {e.details()}")
+        except asyncio.TimeoutError:
+            logger.error(f"Timeout error for {req.photo_id}")
+        except Exception as e:
+            logger.error(f"Error occurred in gRPC request for {req.photo_id}: {e}")
+
+
+def image_classification_analysis_layer_request(req: ImageClassificationModelOutputRequest, port: str, request_location: str = None) -> None:
+
+    # interceptors = [LoggingClientInterceptor()]
+    # interceptor = LoggingClientInterceptor()
+    # with grpc.secure_channel(port, channel_credentials) as channel:
+    with grpc.insecure_channel(port) as channel:
+        # channel = grpc.intercept_channel(channel)  #, interceptor)
+
+        stub = ImageClassificationAnalysisLayerStub(channel)
+
+        logger.trace(f"Client making ImageClassificationModelOutputRequest with data: {req}")
+        try:
+            logger.debug(f"Initiating gRPC image classification layer call for {req.photo_id} in table {req.project_table_name} to port {port}")
+            # logger.trace(f"Channel state before initiating call: {channel.get_state()}")
+            for response in stub.ImageClassificationModelOutputRequestHandler(req, timeout=30):
                 logger.info(f"received response: {response}")
         except grpc.RpcError as e:
             logger.error(f"gRPC error for {req.photo_id}: {e.code()}, {e.details()}")

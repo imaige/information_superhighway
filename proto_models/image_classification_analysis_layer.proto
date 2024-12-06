@@ -5,7 +5,7 @@ package information_superhighway;
 // Service definition
 service ImageClassificationAnalysisLayer {
     // AI output request
-    rpc ImageClassificationModelOutputRequestHandler (ImageClassificationModelOutputRequest) returns (stream StatusReply);
+    rpc ImageClassificationModelOutputRequestHandler (ImageClassificationModelOutputRequest) returns (stream ImageClassificationStatusReply);
 }
 
 // AI analysis request message
@@ -17,7 +17,6 @@ message ImageClassificationModelOutputRequest {
 }
 
 // A basic status response message
-message StatusReply {
-    int64 photo_id = 1;
-    string model_name = 2;
+message ImageClassificationStatusReply {
+    string message = 1;
 }

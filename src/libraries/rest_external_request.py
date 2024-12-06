@@ -144,13 +144,13 @@ if __name__ == '__main__':
         "description": "describe me",
         "table_name": table_name,  # dev
         "models": [
-            # "image_comparison_hash_model",
+            "image_comparison_hash_model",
             # "colors_basic_model",
-            # "image_classification_model",
+            "image_classification_model",
             # "face_detect_model",
             # "blur_model",
             # "feature_extraction_model",
-            "image_comparison_test_model"
+            # "image_comparison_test_model"
         ],
         "date_taken": '2024-10-15',
         "client_side_id": 'test-id-unique'

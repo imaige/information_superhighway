@@ -18,7 +18,7 @@ class ImageClassificationAnalysisLayerStub(object):
         self.ImageClassificationModelOutputRequestHandler = channel.unary_stream(
                 '/information_superhighway.ImageClassificationAnalysisLayer/ImageClassificationModelOutputRequestHandler',
                 request_serializer=image__classification__analysis__layer__pb2.ImageClassificationModelOutputRequest.SerializeToString,
-                response_deserializer=image__classification__analysis__layer__pb2.StatusReply.FromString,
+                response_deserializer=image__classification__analysis__layer__pb2.ImageClassificationStatusReply.FromString,
                 )
 
 
@@ -39,7 +39,7 @@ def add_ImageClassificationAnalysisLayerServicer_to_server(servicer, server):
             'ImageClassificationModelOutputRequestHandler': grpc.unary_stream_rpc_method_handler(
                     servicer.ImageClassificationModelOutputRequestHandler,
                     request_deserializer=image__classification__analysis__layer__pb2.ImageClassificationModelOutputRequest.FromString,
-                    response_serializer=image__classification__analysis__layer__pb2.StatusReply.SerializeToString,
+                    response_serializer=image__classification__analysis__layer__pb2.ImageClassificationStatusReply.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -65,6 +65,6 @@ class ImageClassificationAnalysisLayer(object):
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/information_superhighway.ImageClassificationAnalysisLayer/ImageClassificationModelOutputRequestHandler',
             image__classification__analysis__layer__pb2.ImageClassificationModelOutputRequest.SerializeToString,
-            image__classification__analysis__layer__pb2.StatusReply.FromString,
+            image__classification__analysis__layer__pb2.ImageClassificationStatusReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
