@@ -231,7 +231,7 @@ async def process_image_classification_model(model: str, request_image, photo_id
         classification_output = await kserve_request.image_classification_request(
             getenv("IMAGE_CLASSIFICATION_MODEL_URL"),
             request_image, model)
-
+        logger.trace("about to send request in background")
         send_image_classification_analysis_request_in_background(
             project_table_name, photo_id, classification_output.raw_output_contents
         )

@@ -14,12 +14,14 @@ configure_logger(logger, level=log_level)
 
 
 def send_image_classification_analysis_request_in_background(project_table_name: str, photo_id: int, image_classification_output):
+    logger.trace("starting send request in background in library file")
     executor = ThreadPoolExecutor(max_workers=1)
     executor.submit(image_classification_output_process, project_table_name, photo_id, image_classification_output)
     executor.shutdown(wait=False)  # Don’t block on shutdown.
 
 
 def image_classification_output_process(project_table_name: str, photo_id: int, image_classification_raw_output):
+    logger.trace("starting image_classification_output_process in library file")
     image_classification_request = ImageClassificationModelOutputRequest(
         project_table_name=project_table_name,
         photo_id=photo_id,
