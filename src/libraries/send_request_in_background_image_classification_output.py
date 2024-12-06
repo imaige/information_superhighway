@@ -25,7 +25,7 @@ def image_classification_output_process(project_table_name: str, photo_id: int, 
     image_classification_request = ImageClassificationModelOutputRequest(
         project_table_name=project_table_name,
         photo_id=photo_id,
-        labels_from_classifications_model={image_classification_raw_output}
+        labels_from_classifications_model=image_classification_raw_output
     )
     try:
         image_classification_analysis_layer_port = f'{getenv("IMAGE_CLASSIFICATION_ANALYSIS_LAYER_URL").strip()}.default.svc.cluster.local:50051'
