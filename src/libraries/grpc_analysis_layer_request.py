@@ -70,7 +70,8 @@ async def analysis_layer_request(req: AiModelOutputRequest, port: str, request_l
     async with grpc.aio.insecure_channel(port) as channel:
         stub = AnalysisLayerStub(channel)
 
-        logger.info(f"Client making AiModelOutputRequest with data: {req}")
+        logger.trace(f"Client making AiModelOutputRequest for photo ID {req.photo_id} in table {req.project_table_name}")
+        # logger.trace(f"with data: {req}")
         try:
         #     async for response in stub.AiModelOutputRequestHandler(
         #             req

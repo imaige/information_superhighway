@@ -243,7 +243,8 @@ async def process_image_classification_model(model: str, request_image, photo_id
             "labels_from_classifications_model": contents
         })
 
-        logger.debug(f"for id {photo_id}, returning image classification output: {result}")
+        logger.debug(f"for id {photo_id}, returning image classification output")
+        # logger.trace(f"for id {photo_id}, returning image classification output: {result}")
         return result
 
     except Exception as e:
