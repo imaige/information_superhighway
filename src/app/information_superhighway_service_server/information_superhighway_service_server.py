@@ -460,6 +460,8 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 
         try:
             results = await asyncio.wait_for(future, timeout=300)  # 5 minute timeout
+            # Note: these are commented out to avoid taxing the external API with add'l request volume, as the response
+            # here is not particularly useful anyway unless it's an error we need to catch and handle
             # for result in results:
             #     yield result
         except asyncio.TimeoutError:
