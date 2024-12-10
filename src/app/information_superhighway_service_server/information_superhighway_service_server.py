@@ -460,8 +460,8 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 
         try:
             results = await asyncio.wait_for(future, timeout=300)  # 5 minute timeout
-            for result in results:
-                yield result
+            # for result in results:
+            #     yield result
         except asyncio.TimeoutError:
             logger.error(f"Request {request_id} timed out")
             yield status_pb2.Status(
