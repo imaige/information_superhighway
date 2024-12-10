@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package evidence_model;
+
+// Service definition
+service EvidenceModelService {
+    // AI analysis request
+    rpc EvidenceAnalysisRequestHandler (EvidenceRequest) returns (stream EvidenceReply) {}
+}
+
+// Evidence analysis request message
+message EvidenceRequest {
+    string project_table_name = 1;
+}
+
+// Evidence analysis response message
+message EvidenceReply {
+    string message = 1;
+}

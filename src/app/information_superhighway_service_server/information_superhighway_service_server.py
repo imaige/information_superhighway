@@ -1,5 +1,5 @@
 from proto_models.information_superhighway_pb2 import (
-    ImageAnalysisRequest, SuperhighwayStatusReply, SimilarityAnalysisRequest
+    ImageAnalysisRequest, SuperhighwayStatusReply, SimilarityAnalysisRequest, EvidenceAnalysisRequest
 )
 from proto_models.information_superhighway_pb2_grpc import (
     InformationSuperhighwayServiceServicer, add_InformationSuperhighwayServiceServicer_to_server
@@ -10,12 +10,17 @@ from proto_models.analysis_layer_pb2 import (
 from proto_models.similarity_model_pb2 import (
     SimilarityRequest, SimilarityReply
 )
+from proto_models.evidence_model_pb2 import (
+    EvidenceRequest, EvidenceReply
+)
 import json
 from ...libraries import kserve_request
 from ...libraries import rekognition_face_id_request
 from ...libraries.send_request_in_background_image_classification_output import send_image_classification_analysis_request_in_background
 from ...libraries.grpc_server_factory import create_secure_server, create_standard_server
-from ...libraries.grpc_analysis_layer_request import analysis_layer_request, similarity_model_request
+from ...libraries.grpc_analysis_layer_request import (
+    analysis_layer_request, similarity_model_request, evidence_model_request
+)
 from ...libraries.enums import AiModel
 from ...libraries.logging_file_format import configure_logger, get_log_level
 import logging
@@ -495,6 +500,34 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     )
                 )]
             )
+
+    async def EvidenceAiAnalysisRequest(
+            self, request: EvidenceAnalysisRequest, context: grpc.aio.ServicerContext
+    ):
+        logger.info(
+            f"Serving Evidence model request for project: {request.table_name}"
+        )
+        evidence_input = EvidenceRequest(
+            project_table_name=request.table_name
+        )
+        logger.trace("evidence_input request created")
+        try:
+            evidence_model_port = f'{getenv("EVIDENCE_MODEL_URL")}:50051'
+            logger.trace(f"about to call similarity_model_request to port {evidence_model_port}")
+            evidence_response = await evidence_model_request(evidence_input, evidence_model_port)
+            logger.trace(f"response from evidence model is: {evidence_response}")
+        except Exception as e:
+            logger.error(f"Error sending combined results to evidence model: {e}")
+            yield status_pb2.Status(
+                code=code_pb2.INTERNAL,
+                message="Evidence request error.",
+                details=[any_pb2.Any().Pack(
+                    error_details_pb2.DebugInfo(
+                        detail=f"Error sending results to evidence model for project {request.table_name}: {str(e)}"
+                    )
+                )]
+            )
+
 
 
 # Server Creation #

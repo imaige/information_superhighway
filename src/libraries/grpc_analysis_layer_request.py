@@ -30,6 +30,12 @@ from proto_models.similarity_model_pb2 import (
 from proto_models.similarity_model_pb2_grpc import (
     SimilarityModelServiceStub
 )
+from proto_models.evidence_model_pb2 import (
+    EvidenceRequest, EvidenceReply
+)
+from proto_models.evidence_model_pb2_grpc import (
+    EvidenceModelServiceStub
+)
 from .logging_file_format import configure_logger, get_log_level
 from .get_tls_certs import get_secret_data
 
@@ -162,6 +168,30 @@ async def similarity_model_request(req: SimilarityRequest, port: str, request_lo
             logger.debug(f"Initiating gRPC similarity call for table {req.project_table_name} to port {port}")
             # logger.trace(f"Channel state before initiating call: {channel.get_state()}")
             async for response in stub.SimilarityAnalysisRequestHandler(req, timeout=30):
+                logger.info(f"received response: {response}")
+        except grpc.RpcError as e:
+            logger.error(f"gRPC error for {req.project_table_name}: {e.code()}, {e.details()}")
+        except asyncio.TimeoutError:
+            logger.error(f"Timeout error for {req.project_table_name}")
+        except Exception as e:
+            logger.error(f"Error occurred in gRPC request for {req.project_table_name}: {e}")
+
+
+async def evidence_model_request(req: EvidenceRequest, port: str, request_location: str = None) -> None:
+    logger.trace(f"started similarity_model_request to port {port}")
+    # interceptors = [LoggingClientInterceptor()]
+    # interceptor = LoggingClientInterceptor()
+    # with grpc.secure_channel(port, channel_credentials) as channel:
+    async with grpc.aio.insecure_channel(port) as channel:
+        # channel = grpc.intercept_channel(channel)  #, interceptor)
+
+        stub = EvidenceModelServiceStub(channel)
+
+        logger.trace(f"Client making EvidenceRequest with data: {req}")
+        try:
+            logger.debug(f"Initiating gRPC evidence call for table {req.project_table_name} to port {port}")
+            # logger.trace(f"Channel state before initiating call: {channel.get_state()}")
+            async for response in stub.EvidenceAnalysisRequestHandler(req, timeout=30):
                 logger.info(f"received response: {response}")
         except grpc.RpcError as e:
             logger.error(f"gRPC error for {req.project_table_name}: {e.code()}, {e.details()}")

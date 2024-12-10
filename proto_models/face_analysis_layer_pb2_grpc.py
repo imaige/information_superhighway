@@ -20,6 +20,11 @@ class FaceAnalysisLayerStub(object):
                 request_serializer=face__analysis__layer__pb2.FaceRekognitionModelOutputRequest.SerializeToString,
                 response_deserializer=face__analysis__layer__pb2.FaceStatusReply.FromString,
                 )
+        self.FaceRekognitionIndexingRequestHandler = channel.unary_stream(
+                '/information_superhighway.FaceAnalysisLayer/FaceRekognitionIndexingRequestHandler',
+                request_serializer=face__analysis__layer__pb2.FaceIndexRequest.SerializeToString,
+                response_deserializer=face__analysis__layer__pb2.FaceStatusReply.FromString,
+                )
 
 
 class FaceAnalysisLayerServicer(object):
@@ -27,7 +32,14 @@ class FaceAnalysisLayerServicer(object):
     """
 
     def FaceRekognitionModelOutputRequestHandler(self, request, context):
-        """AI output request
+        """AWS Rekognition output processing request
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def FaceRekognitionIndexingRequestHandler(self, request, context):
+        """AWS Rekognition face recognition request
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -39,6 +51,11 @@ def add_FaceAnalysisLayerServicer_to_server(servicer, server):
             'FaceRekognitionModelOutputRequestHandler': grpc.unary_stream_rpc_method_handler(
                     servicer.FaceRekognitionModelOutputRequestHandler,
                     request_deserializer=face__analysis__layer__pb2.FaceRekognitionModelOutputRequest.FromString,
+                    response_serializer=face__analysis__layer__pb2.FaceStatusReply.SerializeToString,
+            ),
+            'FaceRekognitionIndexingRequestHandler': grpc.unary_stream_rpc_method_handler(
+                    servicer.FaceRekognitionIndexingRequestHandler,
+                    request_deserializer=face__analysis__layer__pb2.FaceIndexRequest.FromString,
                     response_serializer=face__analysis__layer__pb2.FaceStatusReply.SerializeToString,
             ),
     }
@@ -65,6 +82,23 @@ class FaceAnalysisLayer(object):
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/information_superhighway.FaceAnalysisLayer/FaceRekognitionModelOutputRequestHandler',
             face__analysis__layer__pb2.FaceRekognitionModelOutputRequest.SerializeToString,
+            face__analysis__layer__pb2.FaceStatusReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def FaceRekognitionIndexingRequestHandler(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/information_superhighway.FaceAnalysisLayer/FaceRekognitionIndexingRequestHandler',
+            face__analysis__layer__pb2.FaceIndexRequest.SerializeToString,
             face__analysis__layer__pb2.FaceStatusReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
