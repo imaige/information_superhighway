@@ -22,13 +22,13 @@ rekognition_client = boto3.client('rekognition', region_name="us-east-2")
 
 
 # pool = Pool(10)
-def send_request_in_background(project_table_name: str, photo_id: str, face_details):
+def send_request_in_background(project_table_name: str, photo_id: int, face_details):
     executor = ThreadPoolExecutor(max_workers=1)
     executor.submit(face_detail_process, project_table_name, photo_id, face_details)
     executor.shutdown(wait=False)  # Don’t block on shutdown.
 
 
-def face_detail_process(project_table_name: str, photo_id: str, face_details):
+def face_detail_process(project_table_name: str, photo_id: int, face_details):
     logger.trace(f"at start of process - face_details is: {face_details}")
     # futures = []
     face_request = FaceRekognitionModelOutputRequest(
@@ -101,7 +101,7 @@ def face_detail_process(project_table_name: str, photo_id: str, face_details):
         logger.error(f"Error occurred in gRPC face detail request: {e}")
 
 
-def analyze_face(b64image: str, photo_id: str, project_table_name: str):
+def analyze_face(b64image: str, photo_id: int, project_table_name: str):
     logger.trace("starting analyze_face")
     # decode the base64 string to bytes for rekognition
     image_bytes = base64.b64decode(b64image)

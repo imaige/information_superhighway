@@ -104,3 +104,9 @@ class FaceStatusReply(_message.Message):
     MESSAGE_FIELD_NUMBER: _ClassVar[int]
     message: str
     def __init__(self, message: _Optional[str] = ...) -> None: ...
+
+class FaceIndexRequest(_message.Message):
+    __slots__ = ("project_table_name",)
+    PROJECT_TABLE_NAME_FIELD_NUMBER: _ClassVar[int]
+    project_table_name: str
+    def __init__(self, project_table_name: _Optional[str] = ...) -> None: ...

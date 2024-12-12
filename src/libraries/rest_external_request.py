@@ -97,21 +97,63 @@ def request_with_body_and_photo(url: str, recipe: Union[List[str], None], reques
 
 
 if __name__ == '__main__':
+    # server_target = 'local'
+    server_target = 'dev'
+    # server_target = 'qa'
+    # server_target = 'dev_similarity'
+    # server_target = 'qa_test'
+
+    photo_and_model = True
+
+    table_name = ''
+    if server_target == 'local':
+        table_name = "z_1_9a8db925-52fc-404c-839d-b9c8830d6256_photos"
+        if photo_and_model:
+            url = "http://localhost:8000/api/v1/photos/model_request"
+        else:
+            url = "http://localhost:8000/api/v1/photos/"
+    elif server_target == 'dev':
+        table_name = "z_1_9a8db925-52fc-404c-839d-b9c8830d6256_photos"
+        if photo_and_model:
+            url = "https://dev.api.mediaviz.ai/api/v1/photos/model_request"
+        else:
+            url = "https://dev.api.mediaviz.ai/api/v1/photos/"
+    elif server_target == 'dev_similarity':
+        # table_name = "z_1_6031746f-b9f4-4588-bb1d-5f7a817f06c2_photos"
+        # table_name = "z_1_20033e5a-a636-4fa7-9d3a-4175d4ff41f1_photos"
+        table_name = "z_1_c75e6b01-883c-44ce-95e0-7da154e67059_photos"
+        if photo_and_model:
+            url = "https://dev.api.mediaviz.ai/api/v1/photos/model_request"
+        else:
+            url = "https://dev.api.mediaviz.ai/api/v1/photos/"
+    elif server_target == 'qa':
+        table_name = "z_2_688cf6a4-7a24-4bd5-84fc-e9789861b558_photos"
+        if photo_and_model:
+            url = "https://api.mediaviz.ai/api/v1/photos/model_request"
+        else:
+            url = "https://api.mediaviz.ai/api/v1/photos/"
+    elif server_target == 'qa_test':
+        table_name = "z_2_242f0947-d1eb-43ff-8a32-5697757f2d18_photos"
+        if photo_and_model:
+            url = "https://api.mediaviz.ai/api/v1/photos/model_request"
+        else:
+            url = "https://api.mediaviz.ai/api/v1/photos/"
+
     recipe = {
         "name": "test-recipe",
         "description": "describe me",
-        "table_name": "z_2_688cf6a4-7a24-4bd5-84fc-e9789861b558_photos",  # qa
-        # "table_name": "z_1_9a8db925-52fc-404c-839d-b9c8830d6256_photos",  # dev
-        # "project_id": 1,
+        "table_name": table_name,  # dev
         "models": [
             "image_comparison_hash_model",
             # "colors_basic_model",
-            # "image_classification_model",
+            "image_classification_model",
             # "face_detect_model",
             # "blur_model",
-            # "feature_extraction_model"
+            # "feature_extraction_model",
+            # "image_comparison_test_model"
         ],
-        "title": "test-file"
+        "date_taken": '2024-10-15',
+        "client_side_id": 'test-id-unique'
     }
 
     token = ""
@@ -125,29 +167,9 @@ if __name__ == '__main__':
         "company_id": 1
     }
 
-
-
-    # local photo ai request
-    # url = "http://0.0.0.0:8000/api/v1/photos/model_request"
-    # local vanilla photo create
-    # url = "http://0.0.0.0:8000/api/v1/photos/"
-
-    # k8s vanilla photo create
-    # url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/photos/"
-
-    # k8s dev
-    # vanilla photo create
-    # url = "https://dev.api.mediaviz.ai/api/v1/photos/"
-    # photo + model
-    # url = "https://dev.api.mediaviz.ai/api/v1/photos/model_request"
-
     # k8s dev raw url
     # k8s photo ai request
     # url = "http://a2dfc76eee74e458ba52f9438dae0f4c-176970126.us-east-2.elb.amazonaws.com:443/api/v1/photos/model_request"
-
-    # k8s QA
-    # k8s photo ai request
-    url = "https://api.mediaviz.ai/api/v1/photos/model_request"
 
     # token
     # url = "http://acb5bb47a60054e3ab8f6f2bab81a51c-1018561966.us-east-2.elb.amazonaws.com:80/api/v1/token"
@@ -171,6 +193,9 @@ if __name__ == '__main__':
     # directory = 'test_images/small_with_face'
     # directory = 'test_images/small_selection'
     directory = 'test_images/small'
+    # directory = 'test_images/similarity'
+    # directory = 'test_images/all_same'
+    # directory = 'test_images/all_same_smaller'
 
     for filename in listdir(directory):
         ext = path.splitext(filename)[1]

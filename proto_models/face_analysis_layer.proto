@@ -4,8 +4,10 @@ package information_superhighway;
 
 // Service definition
 service FaceAnalysisLayer {
-    // AI output request
+    // AWS Rekognition output processing request
     rpc FaceRekognitionModelOutputRequestHandler (FaceRekognitionModelOutputRequest) returns (stream FaceStatusReply);
+    // AWS Rekognition face recognition request
+    rpc FaceRekognitionIndexingRequestHandler (FaceIndexRequest) returns (stream FaceStatusReply);
 }
 
 
@@ -93,4 +95,8 @@ message Landmark {
 
 message FaceStatusReply {
     string message = 1;
+}
+
+message FaceIndexRequest {
+    string project_table_name = 1;
 }

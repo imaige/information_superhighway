@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package information_superhighway;
+
+// Service definition
+service ImageClassificationAnalysisLayer {
+    // AI output request
+    rpc ImageClassificationModelOutputRequestHandler (ImageClassificationModelOutputRequest) returns (stream ImageClassificationStatusReply);
+}
+
+// AI analysis request message
+message ImageClassificationModelOutputRequest {
+    string project_table_name = 1;
+    int32 photo_id = 2;
+    // image classification model outputs
+    repeated bytes labels_from_classifications_model = 3;
+}
+
+// A basic status response message
+message ImageClassificationStatusReply {
+    string message = 1;
+}

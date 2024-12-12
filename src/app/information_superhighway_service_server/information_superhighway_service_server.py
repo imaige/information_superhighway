@@ -1,5 +1,5 @@
 from proto_models.information_superhighway_pb2 import (
-    ImageAnalysisRequest, SuperhighwayStatusReply, SimilarityAnalysisRequest
+    ImageAnalysisRequest, SuperhighwayStatusReply, SimilarityAnalysisRequest, EvidenceAnalysisRequest
 )
 from proto_models.information_superhighway_pb2_grpc import (
     InformationSuperhighwayServiceServicer, add_InformationSuperhighwayServiceServicer_to_server
@@ -10,11 +10,17 @@ from proto_models.analysis_layer_pb2 import (
 from proto_models.similarity_model_pb2 import (
     SimilarityRequest, SimilarityReply
 )
+from proto_models.evidence_model_pb2 import (
+    EvidenceRequest, EvidenceReply
+)
 import json
 from ...libraries import kserve_request
 from ...libraries import rekognition_face_id_request
+from ...libraries.send_request_in_background_image_classification_output import send_image_classification_analysis_request_in_background
 from ...libraries.grpc_server_factory import create_secure_server, create_standard_server
-from ...libraries.grpc_analysis_layer_request import analysis_layer_request, similarity_model_request
+from ...libraries.grpc_analysis_layer_request import (
+    analysis_layer_request, similarity_model_request, evidence_model_request
+)
 from ...libraries.enums import AiModel
 from ...libraries.logging_file_format import configure_logger, get_log_level
 import logging
@@ -51,6 +57,63 @@ async def process_image_comparison_model(model: str, request_image, photo_id: in
         # TODO: this could use better error handling
         image_comparison_output = await kserve_request.image_comparison_request(
             getenv("IMAGE_COMPARISON_MODEL_URL"),
+            request_image, model)
+
+        output = image_comparison_output.outputs[0]
+        logger.trace(f"output is: {output}")
+        shape = output.shape[0]
+        contents = []
+        for j in range(0, shape):
+            byte_string = output.contents.bytes_contents[j]
+            contents.extend([byte_string])
+        logger.trace(f"contents is: {contents}")
+        average_hash = output.contents.bytes_contents[0]
+        perceptual_hash = output.contents.bytes_contents[1]
+        difference_hash = output.contents.bytes_contents[2]
+        wavelet_hash_haar = output.contents.bytes_contents[3]
+        color_hash = output.contents.bytes_contents[4]
+        reference_1_average_distance = float(output.contents.bytes_contents[5])
+        reference_2_average_distance = float(output.contents.bytes_contents[6])
+        reference_3_average_distance = float(output.contents.bytes_contents[7])
+        result = ({
+            "average_hash": average_hash,
+            "perceptual_hash": perceptual_hash,
+            "difference_hash": difference_hash,
+            "wavelet_hash_haar": wavelet_hash_haar,
+            "color_hash": color_hash,
+            "reference_1_average_distance": reference_1_average_distance,
+            "reference_2_average_distance": reference_2_average_distance,
+            "reference_3_average_distance": reference_3_average_distance
+        })
+
+        logger.debug(f"for id {photo_id}, returning image comparison output: {result}")
+        return result
+
+    except Exception as e:
+        logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
+        code = code_pb2.INVALID_ARGUMENT
+        details = any_pb2.Any()
+        details.Pack(
+            error_details_pb2.DebugInfo(
+                detail=f"Error processing {model} for photo {photo_id}."
+            )
+        )
+        message = "Internal server error."
+        response = status_pb2.Status(
+            code=code,
+            message=message,
+            details=[details]
+        )
+        results.append(response)
+
+
+async def process_image_comparison_test_model(model: str, request_image, photo_id: int, project_table_name: str):
+    logger.info(f"starting {model} flow for photo {photo_id}")
+    results = []
+    try:
+        # TODO: this could use better error handling
+        image_comparison_output = await kserve_request.image_comparison_request(
+            "image-comparison-test-model-service",
             request_image, model)
 
         output = image_comparison_output.outputs[0]
@@ -173,6 +236,10 @@ async def process_image_classification_model(model: str, request_image, photo_id
         classification_output = await kserve_request.image_classification_request(
             getenv("IMAGE_CLASSIFICATION_MODEL_URL"),
             request_image, model)
+        logger.trace("about to send request in background")
+        send_image_classification_analysis_request_in_background(
+            project_table_name, photo_id, classification_output.raw_output_contents
+        )
 
         contents = []
         contents.extend(classification_output.raw_output_contents)
@@ -181,7 +248,8 @@ async def process_image_classification_model(model: str, request_image, photo_id
             "labels_from_classifications_model": contents
         })
 
-        logger.debug(f"for id {photo_id}, returning image classification output: {result}")
+        logger.debug(f"for id {photo_id}, returning image classification output")
+        # logger.trace(f"for id {photo_id}, returning image classification output: {result}")
         return result
 
     except Exception as e:
@@ -308,7 +376,8 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
             "image_classification_model": process_image_classification_model,
             "face_detect_model": process_face_detect_model,
             "blur_model": process_blur_model,
-            "feature_extraction_model": process_feature_extraction_model
+            "feature_extraction_model": process_feature_extraction_model,
+            "image_comparison_test_model": process_image_comparison_test_model
         }
 
         tasks = []
@@ -391,8 +460,10 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
 
         try:
             results = await asyncio.wait_for(future, timeout=300)  # 5 minute timeout
-            for result in results:
-                yield result
+            # Note: these are commented out to avoid taxing the external API with add'l request volume, as the response
+            # here is not particularly useful anyway unless it's an error we need to catch and handle
+            # for result in results:
+            #     yield result
         except asyncio.TimeoutError:
             logger.error(f"Request {request_id} timed out")
             yield status_pb2.Status(
@@ -431,6 +502,34 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                     )
                 )]
             )
+
+    async def EvidenceAiAnalysisRequest(
+            self, request: EvidenceAnalysisRequest, context: grpc.aio.ServicerContext
+    ):
+        logger.info(
+            f"Serving Evidence model request for project: {request.table_name}"
+        )
+        evidence_input = EvidenceRequest(
+            project_table_name=request.table_name
+        )
+        logger.trace("evidence_input request created")
+        try:
+            evidence_model_port = f'{getenv("EVIDENCE_MODEL_URL")}:50051'
+            logger.trace(f"about to call similarity_model_request to port {evidence_model_port}")
+            evidence_response = await evidence_model_request(evidence_input, evidence_model_port)
+            logger.trace(f"response from evidence model is: {evidence_response}")
+        except Exception as e:
+            logger.error(f"Error sending combined results to evidence model: {e}")
+            yield status_pb2.Status(
+                code=code_pb2.INTERNAL,
+                message="Evidence request error.",
+                details=[any_pb2.Any().Pack(
+                    error_details_pb2.DebugInfo(
+                        detail=f"Error sending results to evidence model for project {request.table_name}: {str(e)}"
+                    )
+                )]
+            )
+
 
 
 # Server Creation #
