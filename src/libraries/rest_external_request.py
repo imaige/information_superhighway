@@ -98,8 +98,8 @@ def request_with_body_and_photo(url: str, recipe: Union[List[str], None], reques
 
 if __name__ == '__main__':
     # server_target = 'local'
-    server_target = 'dev'
-    # server_target = 'qa'
+    # server_target = 'dev'
+    server_target = 'qa'
     # server_target = 'dev_similarity'
     # server_target = 'qa_test'
 

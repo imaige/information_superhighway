@@ -51,7 +51,7 @@ configure_logger(logger, level=log_level)
 
 
 async def process_image_comparison_model(model: str, request_image, photo_id: int, project_table_name: str):
-    logger.info(f"starting {model} flow for photo {photo_id}")
+    logger.debug(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
         # TODO: this could use better error handling
@@ -108,7 +108,7 @@ async def process_image_comparison_model(model: str, request_image, photo_id: in
 
 
 async def process_image_comparison_test_model(model: str, request_image, photo_id: int, project_table_name: str):
-    logger.info(f"starting {model} flow for photo {photo_id}")
+    logger.debug(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
         # TODO: this could use better error handling
@@ -165,7 +165,7 @@ async def process_image_comparison_test_model(model: str, request_image, photo_i
 
 
 async def process_colors_model(model: str, request_image, photo_id: int, project_table_name: str):
-    logger.info(f"starting {model} flow for photo {photo_id}")
+    logger.debug(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
         colors_output = await kserve_request.colors_request(
@@ -204,7 +204,7 @@ async def process_colors_model(model: str, request_image, photo_id: int, project
 
 
 async def process_face_detect_model(model: str, request_image, photo_id: int, project_table_name: str):
-    logger.info(f"starting {model} flow for photo {photo_id}")
+    logger.debug(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
         output = rekognition_face_id_request.analyze_face(request_image, photo_id, project_table_name)
@@ -230,7 +230,7 @@ async def process_face_detect_model(model: str, request_image, photo_id: int, pr
 
 
 async def process_image_classification_model(model: str, request_image, photo_id: int, project_table_name: str):
-    logger.info(f"starting {model} flow for photo {photo_id}")
+    logger.debug(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
         classification_output = await kserve_request.image_classification_request(
@@ -271,7 +271,7 @@ async def process_image_classification_model(model: str, request_image, photo_id
 
 
 async def process_blur_model(model: str, request_image, photo_id: int, project_table_name: str):
-    logger.info(f"starting {model} flow for photo {photo_id}")
+    logger.debug(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
         blur_output = await kserve_request.blur_request(
@@ -306,7 +306,7 @@ async def process_blur_model(model: str, request_image, photo_id: int, project_t
 
 
 async def process_feature_extraction_model(model: str, request_image, photo_id: int, project_table_name: str):
-    logger.info(f"starting {model} flow for photo {photo_id}")
+    logger.debug(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
         feature_extraction_output = await kserve_request.feature_extraction_request(
