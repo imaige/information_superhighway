@@ -30,6 +30,11 @@ message EvidenceAnalysisRequest {
     string table_name = 1;
 }
 
+// Similarity request message
+message TopicAnalysisRequest {
+    string table_name = 1;
+}
+
 // AI analysis response message
 message ImageAnalysisResponse {
     string message = 1;
