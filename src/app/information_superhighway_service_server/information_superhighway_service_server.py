@@ -1,5 +1,5 @@
 from proto_models.information_superhighway_pb2 import (
-    ImageAnalysisRequest, SuperhighwayStatusReply, SimilarityAnalysisRequest, EvidenceAnalysisRequest
+    ImageAnalysisRequest, SuperhighwayStatusReply, SimilarityAnalysisRequest, EvidenceAnalysisRequest, TopicAnalysisRequest
 )
 from proto_models.information_superhighway_pb2_grpc import (
     InformationSuperhighwayServiceServicer, add_InformationSuperhighwayServiceServicer_to_server
@@ -19,7 +19,7 @@ from ...libraries import rekognition_face_id_request
 from ...libraries.send_request_in_background_image_classification_output import send_image_classification_analysis_request_in_background
 from ...libraries.grpc_server_factory import create_secure_server, create_standard_server
 from ...libraries.grpc_analysis_layer_request import (
-    analysis_layer_request, similarity_model_request, evidence_model_request
+    analysis_layer_request, similarity_model_request, evidence_model_request, topic_model_request
 )
 from ...libraries.enums import AiModel
 from ...libraries.logging_file_format import configure_logger, get_log_level
@@ -530,6 +530,33 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 )]
             )
 
+
+    async def TopicAiAnalysisRequest(
+            self, request: TopicAnalysisRequest, context: grpc.aio.ServicerContext
+    ):
+        logger.info(
+            f"Serving Topic model request for project: {request.table_name}"
+        )
+        topic_input = TopicRequest(
+            project_table_name=request.table_name
+        )
+        logger.trace("topic_input request created")
+        try:
+            topic_model_port = f'{getenv("EVIDENCE_MODEL_URL")}:50051'
+            logger.trace(f"about to call similarity_model_request to port {topic_model_port}")
+            topic_response = await topic_model_request(topic_input, topic_model_port)
+            logger.trace(f"response from topic model is: {topic_response}")
+        except Exception as e:
+            logger.error(f"Error sending combined results to topic model: {e}")
+            yield status_pb2.Status(
+                code=code_pb2.INTERNAL,
+                message="Topic request error.",
+                details=[any_pb2.Any().Pack(
+                    error_details_pb2.DebugInfo(
+                        detail=f"Error sending results to topic model for project {request.table_name}: {str(e)}"
+                    )
+                )]
+            )
 
 
 # Server Creation #

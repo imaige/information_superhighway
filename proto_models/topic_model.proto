@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package topic_model;
+
+// Service definition
+service TopicModelService {
+    // AI analysis request
+    rpc TopicAnalysisRequestHandler (TopicRequest) returns (stream TopicReply) {}
+}
+
+// Topic analysis request message
+message TopicRequest {
+    string project_table_name = 1;
+}
+
+// Topic analysis response message
+message TopicReply {
+    string message = 1;
+}
