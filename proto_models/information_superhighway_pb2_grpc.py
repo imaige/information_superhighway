@@ -30,6 +30,11 @@ class InformationSuperhighwayServiceStub(object):
                 request_serializer=information__superhighway__pb2.EvidenceAnalysisRequest.SerializeToString,
                 response_deserializer=information__superhighway__pb2.SuperhighwayStatusReply.FromString,
                 )
+        self.TopicAiAnalysisRequest = channel.unary_stream(
+                '/information_superhighway.InformationSuperhighwayService/TopicAiAnalysisRequest',
+                request_serializer=information__superhighway__pb2.TopicAnalysisRequest.SerializeToString,
+                response_deserializer=information__superhighway__pb2.SuperhighwayStatusReply.FromString,
+                )
 
 
 class InformationSuperhighwayServiceServicer(object):
@@ -57,6 +62,13 @@ class InformationSuperhighwayServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def TopicAiAnalysisRequest(self, request, context):
+        """Topic analysis request
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_InformationSuperhighwayServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -73,6 +85,11 @@ def add_InformationSuperhighwayServiceServicer_to_server(servicer, server):
             'EvidenceAiAnalysisRequest': grpc.unary_stream_rpc_method_handler(
                     servicer.EvidenceAiAnalysisRequest,
                     request_deserializer=information__superhighway__pb2.EvidenceAnalysisRequest.FromString,
+                    response_serializer=information__superhighway__pb2.SuperhighwayStatusReply.SerializeToString,
+            ),
+            'TopicAiAnalysisRequest': grpc.unary_stream_rpc_method_handler(
+                    servicer.TopicAiAnalysisRequest,
+                    request_deserializer=information__superhighway__pb2.TopicAnalysisRequest.FromString,
                     response_serializer=information__superhighway__pb2.SuperhighwayStatusReply.SerializeToString,
             ),
     }
@@ -133,6 +150,23 @@ class InformationSuperhighwayService(object):
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/information_superhighway.InformationSuperhighwayService/EvidenceAiAnalysisRequest',
             information__superhighway__pb2.EvidenceAnalysisRequest.SerializeToString,
+            information__superhighway__pb2.SuperhighwayStatusReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def TopicAiAnalysisRequest(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/information_superhighway.InformationSuperhighwayService/TopicAiAnalysisRequest',
+            information__superhighway__pb2.TopicAnalysisRequest.SerializeToString,
             information__superhighway__pb2.SuperhighwayStatusReply.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
