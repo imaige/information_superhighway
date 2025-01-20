@@ -13,6 +13,9 @@ from proto_models.similarity_model_pb2 import (
 from proto_models.evidence_model_pb2 import (
     EvidenceRequest, EvidenceReply
 )
+from proto_models.topic_model_pb2 import (
+    TopicRequest, TopicReply
+)
 import json
 from ...libraries import kserve_request
 from ...libraries import rekognition_face_id_request
