@@ -1,5 +1,5 @@
 from proto_models.information_superhighway_pb2 import (
-    ImageAnalysisRequest, SuperhighwayStatusReply, SimilarityAnalysisRequest, EvidenceAnalysisRequest
+    ImageAnalysisRequest, SuperhighwayStatusReply, SimilarityAnalysisRequest, EvidenceAnalysisRequest, TopicAnalysisRequest
 )
 from proto_models.information_superhighway_pb2_grpc import (
     InformationSuperhighwayServiceServicer, add_InformationSuperhighwayServiceServicer_to_server
@@ -13,13 +13,16 @@ from proto_models.similarity_model_pb2 import (
 from proto_models.evidence_model_pb2 import (
     EvidenceRequest, EvidenceReply
 )
+from proto_models.topic_model_pb2 import (
+    TopicRequest, TopicReply
+)
 import json
 from ...libraries import kserve_request
 from ...libraries import rekognition_face_id_request
 from ...libraries.send_request_in_background_image_classification_output import send_image_classification_analysis_request_in_background
 from ...libraries.grpc_server_factory import create_secure_server, create_standard_server
 from ...libraries.grpc_analysis_layer_request import (
-    analysis_layer_request, similarity_model_request, evidence_model_request
+    analysis_layer_request, similarity_model_request, evidence_model_request, topic_model_request
 )
 from ...libraries.enums import AiModel
 from ...libraries.logging_file_format import configure_logger, get_log_level
@@ -51,7 +54,7 @@ configure_logger(logger, level=log_level)
 
 
 async def process_image_comparison_model(model: str, request_image, photo_id: int, project_table_name: str):
-    logger.info(f"starting {model} flow for photo {photo_id}")
+    logger.debug(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
         # TODO: this could use better error handling
@@ -107,65 +110,65 @@ async def process_image_comparison_model(model: str, request_image, photo_id: in
         results.append(response)
 
 
-async def process_image_comparison_test_model(model: str, request_image, photo_id: int, project_table_name: str):
-    logger.info(f"starting {model} flow for photo {photo_id}")
-    results = []
-    try:
-        # TODO: this could use better error handling
-        image_comparison_output = await kserve_request.image_comparison_request(
-            "image-comparison-test-model-service",
-            request_image, model)
-
-        output = image_comparison_output.outputs[0]
-        logger.trace(f"output is: {output}")
-        shape = output.shape[0]
-        contents = []
-        for j in range(0, shape):
-            byte_string = output.contents.bytes_contents[j]
-            contents.extend([byte_string])
-        logger.trace(f"contents is: {contents}")
-        average_hash = output.contents.bytes_contents[0]
-        perceptual_hash = output.contents.bytes_contents[1]
-        difference_hash = output.contents.bytes_contents[2]
-        wavelet_hash_haar = output.contents.bytes_contents[3]
-        color_hash = output.contents.bytes_contents[4]
-        reference_1_average_distance = float(output.contents.bytes_contents[5])
-        reference_2_average_distance = float(output.contents.bytes_contents[6])
-        reference_3_average_distance = float(output.contents.bytes_contents[7])
-        result = ({
-            "average_hash": average_hash,
-            "perceptual_hash": perceptual_hash,
-            "difference_hash": difference_hash,
-            "wavelet_hash_haar": wavelet_hash_haar,
-            "color_hash": color_hash,
-            "reference_1_average_distance": reference_1_average_distance,
-            "reference_2_average_distance": reference_2_average_distance,
-            "reference_3_average_distance": reference_3_average_distance
-        })
-
-        logger.debug(f"for id {photo_id}, returning image comparison output: {result}")
-        return result
-
-    except Exception as e:
-        logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
-        code = code_pb2.INVALID_ARGUMENT
-        details = any_pb2.Any()
-        details.Pack(
-            error_details_pb2.DebugInfo(
-                detail=f"Error processing {model} for photo {photo_id}."
-            )
-        )
-        message = "Internal server error."
-        response = status_pb2.Status(
-            code=code,
-            message=message,
-            details=[details]
-        )
-        results.append(response)
+# async def process_image_comparison_test_model(model: str, request_image, photo_id: int, project_table_name: str):
+#     logger.debug(f"starting {model} flow for photo {photo_id}")
+#     results = []
+#     try:
+#         # TODO: this could use better error handling
+#         image_comparison_output = await kserve_request.image_comparison_request(
+#             "image-comparison-test-model-service",
+#             request_image, model)
+#
+#         output = image_comparison_output.outputs[0]
+#         logger.trace(f"output is: {output}")
+#         shape = output.shape[0]
+#         contents = []
+#         for j in range(0, shape):
+#             byte_string = output.contents.bytes_contents[j]
+#             contents.extend([byte_string])
+#         logger.trace(f"contents is: {contents}")
+#         average_hash = output.contents.bytes_contents[0]
+#         perceptual_hash = output.contents.bytes_contents[1]
+#         difference_hash = output.contents.bytes_contents[2]
+#         wavelet_hash_haar = output.contents.bytes_contents[3]
+#         color_hash = output.contents.bytes_contents[4]
+#         reference_1_average_distance = float(output.contents.bytes_contents[5])
+#         reference_2_average_distance = float(output.contents.bytes_contents[6])
+#         reference_3_average_distance = float(output.contents.bytes_contents[7])
+#         result = ({
+#             "average_hash": average_hash,
+#             "perceptual_hash": perceptual_hash,
+#             "difference_hash": difference_hash,
+#             "wavelet_hash_haar": wavelet_hash_haar,
+#             "color_hash": color_hash,
+#             "reference_1_average_distance": reference_1_average_distance,
+#             "reference_2_average_distance": reference_2_average_distance,
+#             "reference_3_average_distance": reference_3_average_distance
+#         })
+#
+#         logger.debug(f"for id {photo_id}, returning image comparison output: {result}")
+#         return result
+#
+#     except Exception as e:
+#         logger.error(f"Caught error processing {model} for photo {photo_id}: {e}")
+#         code = code_pb2.INVALID_ARGUMENT
+#         details = any_pb2.Any()
+#         details.Pack(
+#             error_details_pb2.DebugInfo(
+#                 detail=f"Error processing {model} for photo {photo_id}."
+#             )
+#         )
+#         message = "Internal server error."
+#         response = status_pb2.Status(
+#             code=code,
+#             message=message,
+#             details=[details]
+#         )
+#         results.append(response)
 
 
 async def process_colors_model(model: str, request_image, photo_id: int, project_table_name: str):
-    logger.info(f"starting {model} flow for photo {photo_id}")
+    logger.debug(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
         colors_output = await kserve_request.colors_request(
@@ -204,7 +207,7 @@ async def process_colors_model(model: str, request_image, photo_id: int, project
 
 
 async def process_face_detect_model(model: str, request_image, photo_id: int, project_table_name: str):
-    logger.info(f"starting {model} flow for photo {photo_id}")
+    logger.debug(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
         output = rekognition_face_id_request.analyze_face(request_image, photo_id, project_table_name)
@@ -230,7 +233,7 @@ async def process_face_detect_model(model: str, request_image, photo_id: int, pr
 
 
 async def process_image_classification_model(model: str, request_image, photo_id: int, project_table_name: str):
-    logger.info(f"starting {model} flow for photo {photo_id}")
+    logger.debug(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
         classification_output = await kserve_request.image_classification_request(
@@ -271,7 +274,7 @@ async def process_image_classification_model(model: str, request_image, photo_id
 
 
 async def process_blur_model(model: str, request_image, photo_id: int, project_table_name: str):
-    logger.info(f"starting {model} flow for photo {photo_id}")
+    logger.debug(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
         blur_output = await kserve_request.blur_request(
@@ -306,7 +309,7 @@ async def process_blur_model(model: str, request_image, photo_id: int, project_t
 
 
 async def process_feature_extraction_model(model: str, request_image, photo_id: int, project_table_name: str):
-    logger.info(f"starting {model} flow for photo {photo_id}")
+    logger.debug(f"starting {model} flow for photo {photo_id}")
     results = []
     try:
         feature_extraction_output = await kserve_request.feature_extraction_request(
@@ -377,7 +380,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
             "face_detect_model": process_face_detect_model,
             "blur_model": process_blur_model,
             "feature_extraction_model": process_feature_extraction_model,
-            "image_comparison_test_model": process_image_comparison_test_model
+            # "image_comparison_test_model": process_image_comparison_test_model
         }
 
         tasks = []
@@ -530,6 +533,33 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 )]
             )
 
+
+    async def TopicAiAnalysisRequest(
+            self, request: TopicAnalysisRequest, context: grpc.aio.ServicerContext
+    ):
+        logger.info(
+            f"Serving Topic model request for project: {request.table_name}"
+        )
+        topic_input = TopicRequest(
+            project_table_name=request.table_name
+        )
+        logger.trace("topic_input request created")
+        try:
+            topic_model_port = f'{getenv("EVIDENCE_MODEL_URL")}:50051'
+            logger.trace(f"about to call similarity_model_request to port {topic_model_port}")
+            topic_response = await topic_model_request(topic_input, topic_model_port)
+            logger.trace(f"response from topic model is: {topic_response}")
+        except Exception as e:
+            logger.error(f"Error sending combined results to topic model: {e}")
+            yield status_pb2.Status(
+                code=code_pb2.INTERNAL,
+                message="Topic request error.",
+                details=[any_pb2.Any().Pack(
+                    error_details_pb2.DebugInfo(
+                        detail=f"Error sending results to topic model for project {request.table_name}: {str(e)}"
+                    )
+                )]
+            )
 
 
 # Server Creation #

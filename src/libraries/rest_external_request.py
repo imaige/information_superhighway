@@ -98,8 +98,9 @@ def request_with_body_and_photo(url: str, recipe: Union[List[str], None], reques
 
 if __name__ == '__main__':
     # server_target = 'local'
-    server_target = 'dev'
-    # server_target = 'qa'
+    # server_target = 'dev'
+    server_target = 'qa'
+    # server_target = 'qa_similarity_test'
     # server_target = 'dev_similarity'
     # server_target = 'qa_test'
 
@@ -132,8 +133,14 @@ if __name__ == '__main__':
             url = "https://api.mediaviz.ai/api/v1/photos/model_request"
         else:
             url = "https://api.mediaviz.ai/api/v1/photos/"
+    elif server_target == 'qa_similarity_test':
+        table_name = "z_2_0908b889-39d4-4464-8659-d56e672b76b6_photos"
+        if photo_and_model:
+            url = "https://api.mediaviz.ai/api/v1/photos/model_request"
+        else:
+            url = "https://api.mediaviz.ai/api/v1/photos/"
     elif server_target == 'qa_test':
-        table_name = "z_2_242f0947-d1eb-43ff-8a32-5697757f2d18_photos"
+        table_name = "z_2_c1759732-5feb-4955-aaeb-7776bb216004_photos"
         if photo_and_model:
             url = "https://api.mediaviz.ai/api/v1/photos/model_request"
         else:
@@ -144,13 +151,12 @@ if __name__ == '__main__':
         "description": "describe me",
         "table_name": table_name,  # dev
         "models": [
-            "image_comparison_hash_model",
+            # "image_comparison_hash_model",
             # "colors_basic_model",
             "image_classification_model",
             # "face_detect_model",
             # "blur_model",
-            # "feature_extraction_model",
-            # "image_comparison_test_model"
+            # "feature_extraction_model"
         ],
         "date_taken": '2024-10-15',
         "client_side_id": 'test-id-unique'
@@ -193,6 +199,8 @@ if __name__ == '__main__':
     # directory = 'test_images/small_with_face'
     # directory = 'test_images/small_selection'
     directory = 'test_images/small'
+    # directory = 'test_images/medium'
+    # directory = 'test_images/2k'
     # directory = 'test_images/similarity'
     # directory = 'test_images/all_same'
     # directory = 'test_images/all_same_smaller'
@@ -201,7 +209,8 @@ if __name__ == '__main__':
         ext = path.splitext(filename)[1]
         if ext.lower() == '.jpg':
             file_path = path.join(directory, filename)
-            logger.info(f"file path is: {file_path}")
+            # logger.info(f"file path is: {file_path}")
+
             request_with_body_and_photo(url, recipe, "post", heads, file_path)
 
     # get token

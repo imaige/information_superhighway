@@ -10,6 +10,8 @@ service InformationSuperhighwayService {
     rpc SimilarityAiAnalysisRequest (SimilarityAnalysisRequest) returns (stream SuperhighwayStatusReply) {}
     // Evidence analysis request
     rpc EvidenceAiAnalysisRequest (EvidenceAnalysisRequest) returns (stream SuperhighwayStatusReply) {}
+    // Topic analysis request
+    rpc TopicAiAnalysisRequest (TopicAnalysisRequest) returns (stream SuperhighwayStatusReply) {}
 }
 
 // AI analysis request message
@@ -27,6 +29,11 @@ message SimilarityAnalysisRequest {
 
 // Evidence request message
 message EvidenceAnalysisRequest {
+    string table_name = 1;
+}
+
+// Similarity request message
+message TopicAnalysisRequest {
     string table_name = 1;
 }
 

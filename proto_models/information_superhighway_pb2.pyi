@@ -29,6 +29,12 @@ class EvidenceAnalysisRequest(_message.Message):
     table_name: str
     def __init__(self, table_name: _Optional[str] = ...) -> None: ...
 
+class TopicAnalysisRequest(_message.Message):
+    __slots__ = ("table_name",)
+    TABLE_NAME_FIELD_NUMBER: _ClassVar[int]
+    table_name: str
+    def __init__(self, table_name: _Optional[str] = ...) -> None: ...
+
 class ImageAnalysisResponse(_message.Message):
     __slots__ = ("message",)
     MESSAGE_FIELD_NUMBER: _ClassVar[int]
