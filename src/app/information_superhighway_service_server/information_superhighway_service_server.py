@@ -545,7 +545,7 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
         )
         logger.trace("topic_input request created")
         try:
-            topic_model_port = f'{getenv("EVIDENCE_MODEL_URL")}:50051'
+            topic_model_port = f'{getenv("TOPIC_MODEL_URL")}:50051'
             logger.trace(f"about to call similarity_model_request to port {topic_model_port}")
             topic_response = await topic_model_request(topic_input, topic_model_port)
             logger.trace(f"response from topic model is: {topic_response}")
