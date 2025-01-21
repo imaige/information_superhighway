@@ -479,32 +479,32 @@ class InformationSuperhighway(InformationSuperhighwayServiceServicer):
                 )]
             )
 
-    # async def SimilarityAiAnalysisRequest(
-    #         self, request: SimilarityAnalysisRequest, context: grpc.aio.ServicerContext
-    # ):
-    #     logger.info(
-    #         f"Serving Similarity model request for project: {request.table_name}"
-    #     )
-    #     similarity_input = SimilarityRequest(
-    #         project_table_name=request.table_name
-    #     )
-    #     logger.trace("similarity_input request created")
-    #     try:
-    #         similarity_model_port = f'{getenv("SIMILARITY_MODEL_URL")}:50051'
-    #         logger.trace(f"about to call similarity_model_request to port {similarity_model_port}")
-    #         similarity_response = await similarity_model_request(similarity_input, similarity_model_port)
-    #         logger.trace(f"response from similarity model is: {similarity_response}")
-    #     except Exception as e:
-    #         logger.error(f"Error sending combined results to similarity model: {e}")
-    #         yield status_pb2.Status(
-    #             code=code_pb2.INTERNAL,
-    #             message="Similarity request error.",
-    #             details=[any_pb2.Any().Pack(
-    #                 error_details_pb2.DebugInfo(
-    #                     detail=f"Error sending results to similarity model for project {request.table_name}: {str(e)}"
-    #                 )
-    #             )]
-    #         )
+    async def SimilarityAiAnalysisRequest(
+            self, request: SimilarityAnalysisRequest, context: grpc.aio.ServicerContext
+    ):
+        logger.info(
+            f"Serving Similarity model request for project: {request.table_name}"
+        )
+        similarity_input = SimilarityRequest(
+            project_table_name=request.table_name
+        )
+        logger.trace("similarity_input request created")
+        try:
+            similarity_model_port = f'{getenv("SIMILARITY_MODEL_URL")}:50051'
+            logger.trace(f"about to call similarity_model_request to port {similarity_model_port}")
+            similarity_response = await similarity_model_request(similarity_input, similarity_model_port)
+            logger.trace(f"response from similarity model is: {similarity_response}")
+        except Exception as e:
+            logger.error(f"Error sending combined results to similarity model: {e}")
+            yield status_pb2.Status(
+                code=code_pb2.INTERNAL,
+                message="Similarity request error.",
+                details=[any_pb2.Any().Pack(
+                    error_details_pb2.DebugInfo(
+                        detail=f"Error sending results to similarity model for project {request.table_name}: {str(e)}"
+                    )
+                )]
+            )
 
     async def EvidenceAiAnalysisRequest(
             self, request: EvidenceAnalysisRequest, context: grpc.aio.ServicerContext
