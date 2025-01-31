@@ -173,7 +173,7 @@ async def similarity_model_request(req: SimilarityRequest, port: str, request_lo
         try:
             logger.debug(f"Initiating gRPC similarity call for table {req.project_table_name} to port {port}")
             # logger.trace(f"Channel state before initiating call: {channel.get_state()}")
-            async for response in stub.SimilarityAnalysisRequestHandler(req, timeout=30):
+            async for response in stub.SimilarityAnalysisRequestHandler(req):
                 logger.info(f"received response: {response}")
         except grpc.RpcError as e:
             logger.error(f"gRPC error for {req.project_table_name}: {e.code()}, {e.details()}")
@@ -197,7 +197,7 @@ async def evidence_model_request(req: EvidenceRequest, port: str, request_locati
         try:
             logger.debug(f"Initiating gRPC evidence call for table {req.project_table_name} to port {port}")
             # logger.trace(f"Channel state before initiating call: {channel.get_state()}")
-            async for response in stub.EvidenceAnalysisRequestHandler(req, timeout=30):
+            async for response in stub.EvidenceAnalysisRequestHandler(req):
                 logger.info(f"received response: {response}")
         except grpc.RpcError as e:
             logger.error(f"gRPC error for {req.project_table_name}: {e.code()}, {e.details()}")
